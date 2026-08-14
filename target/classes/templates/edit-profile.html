@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - SaeSubam Matrimony</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #e11d48;
+            --sidebar-width: 260px;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 24px 28px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-menu {
+            padding: 20px 16px;
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #fff1f2;
+            color: var(--primary);
+        }
+
+        .sidebar-user {
+            padding: 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-user img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px 40px;
+        }
+
+        .edit-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+        }
+
+        .edit-card h5 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .form-control, .form-select {
+            height: 48px;
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li><a href="/profiles"><i class="bi bi-people-fill"></i> Browse Profiles</a></li>
+            <li><a href="/interests"><i class="bi bi-envelope-heart-fill"></i> Match Interests</a></li>
+            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> Shortlisted Profiles</a></li>
+            <li><a href="/my-profile" class="active"><i class="bi bi-person-bounding-box"></i> My Profile</a></li>
+            <li><a href="/subscription"><i class="bi bi-gem"></i> Membership Plan</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-user">
+        <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}" alt="user">
+        <div class="overflow-hidden">
+            <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user != null ? user.name : 'Member'}">User Name</h6>
+            <span class="badge bg-danger-subtle text-danger small" th:text="${user != null ? user.membershipType : 'FREE'}">FREE</span>
+        </div>
+        <a href="/logout" class="ms-auto text-muted fs-5"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Edit My Profile Details</h3>
+            <p class="text-muted mb-0">Update your personal, religious, educational, and family information.</p>
+        </div>
+        <a href="/my-profile" class="btn btn-outline-secondary rounded-3 px-4">Cancel</a>
+    </div>
+
+    <form action="/my-profile/save" method="post" enctype="multipart/form-data" th:object="${profile}">
+        <!-- Basic Info -->
+        <div class="edit-card">
+            <h5><i class="bi bi-person-fill text-danger me-2"></i> Personal Details</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" th:field="*{fullName}" class="form-control" placeholder="Full Name" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Gender</label>
+                    <select th:field="*{gender}" class="form-select" required>
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" th:field="*{age}" class="form-control" placeholder="e.g. 26" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Height</label>
+                    <input type="text" th:field="*{height}" class="form-control" placeholder="e.g. 5 ft 6 in">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Marital Status</label>
+                    <select th:field="*{maritalStatus}" class="form-select">
+                        <option value="Never Married">Never Married</option>
+                        <option value="Divorced">Divorced</option>
+                        <option value="Widowed">Widowed</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Mother Tongue</label>
+                    <input type="text" th:field="*{motherTongue}" class="form-control" placeholder="e.g. Tamil">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold text-danger"><i class="bi bi-image me-1"></i> Upload Profile Photo File</label>
+                    <input type="file" name="photoFile" accept="image/*" class="form-control">
+                    <div class="form-text">Upload JPG, PNG, WEBP image file from your computer or phone.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Or Profile Image Web URL</label>
+                    <input type="url" th:field="*{photoUrl}" class="form-control" placeholder="https://images.unsplash.com/...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Religious Details -->
+        <div class="edit-card">
+            <h5><i class="bi bi-brightness-high-fill text-danger me-2"></i> Religious & Cultural Details</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Religion</label>
+                    <select th:field="*{religion}" class="form-select">
+                        <option value="Hindu">Hindu</option>
+                        <option value="Christian">Christian</option>
+                        <option value="Muslim">Muslim</option>
+                        <option value="Sikh">Sikh</option>
+                        <option value="Jain">Jain</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Caste</label>
+                    <select th:field="*{caste}" class="form-select">
+                        <option value="">Select Caste</option>
+                        <option value="Devar">Devar / Thevar</option>
+                        <option value="Maravar">Devar - Maravar</option>
+                        <option value="Kallar">Devar - Kallar</option>
+                        <option value="Agamudayar">Devar - Agamudayar</option>
+                        <option value="Gounder">Gounder (Kongu Vellala)</option>
+                        <option value="Vanniyar">Vanniyar</option>
+                        <option value="Mudaliyar">Mudaliyar</option>
+                        <option value="Nadar">Nadar</option>
+                        <option value="Chettiar">Chettiar</option>
+                        <option value="Pillai">Pillai</option>
+                        <option value="Brahmin">Brahmin</option>
+                        <option value="Naidu">Naidu</option>
+                        <option value="Reddy">Reddy / Reddiyar</option>
+                        <option value="Nair">Nair</option>
+                        <option value="Kamma">Kamma</option>
+                        <option value="Viswakarma">Viswakarma</option>
+                        <option value="Yadava">Yadava / Konar</option>
+                        <option value="Ezhavas">Ezhavas / Thiyya</option>
+                        <option value="Sourashtra">Sourashtra</option>
+                        <option value="Lingayat">Lingayat</option>
+                        <option value="Vokkaliga">Vokkaliga</option>
+                        <option value="Other">Other / Caste No Bar</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Sub-Caste</label>
+                    <input type="text" th:field="*{subCaste}" class="form-control" placeholder="Subcaste">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Gothram</label>
+                    <input type="text" th:field="*{gothram}" class="form-control" placeholder="Gothram">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Star / Rasi</label>
+                    <input type="text" th:field="*{starRasi}" class="form-control" placeholder="Star / Nakshatram">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Dosham</label>
+                    <select th:field="*{dosham}" class="form-select">
+                        <option value="No">No Dosham</option>
+                        <option value="Yes">Kujadosham / Sevvai</option>
+                        <option value="Don't Know">Don't Know</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Career & Location -->
+        <div class="edit-card">
+            <h5><i class="bi bi-briefcase-fill text-danger me-2"></i> Career & Location Details</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Highest Education</label>
+                    <input type="text" th:field="*{education}" class="form-control" placeholder="e.g. B.Tech / MBA / MBBS">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Occupation</label>
+                    <input type="text" th:field="*{occupation}" class="form-control" placeholder="e.g. Software Engineer">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Employed In</label>
+                    <select th:field="*{employedIn}" class="form-select">
+                        <option value="Private Sector">Private Sector</option>
+                        <option value="Government / PSU">Government / PSU</option>
+                        <option value="Business / Self Employed">Business / Self Employed</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Annual Income</label>
+                    <input type="text" th:field="*{annualIncome}" class="form-control" placeholder="e.g. ₹12 - ₹15 Lakhs">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    <input type="text" th:field="*{city}" class="form-control" placeholder="e.g. Chennai">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">State</label>
+                    <input type="text" th:field="*{state}" class="form-control" placeholder="e.g. Tamil Nadu">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Contact Mobile</label>
+                    <input type="text" th:field="*{contactMobile}" class="form-control" placeholder="10 Digit Number">
+                </div>
+            </div>
+        </div>
+
+        <!-- About Me -->
+        <div class="edit-card">
+            <h5><i class="bi bi-chat-text-fill text-danger me-2"></i> About Me & Partner Preferences</h5>
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <label class="form-label">About Me</label>
+                    <textarea th:field="*{aboutMe}" class="form-control" rows="3" placeholder="Write a short summary about your lifestyle, values, hobbies, and family background..."></textarea>
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label">Partner Preferences</label>
+                    <textarea th:field="*{partnerPreferences}" class="form-control" rows="3" placeholder="Describe your expectations regarding education, profession, family background..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end mb-5">
+            <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-5">Save Changes <i class="bi bi-check-circle ms-1"></i></button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Interests - SaeSubam Matrimony</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #e11d48;
+            --sidebar-width: 260px;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 24px 28px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-menu {
+            padding: 20px 16px;
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #fff1f2;
+            color: var(--primary);
+        }
+
+        .sidebar-user {
+            padding: 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-user img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px 40px;
+        }
+
+        .interest-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: all 0.3s;
+        }
+
+        .interest-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transform: translateY(-2px);
+        }
+
+        .interest-user-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px 24px;
+            color: #64748b;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li><a href="/profiles"><i class="bi bi-people-fill"></i> Browse Profiles</a></li>
+            <li><a href="/interests" class="active"><i class="bi bi-envelope-heart-fill"></i> Match Interests</a></li>
+            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> Shortlisted Profiles</a></li>
+            <li><a href="/my-profile"><i class="bi bi-person-bounding-box"></i> My Profile</a></li>
+            <li><a href="/subscription"><i class="bi bi-gem"></i> Membership Plan</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-user">
+        <img th:src="${user != null and user.profile != null and user.profile.photoUrl != null ? user.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}" alt="user">
+        <div class="overflow-hidden">
+            <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user != null ? user.name : 'Member'}">User Name</h6>
+            <span class="badge bg-danger-subtle text-danger small" th:text="${user != null ? user.membershipType : 'FREE'}">FREE</span>
+        </div>
+        <a href="/logout" class="ms-auto text-muted fs-5"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="mb-4">
+        <h3 class="fw-bold mb-1">Match Interests & Connections</h3>
+        <p class="text-muted mb-0">Track proposals received from interested candidates and proposals you have sent.</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4" id="interestTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="received-tab" data-bs-toggle="pill" data-bs-target="#received" type="button">
+                Received Interests <span class="badge bg-light text-danger ms-1" th:text="${receivedInterests != null ? receivedInterests.size() : 0}">0</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="sent-tab" data-bs-toggle="pill" data-bs-target="#sent" type="button">
+                Sent Interests <span class="badge bg-light text-muted ms-1" th:text="${sentInterests != null ? sentInterests.size() : 0}">0</span>
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="accepted-tab" data-bs-toggle="pill" data-bs-target="#accepted" type="button">
+                Connected Matches <span class="badge bg-light text-success ms-1" th:text="${acceptedMatches != null ? acceptedMatches.size() : 0}">0</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="interestTabsContent">
+        <!-- Received Tab -->
+        <div class="tab-pane fade show active" id="received" role="tabpanel">
+            <div th:if="${receivedInterests != null and not #lists.isEmpty(receivedInterests)}">
+                <div class="interest-card" th:each="item : ${receivedInterests}">
+                    <img th:src="${item.sender.profile != null and item.sender.profile.photoUrl != null ? item.sender.profile.photoUrl : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200'}" alt="sender" class="interest-user-img">
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h5 class="fw-bold mb-0" th:text="${item.sender.name}">Sender Name</h5>
+                            <span class="badge bg-warning-subtle text-warning px-3 py-1 rounded-pill" th:text="${item.status}">PENDING</span>
+                        </div>
+                        <p class="text-muted small mb-2" th:text="${item.sender.profile != null ? item.sender.profile.occupation + ' • ' + item.sender.profile.city : 'Member'}">Profession • City</p>
+                        <span class="small text-muted"><i class="bi bi-clock me-1"></i> Expressed interest on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
+                    </div>
+
+                    <div class="d-flex gap-2" th:if="${item.status.name() == 'PENDING'}">
+                        <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
+                            <button type="submit" class="btn btn-success fw-bold px-4 rounded-3"><i class="bi bi-check-circle me-1"></i> Accept</button>
+                        </form>
+                        <form th:action="@{/api/interests/decline/{id}(id=${item.id})}" method="post">
+                            <button type="submit" class="btn btn-outline-secondary fw-bold px-3 rounded-3"><i class="bi bi-x-circle me-1"></i> Decline</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-5" th:if="${receivedInterests == null or #lists.isEmpty(receivedInterests)}">
+                <i class="bi bi-envelope-open text-muted display-4 d-block mb-3"></i>
+                <h5 class="fw-bold">No Pending Received Interests</h5>
+                <p class="text-muted">When candidates express interest in your profile, proposals will appear here.</p>
+            </div>
+        </div>
+
+        <!-- Sent Tab -->
+        <div class="tab-pane fade" id="sent" role="tabpanel">
+            <div th:if="${sentInterests != null and not #lists.isEmpty(sentInterests)}">
+                <div class="interest-card" th:each="item : ${sentInterests}">
+                    <img th:src="${item.receiver.profile != null and item.receiver.profile.photoUrl != null ? item.receiver.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="receiver" class="interest-user-img">
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h5 class="fw-bold mb-0" th:text="${item.receiver.name}">Receiver Name</h5>
+                            <span class="badge" th:classappend="${item.status.name() == 'ACCEPTED' ? 'bg-success-subtle text-success' : (item.status.name() == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
+                        </div>
+                        <p class="text-muted small mb-2" th:text="${item.receiver.profile != null ? item.receiver.profile.occupation + ' • ' + item.receiver.profile.city : 'Member'}">Profession • City</p>
+                        <span class="small text-muted"><i class="bi bi-send me-1"></i> Interest sent on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
+                    </div>
+                    <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3">View Profile</a>
+                </div>
+            </div>
+
+            <div class="text-center py-5" th:if="${sentInterests == null or #lists.isEmpty(sentInterests)}">
+                <i class="bi bi-send-x text-muted display-4 d-block mb-3"></i>
+                <h5 class="fw-bold">No Sent Interests Yet</h5>
+                <p class="text-muted">Browse profiles and click "Send Express Interest" to connect with candidates.</p>
+                <a href="/profiles" class="btn btn-danger fw-bold rounded-3 px-4 mt-2">Browse Profiles</a>
+            </div>
+        </div>
+
+        <!-- Connected Tab -->
+        <div class="tab-pane fade" id="accepted" role="tabpanel">
+            <div th:if="${acceptedMatches != null and not #lists.isEmpty(acceptedMatches)}">
+                <div class="interest-card border-success-subtle" th:each="item : ${acceptedMatches}">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="bi bi-check-circle-fill text-success fs-2"></i>
+                            <div>
+                                <h5 class="fw-bold mb-1">Mutual Match Connected!</h5>
+                                <p class="text-muted small mb-0">You and your match can now view contact information directly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-5" th:if="${acceptedMatches == null or #lists.isEmpty(acceptedMatches)}">
+                <i class="bi bi-heartbreak text-muted display-4 d-block mb-3"></i>
+                <h5 class="fw-bold">No Mutual Connections Yet</h5>
+                <p class="text-muted">When an interest proposal is accepted, mutual contact details will unlock here.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
