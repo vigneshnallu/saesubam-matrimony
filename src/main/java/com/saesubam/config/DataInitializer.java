@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.saesubam.model.ChatMessage;
 import com.saesubam.model.MembershipType;
 import com.saesubam.model.Profiles;
+import com.saesubam.model.UserInterest;
 import com.saesubam.model.Users;
 import com.saesubam.repositories.ProfileRepository;
+import com.saesubam.repositories.UserInterestRepository;
 import com.saesubam.repositories.UserRepository;
 
 /**
@@ -19,22 +22,19 @@ import com.saesubam.repositories.UserRepository;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    /** The user repository. */
     private final UserRepository userRepository;
-
-    /** The profile repository. */
     private final ProfileRepository profileRepository;
+    private final UserInterestRepository userInterestRepository;
+    private final com.saesubam.repositories.ChatMessageRepository chatMessageRepository;
 
-    /**
-     * Instantiates a new data initializer.
-     *
-     * @param userRepository the user repository
-     * @param profileRepository the profile repository
-     */
     @Autowired
-    public DataInitializer(UserRepository userRepository, ProfileRepository profileRepository) {
+    public DataInitializer(UserRepository userRepository, ProfileRepository profileRepository,
+                           UserInterestRepository userInterestRepository,
+                           com.saesubam.repositories.ChatMessageRepository chatMessageRepository) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
+        this.userInterestRepository = userInterestRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     /**
@@ -142,7 +142,29 @@ public class DataInitializer implements CommandLineRunner {
             "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop",
             MembershipType.GOLD);
 
-        System.out.println("✅ Seed matrimony profiles initialized successfully!");
+        Users priya = userRepository.findByEmail("priya@gmail.com");
+        Users karthik = userRepository.findByEmail("karthik@gmail.com");
+        Users anand = userRepository.findByEmail("anand@gmail.com");
+
+        if (priya != null && karthik != null && userInterestRepository.findBySenderAndReceiver(priya, karthik).isEmpty()) {
+            UserInterest connected1 = new UserInterest(priya, karthik);
+            connected1.setStatus(UserInterest.InterestStatus.ACCEPTED);
+            userInterestRepository.save(connected1);
+
+            chatMessageRepository.save(new ChatMessage(karthik, priya, "Hi Priya! Great to connect with you on SaeSubam Matrimony."));
+            chatMessageRepository.save(new ChatMessage(priya, karthik, "Hello Karthik! Nice to meet you. I noticed your profile and liked your professional background."));
+            chatMessageRepository.save(new ChatMessage(karthik, priya, "Thank you! I would love to talk more about our families and interests."));
+        }
+
+        if (priya != null && anand != null && userInterestRepository.findBySenderAndReceiver(priya, anand).isEmpty()) {
+            UserInterest connected2 = new UserInterest(priya, anand);
+            connected2.setStatus(UserInterest.InterestStatus.ACCEPTED);
+            userInterestRepository.save(connected2);
+
+            chatMessageRepository.save(new ChatMessage(anand, priya, "Namaste Priya! Glad our families aligned on match preferences."));
+        }
+
+        System.out.println("✅ Seed matrimony profiles and connected partner chat conversations initialized successfully!");
     }
 
     /**

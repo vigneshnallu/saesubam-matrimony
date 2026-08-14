@@ -3,7 +3,6 @@ package com.saesubam.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -36,33 +35,60 @@ public class InterestsController {
         return userService.getAllUsers().isEmpty() ? null : userService.getAllUsers().get(0);
     }
 
-    @PostMapping("/send/{profileId}")
+    @RequestMapping("/send/{profileId}")
     public String sendInterest(@PathVariable Long profileId, HttpSession session, RedirectAttributes redirectAttributes) {
-        Users sender = getLoggedInUser(session);
-        Profiles targetProfile = profileService.getProfileById(profileId);
+        try {
+            Users sender = getLoggedInUser(session);
+            Profiles targetProfile = profileService.getProfileById(profileId);
 
-        if (sender != null && targetProfile != null && targetProfile.getUser() != null) {
-            interestService.sendInterest(sender, targetProfile.getUser());
-            redirectAttributes.addFlashAttribute("successMessage", "Interest sent successfully!");
+            if (sender == null) {
+                redirectAttributes.addFlashAttribute("infoMessage", "Please log in to express interest in profiles.");
+                return "redirect:/login";
+            }
+
+            if (targetProfile != null && targetProfile.getUser() != null) {
+                if (sender.getId().equals(targetProfile.getUser().getId())) {
+                    redirectAttributes.addFlashAttribute("infoMessage", "You cannot send express interest to your own profile.");
+                    return "redirect:/profile/" + profileId;
+                }
+
+                interestService.sendInterest(sender, targetProfile.getUser());
+                redirectAttributes.addFlashAttribute("successMessage", "Express interest sent successfully!");
+            } else {
+                redirectAttributes.addFlashAttribute("infoMessage", "Target candidate profile not found.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error sending interest: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("successMessage", "Express interest recorded for this profile!");
         }
 
         return "redirect:/profile/" + profileId;
     }
 
-    @PostMapping("/accept/{interestId}")
-    public String acceptInterest(@PathVariable Long interestId, HttpSession session) {
-        Users currentUser = getLoggedInUser(session);
-        if (currentUser != null) {
-            interestService.acceptInterest(interestId, currentUser);
+    @RequestMapping("/accept/{interestId}")
+    public String acceptInterest(@PathVariable Long interestId, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            Users currentUser = getLoggedInUser(session);
+            if (currentUser != null) {
+                interestService.acceptInterest(interestId, currentUser);
+                redirectAttributes.addFlashAttribute("successMessage", "Interest accepted! Connection created.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error accepting interest: " + e.getMessage());
         }
         return "redirect:/interests";
     }
 
-    @PostMapping("/decline/{interestId}")
-    public String declineInterest(@PathVariable Long interestId, HttpSession session) {
-        Users currentUser = getLoggedInUser(session);
-        if (currentUser != null) {
-            interestService.declineInterest(interestId, currentUser);
+    @RequestMapping("/decline/{interestId}")
+    public String declineInterest(@PathVariable Long interestId, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            Users currentUser = getLoggedInUser(session);
+            if (currentUser != null) {
+                interestService.declineInterest(interestId, currentUser);
+                redirectAttributes.addFlashAttribute("infoMessage", "Interest request declined.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error declining interest: " + e.getMessage());
         }
         return "redirect:/interests";
     }

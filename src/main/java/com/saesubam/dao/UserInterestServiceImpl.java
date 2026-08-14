@@ -31,6 +31,10 @@ public class UserInterestServiceImpl implements UserInterestService {
     @Override
     @Transactional
     public UserInterest sendInterest(Users sender, Users receiver) {
+        if (sender == null || receiver == null || sender.getId() == null || receiver.getId() == null) {
+            return null;
+        }
+
         if (sender.getId().equals(receiver.getId())) {
             throw new IllegalArgumentException("Cannot send interest to yourself");
         }

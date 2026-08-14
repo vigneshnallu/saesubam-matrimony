@@ -3,7 +3,6 @@ package com.saesubam.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -36,18 +35,22 @@ public class BookmarkController {
         return userService.getAllUsers().isEmpty() ? null : userService.getAllUsers().get(0);
     }
 
-    @PostMapping("/toggle/{profileId}")
+    @RequestMapping("/toggle/{profileId}")
     public String toggleBookmark(@PathVariable Long profileId, HttpSession session, RedirectAttributes redirectAttributes) {
-        Users currentUser = getLoggedInUser(session);
-        Profiles targetProfile = profileService.getProfileById(profileId);
+        try {
+            Users currentUser = getLoggedInUser(session);
+            Profiles targetProfile = profileService.getProfileById(profileId);
 
-        if (currentUser != null && targetProfile != null) {
-            boolean added = bookmarkService.toggleBookmark(currentUser, targetProfile);
-            if (added) {
-                redirectAttributes.addFlashAttribute("successMessage", "Profile added to shortlist!");
-            } else {
-                redirectAttributes.addFlashAttribute("infoMessage", "Profile removed from shortlist.");
+            if (currentUser != null && targetProfile != null) {
+                boolean added = bookmarkService.toggleBookmark(currentUser, targetProfile);
+                if (added) {
+                    redirectAttributes.addFlashAttribute("successMessage", "Profile added to shortlist!");
+                } else {
+                    redirectAttributes.addFlashAttribute("infoMessage", "Profile removed from shortlist.");
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Error toggling bookmark: " + e.getMessage());
         }
 
         return "redirect:/profile/" + profileId;
