@@ -131,6 +131,31 @@
             border-color: #dc3545 !important;
             background-color: #fff8f8 !important;
         }
+
+        /* Mobile & Tablet Responsive Alignment */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px 8px;
+            }
+            .checkout-header {
+                padding: 20px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .payment-method-nav {
+                padding: 12px 12px 0 12px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .payment-method-nav .nav-link {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
+            .p-4 {
+                padding: 18px 14px !important;
+            }
+        }
     </style>
 </head>
 <body>

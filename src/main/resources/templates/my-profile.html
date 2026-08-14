@@ -14,7 +14,8 @@
     <style>
         :root {
             --primary: #e11d48;
-            --sidebar-width: 260px;
+            --primary-hover: #be123c;
+            --sidebar-width: 280px;
             --bg-light: #f8fafc;
         }
 
@@ -28,6 +29,7 @@
         body {
             background-color: var(--bg-light);
             min-height: 100vh;
+            color: #334155;
         }
 
         /* Sidebar Styling */
@@ -104,6 +106,22 @@
             padding: 32px 40px;
         }
 
+        .mobile-header {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
         .hero-profile-card {
             background: #ffffff;
             border-radius: 24px;
@@ -113,6 +131,7 @@
             display: flex;
             gap: 32px;
             align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
 
         .profile-main-img {
@@ -129,6 +148,7 @@
             padding: 28px;
             border: 1px solid #e2e8f0;
             margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
 
         .section-card h5 {
@@ -151,12 +171,48 @@
             font-size: 13px;
             color: #64748b;
             font-weight: 500;
+            margin-bottom: 2px;
         }
 
         .detail-item span {
             font-size: 15px;
             font-weight: 600;
             color: #1e293b;
+        }
+
+        /* Mobile & Tablet Responsive Alignment */
+        @media (max-width: 991px) {
+            .sidebar {
+                left: -280px;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 14px;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .hero-profile-card {
+                flex-direction: column;
+                padding: 20px 16px;
+                gap: 20px;
+            }
+            .profile-main-img {
+                width: 100%;
+                height: 240px;
+            }
+            .detail-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -188,19 +244,32 @@
     </div>
 </div>
 
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
 <!-- Main Content -->
 <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Mobile Header -->
+    <div class="mobile-header justify-content-between align-items-center bg-white p-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
+            <i class="bi bi-list fs-5 me-1"></i> Menu
+        </button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h3 class="fw-bold mb-1">My Personal Matrimony Profile</h3>
             <p class="text-muted mb-0">View and update your personal, religious, career, and family details.</p>
         </div>
-        <a href="/my-profile/edit" class="btn btn-danger rounded-3 px-4 fw-bold"><i class="bi bi-pencil-square me-1"></i> Edit Profile</a>
+        <a href="/my-profile/edit" class="btn btn-danger rounded-3 px-4 py-2 fw-bold"><i class="bi bi-pencil-square me-1"></i> Edit Profile</a>
     </div>
 
     <!-- Hero Card -->
     <div class="hero-profile-card">
-        <div class="text-center">
+        <div class="text-center w-100-mobile">
             <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500'}" alt="photo" class="profile-main-img mb-2">
             <form action="/my-profile/upload-photo" method="post" enctype="multipart/form-data" class="mt-2">
                 <label class="btn btn-outline-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
@@ -223,7 +292,7 @@
                 <span class="text-danger fw-bold" th:text="${profile != null ? profile.religion + ' - ' + profile.caste : 'Hindu'}">Religion - Caste</span>
             </p>
 
-            <div class="d-flex gap-4 text-muted small">
+            <div class="d-flex gap-4 text-muted small flex-wrap">
                 <div><i class="bi bi-envelope-fill me-1 text-danger"></i> <span th:text="${user.email}">user@gmail.com</span></div>
                 <div><i class="bi bi-telephone-fill me-1 text-danger"></i> <span th:text="${user.mobile}">9876543210</span></div>
                 <div><i class="bi bi-gem me-1 text-danger"></i> Plan: <span class="fw-bold text-dark" th:text="${user.membershipType}">FREE</span></div>
@@ -232,8 +301,8 @@
     </div>
 
     <!-- Sections -->
-    <div class="row" th:if="${profile != null}">
-        <div class="col-md-8">
+    <div class="row g-4" th:if="${profile != null}">
+        <div class="col-lg-8">
             <div class="section-card">
                 <h5><i class="bi bi-person-lines-fill text-danger"></i> About Me</h5>
                 <p class="text-secondary leading-relaxed mb-0" th:text="${profile.aboutMe}">Profile description here.</p>
@@ -260,7 +329,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <div class="section-card">
                 <h5><i class="bi bi-briefcase-fill text-danger"></i> Career Details</h5>
                 <div class="mb-3"><label class="small text-muted">Education</label><div class="fw-bold text-dark" th:text="${profile.education}">Degree</div></div>
@@ -279,5 +348,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleMobileSidebar() {
+        var sidebar = document.querySelector('.sidebar');
+        var overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('show');
+    }
+</script>
 </body>
 </html>

@@ -14,7 +14,8 @@
     <style>
         :root {
             --primary: #e11d48;
-            --sidebar-width: 260px;
+            --primary-hover: #be123c;
+            --sidebar-width: 280px;
             --bg-light: #f8fafc;
         }
 
@@ -28,6 +29,7 @@
         body {
             background-color: var(--bg-light);
             min-height: 100vh;
+            color: #334155;
         }
 
         /* Sidebar Styling */
@@ -104,6 +106,22 @@
             padding: 32px 40px;
         }
 
+        .mobile-header {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
         .plan-card {
             background: #ffffff;
             border-radius: 24px;
@@ -140,10 +158,16 @@
         }
 
         .price-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
             color: #0f172a;
+            margin: 16px 0;
+        }
+
+        .price-text span {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
         }
 
         .feature-list {
@@ -155,10 +179,36 @@
         .feature-list li {
             margin-bottom: 12px;
             font-size: 14px;
-            color: #475569;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        /* Mobile & Tablet Responsive Alignment */
+        @media (max-width: 991px) {
+            .sidebar {
+                left: -280px;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 14px;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .plan-card {
+                padding: 24px 18px;
+                margin-bottom: 16px;
+            }
         }
     </style>
 </head>
@@ -190,115 +240,103 @@
     </div>
 </div>
 
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
 <!-- Main Content -->
 <div class="main-content">
-    <div class="mb-4">
-        <h3 class="fw-bold mb-1">Upgrade Your Membership</h3>
-        <p class="text-muted mb-0">Unlock direct phone numbers, unlimited interest proposals, and priority profile placement.</p>
+    <!-- Mobile Header -->
+    <div class="mobile-header justify-content-between align-items-center bg-white p-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
+            <i class="bi bi-list fs-5 me-1"></i> Menu
+        </button>
     </div>
 
-    <!-- Upgrade Alert -->
-    <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm" th:if="${param.upgraded}">
-        <i class="bi bi-patch-check-fill me-2 fs-5"></i> <strong>Congratulations!</strong> Your membership plan has been upgraded successfully!
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="text-center max-w-700 mx-auto mb-5">
+        <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-2"><i class="bi bi-star-fill me-1"></i> Upgrade Your Matchmaking</span>
+        <h2 class="fw-bold text-dark display-6 mb-2">Choose Your Matrimony Package</h2>
+        <p class="text-muted fs-5">Unlock direct candidate phone numbers, instant WhatsApp intimation, and 3x profile visibility.</p>
     </div>
 
-    <!-- Pricing Cards Grid -->
-    <div class="row g-4 my-2">
-        <!-- Free Plan -->
-        <div class="col-md-3">
+    <div class="row g-4 align-items-stretch">
+        <!-- FREE PLAN -->
+        <div class="col-lg-4 col-md-6">
             <div class="plan-card">
                 <div>
-                    <h5 class="fw-bold text-muted mb-1">Free Tier</h5>
-                    <div class="price-text mb-3">₹0 <span class="fs-6 text-muted font-sans fw-normal">/ Lifetime</span></div>
-                    <p class="text-muted small">Essential browsing for new members.</p>
-                    <hr>
+                    <h4 class="fw-bold text-dark mb-1">Free Basic</h4>
+                    <p class="text-muted small">Ideal for exploring candidates</p>
+                    <div class="price-text">₹0 <span>/ lifetime</span></div>
+
                     <ul class="feature-list">
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Create Matrimony Profile</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Search & Filter Proposals</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Shortlist Candidates</li>
-                        <li><i class="bi bi-x-circle-fill text-muted"></i> Direct Phone Numbers</li>
-                        <li><i class="bi bi-x-circle-fill text-muted"></i> Priority Support</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Create & Edit Matrimony Profile</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Search & Browse All Candidates</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Send 5 Express Interests / Month</li>
+                        <li class="text-muted opacity-50"><i class="bi bi-x-circle-fill text-secondary"></i> Direct Phone Number Access</li>
+                        <li class="text-muted opacity-50"><i class="bi bi-x-circle-fill text-secondary"></i> WhatsApp Intimation & Live Chat</li>
                     </ul>
                 </div>
-                <button class="btn btn-outline-secondary w-100 rounded-3 fw-bold" th:disabled="${user != null and user.membershipType.name() == 'FREE'}">
-                    <span th:text="${user != null and user.membershipType.name() == 'FREE' ? 'Current Plan' : 'Free Plan'}">Current Plan</span>
-                </button>
+                <button class="btn btn-outline-secondary w-100 rounded-3 py-3 fw-bold" disabled>Current Active Plan</button>
             </div>
         </div>
 
-        <!-- Silver Plan -->
-        <div class="col-md-3">
-            <div class="plan-card">
-                <div>
-                    <h5 class="fw-bold text-primary mb-1">Silver Plan</h5>
-                    <div class="price-text mb-3">₹499 <span class="fs-6 text-muted font-sans fw-normal">/ 3 Months</span></div>
-                    <p class="text-muted small">Great for active proposal seekers.</p>
-                    <hr>
-                    <ul class="feature-list">
-                        <li><i class="bi bi-check-circle-fill text-success"></i> View 15 Contact Phone Numbers</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Send 25 Express Interests</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Search & Filter Proposals</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Shortlist Candidates</li>
-                        <li><i class="bi bi-x-circle-fill text-muted"></i> Highlighted Profile Badge</li>
-                    </ul>
-                </div>
-                <form action="/checkout" method="get">
-                    <input type="hidden" name="plan" value="SILVER">
-                    <button type="submit" class="btn btn-outline-primary w-100 rounded-3 fw-bold">Proceed to Payment (₹499)</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Gold Plan -->
-        <div class="col-md-3">
+        <!-- GOLD PLAN -->
+        <div class="col-lg-4 col-md-6">
             <div class="plan-card plan-popular">
-                <span class="badge-popular"><i class="bi bi-star-fill me-1"></i> MOST POPULAR</span>
+                <span class="badge-popular"><i class="bi bi-fire me-1"></i> MOST POPULAR</span>
                 <div>
-                    <h5 class="fw-bold text-warning mb-1">Gold Plan</h5>
-                    <div class="price-text mb-3">₹999 <span class="fs-6 text-muted font-sans fw-normal">/ 6 Months</span></div>
-                    <p class="text-muted small">Everything you need to find your life partner.</p>
-                    <hr>
+                    <h4 class="fw-bold text-dark mb-1">Gold Premium</h4>
+                    <p class="text-muted small">Best for active family search</p>
+                    <div class="price-text text-danger">₹1,499 <span>/ 3 months</span></div>
+
                     <ul class="feature-list">
-                        <li><i class="bi bi-check-circle-fill text-success"></i> View 50 Contact Phone Numbers</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Unlimited Express Interests</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Highlighted Gold Badge</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Priority Customer Support</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Verified Horoscope Match</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> View 30 Verified Phone Numbers</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Unlimited Express Interest Proposals</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Real-Time Live Partner Chat</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> WhatsApp Intimation Alerts</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> 2x Profile Highlight in Search</li>
                     </ul>
                 </div>
-                <form action="/checkout" method="get">
-                    <input type="hidden" name="plan" value="GOLD">
-                    <button type="submit" class="btn btn-warning w-100 text-white rounded-3 fw-bold">Proceed to Payment (₹999)</button>
-                </form>
+                <a th:href="@{/payment?plan=GOLD&amount=1499}" class="btn btn-danger w-100 rounded-3 py-3 fw-bold shadow-sm">
+                    Upgrade to Gold Plan <i class="bi bi-arrow-right me-1"></i>
+                </a>
             </div>
         </div>
 
-        <!-- Platinum Plan -->
-        <div class="col-md-3">
+        <!-- PLATINUM PLAN -->
+        <div class="col-lg-4 col-md-6">
             <div class="plan-card">
                 <div>
-                    <h5 class="fw-bold text-danger mb-1">Platinum VIP</h5>
-                    <div class="price-text mb-3">₹1,999 <span class="fs-6 text-muted font-sans fw-normal">/ 1 Year</span></div>
-                    <p class="text-muted small">VIP relationship manager & unlimited access.</p>
-                    <hr>
+                    <h4 class="fw-bold text-dark mb-1">Platinum VIP</h4>
+                    <p class="text-muted small">For executive & NRI profiles</p>
+                    <div class="price-text text-primary">₹2,999 <span>/ 6 months</span></div>
+
                     <ul class="feature-list">
                         <li><i class="bi bi-check-circle-fill text-success"></i> Unlimited Contact Phone Numbers</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Unlimited Express Interests</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> VIP Profile Placement Top #1</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Personal Matchmaking Advisor</li>
-                        <li><i class="bi bi-check-circle-fill text-success"></i> Guaranteed Verified Leads</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Dedicated Personal Matchmaker Support</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Instant WhatsApp & SMS Notifications</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> VIP Profile Badge & Top Ranking</li>
+                        <li><i class="bi bi-check-circle-fill text-success"></i> Horoscope Matching Assistance</li>
                     </ul>
                 </div>
-                <form action="/checkout" method="get">
-                    <input type="hidden" name="plan" value="PLATINUM">
-                    <button type="submit" class="btn btn-danger w-100 rounded-3 fw-bold">Proceed to Payment (₹1,999)</button>
-                </form>
+                <a th:href="@{/payment?plan=PLATINUM&amount=2999}" class="btn btn-dark w-100 rounded-3 py-3 fw-bold shadow-sm">
+                    Upgrade to Platinum VIP <i class="bi bi-arrow-right me-1"></i>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleMobileSidebar() {
+        var sidebar = document.querySelector('.sidebar');
+        var overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('show');
+    }
+</script>
 </body>
 </html>
