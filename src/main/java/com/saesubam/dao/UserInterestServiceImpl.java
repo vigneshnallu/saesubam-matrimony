@@ -35,8 +35,19 @@ public class UserInterestServiceImpl implements UserInterestService {
             throw new IllegalArgumentException("Cannot send interest to yourself");
         }
 
-        UserInterest savedInterest = userInterestRepository.findBySenderAndReceiver(sender, receiver)
-                .orElseGet(() -> userInterestRepository.save(new UserInterest(sender, receiver)));
+        List<UserInterest> existingList = userInterestRepository.findBySenderAndReceiver(sender, receiver);
+        if (existingList != null && !existingList.isEmpty()) {
+            if (existingList.size() > 1) {
+                for (int i = 1; i < existingList.size(); i++) {
+                    try {
+                        userInterestRepository.delete(existingList.get(i));
+                    } catch (Exception ignored) {}
+                }
+            }
+            return existingList.get(0);
+        }
+
+        UserInterest savedInterest = userInterestRepository.save(new UserInterest(sender, receiver));
 
         // Trigger Instant Email & WhatsApp Intimation Notifications
         sendInterestEmailNotification(sender, receiver);
@@ -140,27 +151,66 @@ public class UserInterestServiceImpl implements UserInterestService {
     @Override
     @Transactional(readOnly = true)
     public List<UserInterest> getReceivedInterests(Users receiver) {
-        return userInterestRepository.findByReceiver(receiver);
+        List<UserInterest> rawList = userInterestRepository.findByReceiver(receiver);
+        List<UserInterest> uniqueList = new ArrayList<>();
+        java.util.Set<Long> seenSenderIds = new java.util.HashSet<>();
+
+        for (UserInterest ui : rawList) {
+            if (ui != null && ui.getSender() != null) {
+                Long sId = ui.getSender().getId();
+                if (!seenSenderIds.contains(sId)) {
+                    seenSenderIds.add(sId);
+                    uniqueList.add(ui);
+                }
+            }
+        }
+        return uniqueList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<UserInterest> getSentInterests(Users sender) {
-        return userInterestRepository.findBySender(sender);
+        List<UserInterest> rawList = userInterestRepository.findBySender(sender);
+        List<UserInterest> uniqueList = new ArrayList<>();
+        java.util.Set<Long> seenReceiverIds = new java.util.HashSet<>();
+
+        for (UserInterest ui : rawList) {
+            if (ui != null && ui.getReceiver() != null) {
+                Long rId = ui.getReceiver().getId();
+                if (!seenReceiverIds.contains(rId)) {
+                    seenReceiverIds.add(rId);
+                    uniqueList.add(ui);
+                }
+            }
+        }
+        return uniqueList;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<UserInterest> getAcceptedMatches(Users user) {
         List<UserInterest> accepted = new ArrayList<>();
-        
+        java.util.Set<String> seenPairs = new java.util.HashSet<>();
+
         List<UserInterest> received = userInterestRepository.findByReceiverAndStatus(user, InterestStatus.ACCEPTED);
-        accepted.addAll(received);
+        for (UserInterest ui : received) {
+            if (ui != null && ui.getSender() != null) {
+                String pairKey = ui.getSender().getId() + "_" + user.getId();
+                if (!seenPairs.contains(pairKey)) {
+                    seenPairs.add(pairKey);
+                    accepted.add(ui);
+                }
+            }
+        }
 
         List<UserInterest> sent = userInterestRepository.findBySender(user);
         for (UserInterest ui : sent) {
-            if (ui.getStatus() == InterestStatus.ACCEPTED) {
-                accepted.add(ui);
+            if (ui != null && ui.getReceiver() != null && ui.getStatus() == InterestStatus.ACCEPTED) {
+                String pairKey = user.getId() + "_" + ui.getReceiver().getId();
+                if (!seenPairs.contains(pairKey)) {
+                    seenPairs.add(pairKey);
+                    accepted.add(ui);
+                }
             }
         }
 

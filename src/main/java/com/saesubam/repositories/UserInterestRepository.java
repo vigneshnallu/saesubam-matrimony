@@ -16,7 +16,7 @@ public interface UserInterestRepository extends JpaRepository<UserInterest, Long
 
     List<UserInterest> findByReceiverAndStatus(Users receiver, InterestStatus status);
 
-    Optional<UserInterest> findBySenderAndReceiver(Users sender, Users receiver);
+    List<UserInterest> findBySenderAndReceiver(Users sender, Users receiver);
 
     boolean existsBySenderAndReceiver(Users sender, Users receiver);
 
