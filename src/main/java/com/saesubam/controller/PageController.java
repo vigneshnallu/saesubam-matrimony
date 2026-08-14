@@ -72,11 +72,6 @@ public class PageController {
         if (sessionUser != null) {
             return userService.getUserById(sessionUser.getId());
         }
-        // Fallback to first user in system if available, for convenience
-        List<Users> users = userService.getAllUsers();
-        if (!users.isEmpty()) {
-            return users.get(0);
-        }
         return null;
     }
 
@@ -267,6 +262,9 @@ public class PageController {
         @RequestParam(required = false) String education, @RequestParam(required = false) String city,
         @RequestParam(required = false) String maritalStatus, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
+        if (currentUser == null) {
+            return "redirect:/";
+        }
         List<Profiles> profilesList =
             profileService.searchProfiles(gender, minAge, maxAge, religion, caste, education, city, maritalStatus);
 
@@ -295,6 +293,9 @@ public class PageController {
     @GetMapping("/profile/{id}")
     public String profileDetail(@PathVariable Long id, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
+        if (currentUser == null) {
+            return "redirect:/";
+        }
         Profiles targetProfile = profileService.getProfileById(id);
 
         if (targetProfile == null) {
@@ -547,6 +548,9 @@ public class PageController {
     @GetMapping("/subscription")
     public String subscription(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
+        if (currentUser == null) {
+            return "redirect:/";
+        }
         model.addAttribute("user", currentUser);
         return "subscription";
     }
@@ -559,7 +563,7 @@ public class PageController {
      * @param model the model
      * @return the string
      */
-    @GetMapping("/checkout")
+    @GetMapping({"/checkout", "/payment"})
     public String checkoutPage(@RequestParam(defaultValue = "GOLD") String plan, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {

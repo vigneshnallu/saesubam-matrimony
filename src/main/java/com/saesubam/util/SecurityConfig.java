@@ -21,15 +21,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // For H2 console
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin()) // For H2 console
+                .cacheControl(cache -> cache.disable())    // Handled by CacheControlInterceptor
+            )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/register", "/userregister", "/registerUser", "/verify-otp", "/verify-email", "/api/auth/**", "/h2-console/**", "/css/**", "/js/**", "/images/**").permitAll()
-                .anyRequest().permitAll() // Allow session-based web controllers
+                .requestMatchers("/", "/login", "/register", "/userregister", "/registerUser", "/verify-otp", "/verify-email", "/api/auth/**", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
+                .anyRequest().permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/?logout")
+                .logoutSuccessUrl("/?logout=true")
                 .invalidateHttpSession(true)
+                .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
             );
 

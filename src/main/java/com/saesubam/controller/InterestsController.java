@@ -32,7 +32,7 @@ public class InterestsController {
         if (sessionUser != null) {
             return userService.getUserById(sessionUser.getId());
         }
-        return userService.getAllUsers().isEmpty() ? null : userService.getAllUsers().get(0);
+        return null;
     }
 
     @RequestMapping("/send/{profileId}")
