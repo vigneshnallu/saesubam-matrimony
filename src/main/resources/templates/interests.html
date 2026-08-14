@@ -99,70 +99,57 @@
             padding: 32px 40px;
         }
 
-        .interest-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            transition: all 0.3s;
+        .mobile-header {
+            display: none;
         }
 
-        .interest-card:hover {
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transform: translateY(-2px);
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
         }
 
-        .interest-user-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 16px;
-            object-fit: cover;
-        }
-
-        .nav-pills .nav-link {
-            border-radius: 12px;
-            font-weight: 600;
-            padding: 12px 24px;
-            color: #64748b;
-        }
-
-        .nav-pills .nav-link.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .chat-bubble {
-            max-width: 75%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.4;
-            position: relative;
-            word-wrap: break-word;
-        }
-        .chat-bubble-me {
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2);
-        }
-        .chat-bubble-partner {
-            background: #ffffff;
-            color: #1e293b;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-        }
-        .chat-time {
-            font-size: 10px;
-            margin-top: 4px;
-            opacity: 0.8;
+        @media (max-width: 991px) {
+            .sidebar {
+                left: -280px;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 12px;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .interest-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 18px;
+                gap: 16px;
+            }
+            .interest-card .d-flex.flex-column {
+                width: 100%;
+            }
+            .interest-card button, .interest-card a {
+                width: 100%;
+            }
+            .chat-bubble {
+                max-width: 88%;
+            }
         }
     </style>
 </head>
@@ -191,8 +178,20 @@
     </div>
 </div>
 
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
 <!-- Main Content -->
 <div class="main-content">
+    <!-- Mobile Header -->
+    <div class="mobile-header justify-content-between align-items-center bg-white p-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
+            <i class="bi bi-list fs-5 me-1"></i> Menu
+        </button>
+    </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold mb-1">Match Interests & Connections</h3>
@@ -461,6 +460,13 @@
     document.getElementById('chatModal').addEventListener('hidden.bs.modal', function () {
         stopChatPolling();
     });
+
+    function toggleMobileSidebar() {
+        var sidebar = document.querySelector('.sidebar');
+        var overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('show');
+    }
 </script>
 </body>
 </html>

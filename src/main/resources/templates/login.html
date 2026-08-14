@@ -34,25 +34,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px 12px;
         }
 
         .auth-container {
             width: 100%;
-            max-width: 1100px;
-            margin: 20px;
+            max-width: 1050px;
             background: #ffffff;
             border-radius: 24px;
             overflow: hidden;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             display: flex;
-            min-height: 620px;
+            min-height: 600px;
         }
 
         .auth-left {
             width: 50%;
             background: linear-gradient(135deg, #e11d48 0%, #4f46e5 100%);
             color: #ffffff;
-            padding: 60px;
+            padding: 50px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -73,7 +73,7 @@
 
         .auth-left-brand {
             font-family: 'Playfair Display', serif;
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -82,65 +82,65 @@
 
         .auth-left-content h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            line-height: 1.2;
-            margin-bottom: 20px;
+            font-size: 38px;
+            line-height: 1.25;
+            margin-bottom: 16px;
             font-weight: 700;
         }
 
         .auth-left-content p {
-            font-size: 16px;
+            font-size: 15px;
             opacity: 0.9;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .trust-badges {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 14px;
         }
 
         .trust-badge {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 16px;
+            padding: 14px;
             border-radius: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .trust-badge i {
-            font-size: 24px;
+            font-size: 22px;
             color: #fef08a;
         }
 
         .trust-badge div strong {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .trust-badge div span {
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0.85;
         }
 
         .auth-right {
             width: 50%;
-            padding: 60px;
+            padding: 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
         .auth-header {
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
         .auth-header h2 {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 8px;
@@ -148,18 +148,18 @@
 
         .auth-header p {
             color: #64748b;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .form-label {
             font-weight: 600;
             color: #334155;
             font-size: 14px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .form-control {
-            height: 52px;
+            height: 50px;
             border-radius: 12px;
             border: 1.5px solid #e2e8f0;
             padding: 0 16px;
@@ -173,7 +173,7 @@
         }
 
         .btn-primary-custom {
-            height: 52px;
+            height: 50px;
             background: linear-gradient(135deg, var(--primary) 0%, #c026d3 100%);
             border: none;
             border-radius: 12px;
@@ -192,9 +192,9 @@
 
         .register-prompt {
             text-align: center;
-            margin-top: 28px;
+            margin-top: 24px;
             color: #64748b;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .register-prompt a {
@@ -207,13 +207,59 @@
             text-decoration: underline;
         }
 
+        /* Mobile & Tablet Responsive Alignments */
         @media (max-width: 991px) {
+            body {
+                padding: 12px 8px;
+                align-items: flex-start;
+            }
             .auth-container {
                 flex-direction: column;
+                margin: 0 auto;
+                border-radius: 20px;
+                min-height: auto;
             }
-            .auth-left, .auth-right {
+            .auth-left {
                 width: 100%;
-                padding: 40px;
+                padding: 32px 20px;
+            }
+            .auth-left-brand {
+                font-size: 26px;
+                margin-bottom: 16px;
+            }
+            .auth-left-content h1 {
+                font-size: 26px;
+                margin-bottom: 10px;
+            }
+            .auth-left-content p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            .trust-badges {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .trust-badge {
+                padding: 10px 12px;
+            }
+            .auth-right {
+                width: 100%;
+                padding: 32px 20px;
+            }
+            .auth-header h2 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .trust-badges {
+                grid-template-columns: 1fr;
+            }
+            .auth-left {
+                padding: 24px 16px;
+            }
+            .auth-right {
+                padding: 24px 16px;
             }
         }
     </style>
@@ -261,7 +307,7 @@
                 </div>
             </div>
         </div>
-        <div class="small opacity-75">© 2026 SaeSubam Matrimony Services. All rights reserved.</div>
+        <div class="small opacity-75 mt-3">© 2026 SaeSubam Matrimony Services. All rights reserved.</div>
     </div>
 
     <!-- Right Login Form -->

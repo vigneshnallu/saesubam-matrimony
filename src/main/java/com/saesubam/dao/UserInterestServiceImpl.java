@@ -193,26 +193,30 @@ public class UserInterestServiceImpl implements UserInterestService {
     @Override
     @Transactional(readOnly = true)
     public List<UserInterest> getAcceptedMatches(Users user) {
-        List<UserInterest> accepted = new ArrayList<>();
-        java.util.Set<String> seenPairs = new java.util.HashSet<>();
+        if (user == null || user.getId() == null) return List.of();
 
+        List<UserInterest> accepted = new ArrayList<>();
+        java.util.Set<Long> seenPartnerIds = new java.util.HashSet<>();
+
+        // 1. Matches where user is receiver and status is ACCEPTED
         List<UserInterest> received = userInterestRepository.findByReceiverAndStatus(user, InterestStatus.ACCEPTED);
         for (UserInterest ui : received) {
-            if (ui != null && ui.getSender() != null) {
-                String pairKey = ui.getSender().getId() + "_" + user.getId();
-                if (!seenPairs.contains(pairKey)) {
-                    seenPairs.add(pairKey);
+            if (ui != null && ui.getSender() != null && ui.getSender().getId() != null) {
+                Long partnerId = ui.getSender().getId();
+                if (!seenPartnerIds.contains(partnerId)) {
+                    seenPartnerIds.add(partnerId);
                     accepted.add(ui);
                 }
             }
         }
 
+        // 2. Matches where user is sender and status is ACCEPTED
         List<UserInterest> sent = userInterestRepository.findBySender(user);
         for (UserInterest ui : sent) {
-            if (ui != null && ui.getReceiver() != null && ui.getStatus() == InterestStatus.ACCEPTED) {
-                String pairKey = user.getId() + "_" + ui.getReceiver().getId();
-                if (!seenPairs.contains(pairKey)) {
-                    seenPairs.add(pairKey);
+            if (ui != null && ui.getReceiver() != null && ui.getReceiver().getId() != null && ui.getStatus() == InterestStatus.ACCEPTED) {
+                Long partnerId = ui.getReceiver().getId();
+                if (!seenPartnerIds.contains(partnerId)) {
+                    seenPartnerIds.add(partnerId);
                     accepted.add(ui);
                 }
             }
