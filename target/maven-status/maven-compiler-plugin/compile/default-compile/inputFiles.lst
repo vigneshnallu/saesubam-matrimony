@@ -9,6 +9,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\config\DataInitializer.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\config\WebConfig.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\BookmarkController.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\ChatRestController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\InterestsController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\LoginController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\PageController.java
@@ -16,6 +17,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\RegistrationController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\UserController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\UserPageController.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\ChatMessageServiceImpl.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\MembershipValidationServiceImpl.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\ProfileServiceImpl.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\UserBookmarkServiceImpl.java
@@ -23,6 +25,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\UserServiceImpl.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\dao\VerificationServiceImpl.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\CasteAndReligion.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\ChatMessage.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\MembershipType.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\Profiles.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\UserActivity.java
@@ -31,11 +34,13 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\UserProfileView.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\Users.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\CasteAndReligionRepository.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\ChatMessageRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\ProfileRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserActivityRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserBookmarkRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserInterestRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserRepository.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\service\ChatMessageService.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\service\MembershipValidationService.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\service\ProfileService.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\service\UserBookmarkService.java

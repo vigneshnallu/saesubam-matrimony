@@ -12,7 +12,10 @@ com\saesubam\dao\UserBookmarkServiceImpl.class
 com\saesubam\service\UserService.class
 com\saesubam\dao\UserServiceImpl.class
 com\saesubam\repositories\ProfileRepository.class
+com\saesubam\repositories\ChatMessageRepository.class
 com\saesubam\annotation\IdEntityProperty.class
+com\saesubam\model\ChatMessage.class
+com\saesubam\dao\ChatMessageServiceImpl.class
 com\saesubam\dao\MembershipValidationServiceImpl$1.class
 com\saesubam\service\UserBookmarkService.class
 com\saesubam\dao\ProfileServiceImpl.class
@@ -30,6 +33,7 @@ com\saesubam\service\MembershipValidationService.class
 com\saesubam\util\SecurityConfig.class
 com\saesubam\model\Users.class
 com\saesubam\config\WebConfig.class
+com\saesubam\controller\ChatRestController.class
 com\saesubam\controller\UserController.class
 com\saesubam\dao\VerificationServiceImpl.class
 com\saesubam\repositories\UserRepository.class
@@ -39,6 +43,7 @@ com\saesubam\SpringBootApplication.class
 com\saesubam\repositories\UserBookmarkRepository.class
 com\saesubam\service\ProfileService.class
 com\saesubam\dao\MembershipValidationServiceImpl.class
+com\saesubam\service\ChatMessageService.class
 com\saesubam\model\Profiles.class
 com\saesubam\model\UserBookmark.class
 com\saesubam\repositories\UserActivityRepository.class
