@@ -323,6 +323,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
+        <!-- Login Required Alert -->
+        <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm rounded-3" th:if="${param.loginRequired}">
+            <i class="bi bi-info-circle-fill me-2"></i> <strong>Login Required!</strong> Please log in with your credentials to access profile pages.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
         <!-- User Not Found Alert -->
         <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3" th:if="${param.error != null and param.error[0] == 'usernotfound'}">
             <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Account Not Found!</strong> No profile exists with this email address.

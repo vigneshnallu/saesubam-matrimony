@@ -80,7 +80,7 @@ public class PageController {
      *
      * @return the string
      */
-    @GetMapping("/")
+    @GetMapping({"/", "/login"})
     public String login() {
         return "login";
     }
@@ -218,7 +218,7 @@ public class PageController {
     public String dashboard(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
@@ -263,7 +263,7 @@ public class PageController {
         @RequestParam(required = false) String maritalStatus, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
         List<Profiles> profilesList =
             profileService.searchProfiles(gender, minAge, maxAge, religion, caste, education, city, maritalStatus);
@@ -294,7 +294,7 @@ public class PageController {
     public String profileDetail(@PathVariable Long id, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
         Profiles targetProfile = profileService.getProfileById(id);
 
@@ -325,7 +325,7 @@ public class PageController {
     public String myProfile(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
@@ -346,7 +346,7 @@ public class PageController {
     public String editMyProfile(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
@@ -502,7 +502,7 @@ public class PageController {
     public String interests(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         List<UserInterest> received = interestService.getReceivedInterests(currentUser);
@@ -528,7 +528,7 @@ public class PageController {
     public String shortlist(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         List<UserBookmark> bookmarks = bookmarkService.getUserBookmarks(currentUser);
@@ -549,7 +549,7 @@ public class PageController {
     public String subscription(HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
         model.addAttribute("user", currentUser);
         return "subscription";
@@ -567,7 +567,7 @@ public class PageController {
     public String checkoutPage(@RequestParam(defaultValue = "GOLD") String plan, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         String planName = "Gold Plan";
