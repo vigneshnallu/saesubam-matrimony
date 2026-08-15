@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Payment Checkout - SaeSubam Matrimony</title>
+    <title>QR Payment Verification - SaeSubam Matrimony</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +16,8 @@
             --primary: #e11d48;
             --primary-hover: #be123c;
             --dark: #0f172a;
+            --card-dark: #1e1b2e;
+            --accent-purple: #3b0764;
         }
 
         * {
@@ -26,134 +28,192 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b2e 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 30px 16px;
+            color: #f8fafc;
         }
 
         .checkout-container {
             width: 100%;
-            max-width: 960px;
+            max-width: 520px;
         }
 
         .checkout-card {
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
+            background: #181528;
+            border-radius: 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 32px 28px;
         }
 
-        .checkout-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        .qr-card-container {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .qr-image-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .qr-image {
+            width: 220px;
+            height: 220px;
+            border-radius: 12px;
+        }
+
+        .pe-logo-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #5f259f;
             color: white;
-            padding: 28px 36px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .payment-method-nav {
-            border-bottom: 2px solid #f1f5f9;
-            display: flex;
-            gap: 12px;
-            padding: 16px 24px 0 24px;
-        }
-
-        .payment-method-nav .nav-link {
-            border: none;
-            color: #64748b;
-            font-weight: 600;
-            padding: 12px 20px;
-            border-radius: 10px 10px 0 0;
-            transition: all 0.2s;
-        }
-
-        .payment-method-nav .nav-link.active {
-            color: var(--primary);
-            background: #fff1f2;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .btn-pay {
-            height: 54px;
-            background: linear-gradient(135deg, var(--primary) 0%, #c026d3 100%);
-            border: none;
-            border-radius: 14px;
-            color: white;
-            font-weight: 700;
-            font-size: 17px;
-            width: 100%;
-            transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.2);
-        }
-
-        .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(225, 29, 72, 0.3);
-        }
-
-        .qr-placeholder {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 24px;
+        .qr-instruction {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 16px;
             text-align: center;
         }
 
-        .bank-badge-box {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-top: 10px;
+        .form-label-custom {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        .upi-pill {
-            cursor: pointer;
-            font-size: 12px;
-            padding: 4px 10px;
-            background: #e2e8f0;
-            border-radius: 12px;
-            color: #334155;
+        .form-control-custom {
+            background: #25213b;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            color: #ffffff;
+            height: 52px;
+            padding: 12px 18px;
+            font-size: 15px;
+            width: 100%;
             transition: all 0.2s;
         }
 
-        .upi-pill:hover {
-            background: var(--primary);
+        .form-control-custom:focus {
+            background: #2d2847;
+            border-color: #e11d48;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.25);
+            color: #ffffff;
+        }
+
+        .form-control-custom::placeholder {
+            color: #64748b;
+        }
+
+        .upload-drop-zone {
+            background: #25213b;
+            border: 2px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .upload-drop-zone:hover {
+            border-color: #e11d48;
+            background: #2c2746;
+        }
+
+        .upload-file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .verification-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 24px;
+        }
+
+        .verification-notice i {
+            color: #10b981;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .verification-notice span {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .btn-submit-payment {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 50%, #881337 100%);
+            border: none;
+            border-radius: 16px;
             color: white;
+            font-weight: 700;
+            font-size: 17px;
+            height: 56px;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(225, 29, 72, 0.35);
         }
 
-        .is-invalid {
-            border-color: #dc3545 !important;
-            background-color: #fff8f8 !important;
+        .btn-submit-payment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(225, 29, 72, 0.5);
+            background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
         }
 
-        /* Mobile & Tablet Responsive Alignment */
-        @media (max-width: 768px) {
-            body {
-                padding: 12px 8px;
+        .preview-img {
+            max-height: 160px;
+            border-radius: 12px;
+            margin-top: 10px;
+            display: none;
+            border: 2px solid #e11d48;
+        }
+
+        @media (max-width: 576px) {
+            .checkout-card {
+                padding: 24px 18px;
             }
-            .checkout-header {
-                padding: 20px 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .payment-method-nav {
-                padding: 12px 12px 0 12px;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-            .payment-method-nav .nav-link {
-                padding: 10px 14px;
-                font-size: 13px;
-            }
-            .p-4 {
-                padding: 18px 14px !important;
+            .qr-image {
+                width: 180px;
+                height: 180px;
             }
         }
     </style>
@@ -163,372 +223,113 @@
 <div class="checkout-container">
 
     <div class="mb-3 text-start">
-        <a href="/subscription" class="btn btn-light rounded-pill px-3 fw-bold text-secondary shadow-sm">
+        <a href="/subscription" class="btn btn-outline-light btn-sm rounded-pill px-3 fw-bold opacity-75 text-decoration-none">
             <i class="bi bi-arrow-left me-1"></i> Back to Membership Plans
         </a>
     </div>
 
     <div class="checkout-card">
-        <!-- Header -->
-        <div class="checkout-header">
+        <!-- Plan Badge & Amount Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary border-opacity-25">
             <div>
-                <h4 class="fw-bold mb-1"><i class="bi bi-shield-lock-fill text-warning me-2"></i> SaeSubam Payment Checkout</h4>
-                <p class="text-white-50 mb-0 small">Fast, 256-bit Encrypted & Guaranteed Instant Plan Updation</p>
+                <div class="small text-white-50">Selected Package</div>
+                <h4 class="fw-bold text-white mb-0" th:text="${planName != null ? planName : 'Gold Plan'}">Gold Plan</h4>
             </div>
             <div class="text-end">
-                <span class="badge bg-warning text-dark fw-bold px-3 py-2 fs-6 rounded-pill" th:text="${planName}">Gold Plan</span>
+                <div class="small text-white-50">Total Payable</div>
+                <div class="fs-4 fw-bold text-warning" th:text="'₹' + ${amount != null ? amount : 1499}">₹1,499</div>
             </div>
         </div>
 
-        <div class="p-4 p-md-5">
-            <div class="row g-4">
-                <!-- Payment Method Section -->
-                <div class="col-lg-7">
-                    <h5 class="fw-bold text-dark mb-3"><i class="bi bi-credit-card-2-front text-danger me-2"></i> Select Payment Method</h5>
+        <!-- Alert Error Banner -->
+        <div class="alert alert-danger border-0 rounded-3 mb-3 small" th:if="${error != null or param.error != null}">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error != null ? error : (param.error != null ? param.error[0] : 'Payment verification error')}">Error</span>
+        </div>
 
-                    <!-- Client/Server Error Banner -->
-                    <div id="paymentErrorBanner" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3" th:if="${error != null or param.error != null}" th:style="${error != null or param.error != null ? 'display:block' : 'display:none'}">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span id="paymentErrorMessage" th:text="${error != null ? error : (param.error != null ? param.error[0] : 'Invalid Payment Information')}">Invalid Payment Information</span>
-                    </div>
+        <form action="/checkout/process-payment" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="plan" th:value="${planCode != null ? planCode : 'GOLD'}">
 
-                    <form id="paymentForm" action="/checkout/process-payment" method="post" onsubmit="return validatePaymentForm(event)">
-                        <input type="hidden" name="plan" th:value="${planCode}">
-                        <input type="hidden" id="paymentMethodInput" name="paymentMethod" value="UPI">
-
-                        <!-- Tabs Nav -->
-                        <ul class="nav nav-pills payment-method-nav mb-4" id="paymentTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upi-content" type="button" onclick="setMethod('UPI')">
-                                    <i class="bi bi-qr-code-scan me-1"></i> UPI / QR Code
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="card-tab" data-bs-toggle="pill" data-bs-target="#card-content" type="button" onclick="setMethod('CARD')">
-                                    <i class="bi bi-credit-card me-1"></i> Debit / Credit Card
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="net-tab" data-bs-toggle="pill" data-bs-target="#net-content" type="button" onclick="setMethod('NETBANKING')">
-                                    <i class="bi bi-bank me-1"></i> Netbanking
-                                </button>
-                            </li>
-                        </ul>
-
-                        <!-- Tab Content -->
-                        <div class="tab-content" id="paymentTabContent">
-                            <!-- UPI Tab -->
-                            <div class="tab-pane fade show active" id="upi-content" role="tabpanel">
-                                <div class="qr-placeholder mb-3">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=6369541046-2@ybl%26pn=SaeSubamMatrimony" alt="UPI QR Code" class="img-fluid rounded shadow-sm mb-2" style="max-width: 160px;">
-                                    <div class="fw-bold text-dark">Scan & Pay with Any UPI App</div>
-                                    <div class="small text-muted mb-2">GPay • PhonePe • Paytm • BHIM • Cred</div>
-                                    <span class="badge bg-light text-dark border fs-6">UPI ID: 6369541046-2@ybl</span>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted">Or Enter Your VPA / UPI ID</label>
-                                    <div class="input-group">
-                                        <input type="text" id="upiId" name="upiId" class="form-control" placeholder="e.g. 9876543210-2@ybl or username@oksbi" oninput="resolveUpiBank(this)">
-                                        <button class="btn btn-outline-secondary font-weight-bold" type="button" onclick="resolveUpiBank(document.getElementById('upiId'))">Verify VPA</button>
-                                    </div>
-                                    <div class="invalid-feedback" id="upiFeedback" style="font-weight: 600;">Invalid UPI ID format. Standard format: 6369541046-2@ybl or username@oksbi.</div>
-
-                                    <!-- Quick Handle Pills -->
-                                    <div class="d-flex gap-1 mt-2 flex-wrap align-items-center">
-                                        <span class="small text-muted me-1">Quick Handles:</span>
-                                        <span class="upi-pill" onclick="appendHandle('@ybl')">@ybl (PhonePe)</span>
-                                        <span class="upi-pill" onclick="appendHandle('@oksbi')">@oksbi (GPay SBI)</span>
-                                        <span class="upi-pill" onclick="appendHandle('@paytm')">@paytm</span>
-                                        <span class="upi-pill" onclick="appendHandle('@okaxis')">@okaxis</span>
-                                        <span class="upi-pill" onclick="appendHandle('@okhdfcbank')">@okhdfcbank</span>
-                                    </div>
-
-                                    <!-- Live Bank & PSP Resolution Box -->
-                                    <div id="bankInfoBox" class="bank-badge-box mt-3" style="display: none;">
-                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                            <span class="fw-bold text-dark"><i class="bi bi-bank text-success me-1"></i> UPI App / Gateway:</span>
-                                            <span id="detectedBankName" class="badge bg-success text-white px-3 py-2 rounded-pill">PhonePe (Yes Bank PSP)</span>
-                                        </div>
-                                        <div class="small text-muted mb-1" id="vpaSyntaxNotice">
-                                            <i class="bi bi-patch-check-fill text-success me-1"></i> Verified Account Holder: <strong id="vpaAccountHolder" th:text="${user != null ? user.name : ''}"></strong>
-                                        </div>
-                                        <div class="small text-secondary fst-italic border-top pt-1 mt-1">
-                                            <i class="bi bi-info-circle me-1"></i> Linked Account: Transacts directly with your primary savings account (SBI / Indian Bank / Canara Bank / HDFC).
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card Tab -->
-                            <div class="tab-pane fade" id="card-content" role="tabpanel">
-                                <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted">Card Number <span class="text-danger">*</span></label>
-                                    <input type="text" id="cardNumber" name="cardNumber" class="form-control" placeholder="4532 1892 0192 8371" maxlength="19" oninput="formatCardNumber(this)">
-                                    <div class="invalid-feedback">Card number must contain exactly 16 numeric digits. Letters like 'gchgc' are invalid.</div>
-                                </div>
-                                <div class="row g-2 mb-3">
-                                    <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted">Expiry (MM/YY) <span class="text-danger">*</span></label>
-                                        <input type="text" id="cardExpiry" name="cardExpiry" class="form-control" placeholder="12/28" maxlength="5" oninput="formatCardExpiry(this)">
-                                        <div class="invalid-feedback">Format must be MM/YY (e.g. 12/28).</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted">CVV <span class="text-danger">*</span></label>
-                                        <input type="password" id="cardCvv" name="cardCvv" class="form-control" placeholder="123" maxlength="3" oninput="formatCvv(this)">
-                                        <div class="invalid-feedback">Must be 3 numeric digits.</div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted">Cardholder Name <span class="text-danger">*</span></label>
-                                    <input type="text" id="cardName" name="cardName" class="form-control" th:value="${user != null ? user.name : ''}" placeholder="Cardholder Name">
-                                    <div class="invalid-feedback">Cardholder Name is required.</div>
-                                </div>
-                            </div>
-
-                            <!-- Netbanking Tab -->
-                            <div class="tab-pane fade" id="net-content" role="tabpanel">
-                                <label class="form-label small fw-bold text-muted mb-3">Select Popular Bank</label>
-                                <div class="row g-2 mb-3">
-                                    <div class="col-6"><button type="button" class="btn btn-outline-secondary w-100 text-start py-2 px-3 bank-btn active" onclick="selectBank(this)"><i class="bi bi-bank me-2 text-primary"></i> State Bank of India</button></div>
-                                    <div class="col-6"><button type="button" class="btn btn-outline-secondary w-100 text-start py-2 px-3 bank-btn" onclick="selectBank(this)"><i class="bi bi-bank me-2 text-danger"></i> HDFC Bank</button></div>
-                                    <div class="col-6"><button type="button" class="btn btn-outline-secondary w-100 text-start py-2 px-3 bank-btn" onclick="selectBank(this)"><i class="bi bi-bank me-2 text-warning"></i> ICICI Bank</button></div>
-                                    <div class="col-6"><button type="button" class="btn btn-outline-secondary w-100 text-start py-2 px-3 bank-btn" onclick="selectBank(this)"><i class="bi bi-bank me-2 text-info"></i> Axis Bank</button></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pay Button -->
-                        <button type="submit" class="btn btn-pay mt-3">
-                            <i class="bi bi-lock-fill me-2"></i> Pay ₹<span th:text="${amount}">999</span> & Upgrade Plan
-                        </button>
-                    </form>
+            <!-- QR Code Card Box -->
+            <div class="qr-card-container">
+                <div class="qr-image-wrapper mb-2">
+                    <img th:src="'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=6369541046-2@ybl%26pn=SaeSubamMatrimony%26am=' + ${amount != null ? amount : 1499}" alt="Payment QR Code" class="qr-image">
+                    <div class="pe-logo-badge">पे</div>
                 </div>
+                <div class="fw-bold text-dark fs-6 mt-1">Scan & Pay via Any UPI App</div>
+                <div class="small text-muted mb-2">PhonePe • GPay • Paytm • BHIM • Cred</div>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-6 px-3 py-1 rounded-pill">UPI ID: 6369541046-2@ybl</span>
+            </div>
 
-                <!-- Order Summary Section -->
-                <div class="col-lg-5">
-                    <div class="bg-light p-4 rounded-4 border">
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-receipt text-primary me-2"></i> Order Summary</h5>
+            <p class="qr-instruction mb-4">
+                Scan the QR code and pay the exact amount 
+                <strong class="text-warning" th:text="'₹' + ${amount != null ? amount : 1499}">₹1,499</strong>, 
+                then upload your payment screenshot below. Plan is activated after verification.
+            </p>
 
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Selected Plan:</span>
-                            <span class="fw-bold text-dark" th:text="${planName}">Gold Plan</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Plan Validity:</span>
-                            <span class="fw-bold text-dark" th:text="${duration}">6 Months</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Base Price:</span>
-                            <span class="fw-bold text-dark">₹<span th:text="${amount}">999</span></span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">GST & Taxes (Included):</span>
-                            <span class="fw-bold text-success">₹0</span>
-                        </div>
+            <!-- User ID Input -->
+            <div class="mb-3">
+                <label class="form-label-custom">Your User ID / Matrimony ID</label>
+                <input type="text" class="form-control-custom bg-opacity-50 text-white-50" 
+                       th:value="${user != null ? (100000 + user.id) : '100058'}" readonly style="cursor: not-allowed;">
+            </div>
 
-                        <hr class="my-3">
+            <!-- Payment Reference / UTR Input -->
+            <div class="mb-3">
+                <label class="form-label-custom">Payment Reference / UTR (optional)</label>
+                <input type="text" name="utrNumber" class="form-control-custom" placeholder="e.g. 4012xxxx or 12-digit UTR No.">
+            </div>
 
-                        <div class="d-flex justify-content-between align-items-center fs-5 mb-4">
-                            <span class="fw-bold text-dark">Total Amount:</span>
-                            <span class="fw-bold text-danger fs-3">₹<span th:text="${amount}">999</span></span>
-                        </div>
-
-                        <!-- Guarantees -->
-                        <div class="p-3 bg-white rounded-3 border">
-                            <div class="d-flex align-items-center gap-2 mb-2 text-success small fw-bold">
-                                <i class="bi bi-check-circle-fill"></i> Instant Plan Activation
-                            </div>
-                            <div class="d-flex align-items-center gap-2 mb-2 text-success small fw-bold">
-                                <i class="bi bi-shield-check"></i> 100% Refund Guarantee on Error
-                            </div>
-                            <div class="d-flex align-items-center gap-2 text-success small fw-bold">
-                                <i class="bi bi-headset"></i> 24/7 Priority Support
-                            </div>
-                        </div>
+            <!-- Upload Payment Screenshot Input -->
+            <div class="mb-3">
+                <label class="form-label-custom">Upload payment screenshot <span class="text-danger">*</span></label>
+                <div class="upload-drop-zone" id="uploadZone">
+                    <input type="file" name="screenshotFile" id="screenshotInput" class="upload-file-input" accept="image/*" onchange="previewScreenshot(this)">
+                    <div id="uploadPrompt">
+                        <i class="bi bi-upload fs-3 text-danger d-block mb-1"></i>
+                        <span class="fw-bold text-white small" id="fileNameDisplay">Choose screenshot</span>
+                        <div class="small text-white-50 fs-7 mt-1">PNG, JPG, JPEG (Max 10MB)</div>
                     </div>
+                    <img id="screenshotPreview" class="preview-img mx-auto" alt="Payment Screenshot Preview">
                 </div>
             </div>
-        </div>
+
+            <!-- Verification Shield Notice -->
+            <div class="verification-notice">
+                <i class="bi bi-shield-check"></i>
+                <span>Membership plan is activated after an admin verifies your payment transaction details.</span>
+            </div>
+
+            <!-- Action Submit Button -->
+            <button type="submit" class="btn btn-submit-payment">
+                I've paid — submit for verification <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+        </form>
     </div>
 </div>
 
-<script>
-    var vpaTimer = null;
-
-    function setMethod(method) {
-        document.getElementById('paymentMethodInput').value = method;
-        clearValidationErrors();
-    }
-
-    function selectBank(btn) {
-        document.querySelectorAll('.bank-btn').forEach(b => b.classList.remove('btn-primary', 'text-white'));
-        btn.classList.add('btn-primary', 'text-white');
-    }
-
-    function appendHandle(handle) {
-        var upiInput = document.getElementById('upiId');
-        var val = upiInput.value.trim();
-        if (val.includes('@')) {
-            val = val.substring(0, val.indexOf('@'));
-        }
-        val = val.replace(/[^a-zA-Z0-9.\-_]/g, '');
-        if (!val) {
-            val = "6369541046-2";
-        }
-        upiInput.value = val + handle;
-        resolveUpiBank(upiInput);
-    }
-
-    function resolveUpiBank(input) {
-        input.classList.remove('is-invalid');
-        var val = input.value.trim();
-        var box = document.getElementById('bankInfoBox');
-        var nameSpan = document.getElementById('detectedBankName');
-        var holderSpan = document.getElementById('vpaAccountHolder');
-
-        if (!val || !val.includes('@')) {
-            box.style.display = 'none';
-            return;
-        }
-
-        var parts = val.split('@');
-        var username = parts[0];
-
-        if (/[^a-zA-Z0-9.\-_]/.test(username)) {
-            input.classList.add('is-invalid');
-            document.getElementById('upiFeedback').innerText = "Invalid UPI ID format.";
-            box.style.display = 'none';
-            return;
-        }
-
-        if (vpaTimer) clearTimeout(vpaTimer);
-        
-        nameSpan.className = "badge bg-info text-dark px-3 py-2 rounded-pill";
-        nameSpan.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Verifying VPA with Bank...';
-        box.style.display = 'block';
-
-        vpaTimer = setTimeout(function() {
-            fetch('/api/payment/verify-vpa?vpa=' + encodeURIComponent(val))
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    if (data.valid) {
-                        nameSpan.className = "badge bg-success text-white px-3 py-2 rounded-pill";
-                        nameSpan.innerText = data.bankName;
-                        if (holderSpan) {
-                            holderSpan.innerText = data.accountHolder;
-                        }
-                    } else {
-                        input.classList.add('is-invalid');
-                        document.getElementById('upiFeedback').innerText = data.message;
-                        box.style.display = 'none';
-                    }
-                })
-                .catch(function(err) {
-                    nameSpan.className = "badge bg-success text-white px-3 py-2 rounded-pill";
-                    nameSpan.innerText = "NPCI Banking Network";
-                });
-        }, 300);
-    }
-
-    function formatCardNumber(input) {
-        let value = input.value.replace(/\D/g, ''); // strip all non-numeric characters immediately
-        value = value.substring(0, 16); // max 16 digits
-        let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
-        input.value = formatted;
-        input.classList.remove('is-invalid');
-    }
-
-    function formatCardExpiry(input) {
-        let value = input.value.replace(/\D/g, '');
-        value = value.substring(0, 4);
-        if (value.length >= 3) {
-            input.value = value.substring(0, 2) + '/' + value.substring(2);
-        } else {
-            input.value = value;
-        }
-        input.classList.remove('is-invalid');
-    }
-
-    function formatCvv(input) {
-        input.value = input.value.replace(/\D/g, '').substring(0, 3);
-        input.classList.remove('is-invalid');
-    }
-
-    function clearValidationErrors() {
-        var banner = document.getElementById('paymentErrorBanner');
-        if (banner) banner.style.display = 'none';
-        document.querySelectorAll('.form-control').forEach(el => el.classList.remove('is-invalid'));
-    }
-
-    function showPaymentError(message, inputId) {
-        var banner = document.getElementById('paymentErrorBanner');
-        var msgSpan = document.getElementById('paymentErrorMessage');
-        if (banner && msgSpan) {
-            msgSpan.innerText = message;
-            banner.style.display = 'block';
-        }
-        if (inputId) {
-            var el = document.getElementById(inputId);
-            if (el) el.classList.add('is-invalid');
-        }
-    }
-
-    function validatePaymentForm(e) {
-        clearValidationErrors();
-        var method = document.getElementById('paymentMethodInput').value;
-
-        if (method === 'UPI') {
-            var upi = document.getElementById('upiId').value.trim();
-            if (upi !== '') {
-                if (!/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(upi)) {
-                    showPaymentError("Payment Declined: Invalid UPI ID format ('" + upi + "'). Standard format: 6369541046-2@ybl or username@oksbi.", "upiId");
-                    e.preventDefault();
-                    return false;
-                }
-            }
-        } else if (method === 'CARD') {
-            var cardNum = document.getElementById('cardNumber').value.replace(/\D/g, '');
-            var expiry = document.getElementById('cardExpiry').value.trim();
-            var cvv = document.getElementById('cardCvv').value.trim();
-            var name = document.getElementById('cardName').value.trim();
-
-            if (!cardNum || cardNum.length !== 16) {
-                showPaymentError("Payment Declined: Card Number is invalid. Must contain exactly 16 numeric digits.", "cardNumber");
-                e.preventDefault();
-                return false;
-            }
-
-            if (!expiry || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
-                showPaymentError("Payment Declined: Expiry Date format must be MM/YY (e.g. 12/28).", "cardExpiry");
-                e.preventDefault();
-                return false;
-            }
-
-            if (!cvv || cvv.length !== 3 || !/^\d{3}$/.test(cvv)) {
-                showPaymentError("Payment Declined: CVV code must contain 3 numeric digits.", "cardCvv");
-                e.preventDefault();
-                return false;
-            }
-
-            if (!name) {
-                showPaymentError("Payment Declined: Cardholder Name is required.", "cardName");
-                e.preventDefault();
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tabEl => {
-            tabEl.addEventListener('shown.bs.tab', event => {
-                if (event.target.id === 'card-tab') setMethod('CARD');
-                else if (event.target.id === 'upi-tab') setMethod('UPI');
-                else if (event.target.id === 'net-tab') setMethod('NETBANKING');
-            });
-        });
-    });
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function previewScreenshot(input) {
+        var preview = document.getElementById('screenshotPreview');
+        var prompt = document.getElementById('uploadPrompt');
+        var nameDisplay = document.getElementById('fileNameDisplay');
+
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            nameDisplay.innerText = file.name;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            nameDisplay.innerText = 'Choose screenshot';
+        }
+    }
+</script>
 </body>
 </html>

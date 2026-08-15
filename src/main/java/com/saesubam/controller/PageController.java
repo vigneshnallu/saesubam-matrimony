@@ -607,47 +607,38 @@ public class PageController {
      * @return the string
      */
     @PostMapping("/checkout/process-payment")
-    public String processPayment(@RequestParam String plan, @RequestParam(defaultValue = "UPI") String paymentMethod,
-        @RequestParam(required = false) String cardNumber, @RequestParam(required = false) String cardExpiry,
-        @RequestParam(required = false) String cardCvv, @RequestParam(required = false) String upiId,
+    public String processPayment(@RequestParam String plan,
+        @RequestParam(required = false) String utrNumber,
+        @RequestParam(value = "screenshotFile", required = false) MultipartFile screenshotFile,
         HttpSession session, RedirectAttributes redirectAttributes) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
-        // Server-Side Payment Validation
-        if ("CARD".equalsIgnoreCase(paymentMethod)) {
-            String cleanCard = cardNumber != null ? cardNumber.replaceAll("\\D", "") : "";
-            if (cleanCard.length() != 16) {
-                redirectAttributes.addFlashAttribute("error",
-                    "Payment Failed: Card Number is invalid. A valid 16-digit card number is required.");
-                return "redirect:/checkout?plan=" + plan;
-            }
-            if (cardExpiry == null || !cardExpiry.trim().matches("^(0[1-9]|1[0-2])/\\d{2}$")) {
-                redirectAttributes.addFlashAttribute("error",
-                    "Payment Failed: Invalid Expiry Date. Required format MM/YY (e.g. 12/28).");
-                return "redirect:/checkout?plan=" + plan;
-            }
-            if (cardCvv == null || !cardCvv.trim().matches("^\\d{3}$")) {
-                redirectAttributes.addFlashAttribute("error",
-                    "Payment Failed: Invalid CVV code. CVV must be 3 numeric digits.");
-                return "redirect:/checkout?plan=" + plan;
-            }
-        } else if ("UPI".equalsIgnoreCase(paymentMethod)) {
-            if (upiId != null && !upiId.trim().isEmpty()) {
-                String cleanUpi = upiId.trim();
-                if (!cleanUpi.matches("^[a-zA-Z0-9.\\-_]{2,256}@[a-zA-Z]{2,64}$")) {
-                    redirectAttributes.addFlashAttribute("error",
-                        "Payment Declined: Invalid UPI ID format. Standard format username@handle (e.g. 9876543210-2@ybl or name@oksbi).");
-                    return "redirect:/checkout?plan=" + plan;
+        // Validate uploaded screenshot
+        if (screenshotFile != null && !screenshotFile.isEmpty()) {
+            try {
+                String originalFilename = screenshotFile.getOriginalFilename();
+                String ext = (originalFilename != null && originalFilename.contains("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
+                String filename = "payment_proof_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+                Path uploadDir = Paths.get("./uploads/payments");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
                 }
+
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(screenshotFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                System.out.println("Error saving payment screenshot: " + e.getMessage());
             }
         }
 
         String planCode = plan.toUpperCase();
         if ("SILVER".equals(planCode)) {
-            planCode = "PREMIUM"; // map SILVER to PREMIUM enum
+            planCode = "PREMIUM";
         }
 
         try {
@@ -658,11 +649,14 @@ public class PageController {
             System.out.println("Payment upgrade error: " + e.getMessage());
         }
 
-        String txnId = "TXN_" + (10000000 + new java.util.Random().nextInt(90000000));
-        int amount = "PREMIUM".equals(planCode) ? 499 : ("PLATINUM".equals(planCode) ? 1999 : 999);
+        String txnId = (utrNumber != null && !utrNumber.trim().isEmpty()) 
+            ? utrNumber.trim() 
+            : ("UTR_" + (100000000000L + (long)(new java.util.Random().nextDouble() * 899999999999L)));
+
+        int amount = "PREMIUM".equals(planCode) ? 499 : ("PLATINUM".equals(planCode) ? 2999 : 1499);
 
         return "redirect:/payment-success?txnId=" + txnId + "&plan=" + plan.toUpperCase() + "&amount=" + amount
-            + "&method=" + paymentMethod;
+            + "&method=UPI_QR_VERIFICATION";
     }
 
     /**
