@@ -79,6 +79,10 @@ public class Profiles {
 
     private String photoUrl;
 
+    private String secondaryPhotoUrl;
+
+    private String jathagamUrl;
+
     private boolean verified = true;
 
     private int profileCompleteness = 85;
@@ -374,5 +378,21 @@ public class Profiles {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public String getSecondaryPhotoUrl() {
+        return secondaryPhotoUrl;
+    }
+
+    public void setSecondaryPhotoUrl(String secondaryPhotoUrl) {
+        this.secondaryPhotoUrl = secondaryPhotoUrl;
+    }
+
+    public String getJathagamUrl() {
+        return jathagamUrl;
+    }
+
+    public void setJathagamUrl(String jathagamUrl) {
+        this.jathagamUrl = jathagamUrl;
     }
 }

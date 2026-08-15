@@ -228,7 +228,29 @@
         <a href="/my-profile" class="btn btn-outline-secondary rounded-3 px-4 py-2 fw-bold"><i class="bi bi-arrow-left me-1"></i> Back to Profile</a>
     </div>
 
-    <form action="/my-profile/edit" method="post" th:object="${profile}">
+    <form action="/my-profile/save" method="post" enctype="multipart/form-data" th:object="${profile}">
+        <div class="edit-card">
+            <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom"><i class="bi bi-images text-danger me-2"></i> Profile Photos & Jathagam (Horoscope Document)</h5>
+            
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Primary Profile Photo</label>
+                    <input type="file" name="photoFile" accept="image/*" class="form-control">
+                    <div class="form-text">Main profile photo displayed across search.</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Additional Self Photo</label>
+                    <input type="file" name="secondaryPhotoFile" accept="image/*" class="form-control">
+                    <div class="form-text">Secondary photo for candidate profile gallery.</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Jathagam / Horoscope (PDF or Image)</label>
+                    <input type="file" name="jathagamFile" accept=".pdf,image/*" class="form-control">
+                    <div class="form-text">PDF or image of official horoscope for family matching.</div>
+                </div>
+            </div>
+        </div>
+
         <div class="edit-card">
             <h5 class="fw-bold text-dark mb-4 pb-2 border-bottom"><i class="bi bi-person-fill text-danger me-2"></i> Basic Information</h5>
             

@@ -372,11 +372,13 @@ public class PageController {
      */
     @PostMapping("/my-profile/save")
     public String saveMyProfile(@ModelAttribute Profiles profileForm,
-        @RequestParam(value = "photoFile", required = false) MultipartFile photoFile, HttpSession session,
-        RedirectAttributes redirectAttributes) {
+        @RequestParam(value = "photoFile", required = false) MultipartFile photoFile,
+        @RequestParam(value = "secondaryPhotoFile", required = false) MultipartFile secondaryPhotoFile,
+        @RequestParam(value = "jathagamFile", required = false) MultipartFile jathagamFile,
+        HttpSession session, RedirectAttributes redirectAttributes) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         Profiles existingProfile = profileService.getProfileByUserId(currentUser.getId());
@@ -413,7 +415,7 @@ public class PageController {
         existingProfile.setContactMobile(profileForm.getContactMobile());
         existingProfile.setContactPerson(profileForm.getContactPerson());
 
-        // Handle uploaded image file if provided
+        // Save Primary Photo
         if (photoFile != null && !photoFile.isEmpty()) {
             try {
                 String originalFilename = photoFile.getOriginalFilename();
@@ -431,10 +433,52 @@ public class PageController {
 
                 existingProfile.setPhotoUrl("/uploads/profiles/" + filename);
             } catch (Exception e) {
-                System.out.println("Error saving photo: " + e.getMessage());
+                System.out.println("Error saving primary photo: " + e.getMessage());
             }
-        } else if (profileForm.getPhotoUrl() != null && !profileForm.getPhotoUrl().trim().isEmpty()) {
-            existingProfile.setPhotoUrl(profileForm.getPhotoUrl());
+        }
+
+        // Save Secondary Photo
+        if (secondaryPhotoFile != null && !secondaryPhotoFile.isEmpty()) {
+            try {
+                String originalFilename = secondaryPhotoFile.getOriginalFilename();
+                String ext = (originalFilename != null && originalFilename.contains("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
+                String filename = "secondary_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+                Path uploadDir = Paths.get("./uploads/profiles");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(secondaryPhotoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+                existingProfile.setSecondaryPhotoUrl("/uploads/profiles/" + filename);
+            } catch (Exception e) {
+                System.out.println("Error saving secondary photo: " + e.getMessage());
+            }
+        }
+
+        // Save Jathagam / Horoscope PDF
+        if (jathagamFile != null && !jathagamFile.isEmpty()) {
+            try {
+                String originalFilename = jathagamFile.getOriginalFilename();
+                String ext = (originalFilename != null && originalFilename.contains("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".pdf";
+                String filename = "jathagam_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+                Path uploadDir = Paths.get("./uploads/jathagam");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(jathagamFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+                existingProfile.setJathagamUrl("/uploads/jathagam/" + filename);
+            } catch (Exception e) {
+                System.out.println("Error saving Jathagam file: " + e.getMessage());
+            }
         }
 
         profileService.updateProfile(existingProfile);
@@ -442,20 +486,12 @@ public class PageController {
         return "redirect:/my-profile?updated=true";
     }
 
-    /**
-     * Upload photo.
-     *
-     * @param photoFile the photo file
-     * @param session the session
-     * @param redirectAttributes the redirect attributes
-     * @return the string
-     */
     @PostMapping("/my-profile/upload-photo")
     public String uploadPhoto(@RequestParam("photoFile") MultipartFile photoFile, HttpSession session,
         RedirectAttributes redirectAttributes) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
-            return "redirect:/";
+            return "redirect:/?loginRequired=true";
         }
 
         if (photoFile != null && !photoFile.isEmpty()) {
@@ -482,9 +518,91 @@ public class PageController {
                 profile.setPhotoUrl("/uploads/profiles/" + filename);
                 profileService.updateProfile(profile);
 
-                redirectAttributes.addFlashAttribute("successMessage", "Profile photo uploaded successfully!");
+                redirectAttributes.addFlashAttribute("successMessage", "Primary photo uploaded successfully!");
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Error uploading photo: " + e.getMessage());
+            }
+        }
+
+        return "redirect:/my-profile";
+    }
+
+    @PostMapping("/my-profile/upload-secondary-photo")
+    public String uploadSecondaryPhoto(@RequestParam("secondaryPhotoFile") MultipartFile secondaryPhotoFile, HttpSession session,
+        RedirectAttributes redirectAttributes) {
+        Users currentUser = getLoggedInUser(session);
+        if (currentUser == null) {
+            return "redirect:/?loginRequired=true";
+        }
+
+        if (secondaryPhotoFile != null && !secondaryPhotoFile.isEmpty()) {
+            try {
+                String originalFilename = secondaryPhotoFile.getOriginalFilename();
+                String ext = (originalFilename != null && originalFilename.contains("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
+                String filename = "secondary_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+                Path uploadDir = Paths.get("./uploads/profiles");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(secondaryPhotoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+                Profiles profile = profileService.getProfileByUserId(currentUser.getId());
+                if (profile == null) {
+                    profile = new Profiles();
+                    profile.setUser(currentUser);
+                }
+
+                profile.setSecondaryPhotoUrl("/uploads/profiles/" + filename);
+                profileService.updateProfile(profile);
+
+                redirectAttributes.addFlashAttribute("successMessage", "Additional self photo uploaded successfully!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error uploading additional photo: " + e.getMessage());
+            }
+        }
+
+        return "redirect:/my-profile";
+    }
+
+    @PostMapping("/my-profile/upload-jathagam")
+    public String uploadJathagam(@RequestParam("jathagamFile") MultipartFile jathagamFile, HttpSession session,
+        RedirectAttributes redirectAttributes) {
+        Users currentUser = getLoggedInUser(session);
+        if (currentUser == null) {
+            return "redirect:/?loginRequired=true";
+        }
+
+        if (jathagamFile != null && !jathagamFile.isEmpty()) {
+            try {
+                String originalFilename = jathagamFile.getOriginalFilename();
+                String ext = (originalFilename != null && originalFilename.contains("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".pdf";
+                String filename = "jathagam_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+                Path uploadDir = Paths.get("./uploads/jathagam");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(jathagamFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
+                Profiles profile = profileService.getProfileByUserId(currentUser.getId());
+                if (profile == null) {
+                    profile = new Profiles();
+                    profile.setUser(currentUser);
+                }
+
+                profile.setJathagamUrl("/uploads/jathagam/" + filename);
+                profileService.updateProfile(profile);
+
+                redirectAttributes.addFlashAttribute("successMessage", "Jathagam (Horoscope PDF) uploaded successfully!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error uploading Jathagam document: " + e.getMessage());
             }
         }
 

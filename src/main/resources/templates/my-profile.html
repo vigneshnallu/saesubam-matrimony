@@ -269,15 +269,30 @@
 
     <!-- Hero Card -->
     <div class="hero-profile-card">
-        <div class="text-center w-100-mobile">
-            <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500'}" alt="photo" class="profile-main-img mb-2">
-            <form action="/my-profile/upload-photo" method="post" enctype="multipart/form-data" class="mt-2">
-                <label class="btn btn-outline-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
-                    <i class="bi bi-camera-fill me-1"></i> Upload Photo
-                    <input type="file" name="photoFile" accept="image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
-                </label>
-            </form>
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+            <!-- Primary Photo Box -->
+            <div class="text-center">
+                <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500'}" alt="photo" class="profile-main-img mb-2">
+                <form action="/my-profile/upload-photo" method="post" enctype="multipart/form-data">
+                    <label class="btn btn-outline-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-camera-fill me-1"></i> Main Photo
+                        <input type="file" name="photoFile" accept="image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+            </div>
+
+            <!-- Additional Self Photo Box -->
+            <div class="text-center">
+                <img th:src="${profile != null and profile.secondaryPhotoUrl != null ? profile.secondaryPhotoUrl : 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500'}" alt="secondary photo" class="profile-main-img mb-2 border border-danger-subtle">
+                <form action="/my-profile/upload-secondary-photo" method="post" enctype="multipart/form-data">
+                    <label class="btn btn-outline-secondary btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-images me-1"></i> Additional Photo
+                        <input type="file" name="secondaryPhotoFile" accept="image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+            </div>
         </div>
+
         <div class="flex-grow-1">
             <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
                 <h2 class="fw-bold text-dark mb-0" th:text="${profile != null ? profile.fullName : user.name}">User Name</h2>
@@ -330,6 +345,33 @@
         </div>
 
         <div class="col-lg-4">
+            <!-- Jathagam / Horoscope PDF Card -->
+            <div class="section-card bg-light border-danger-subtle">
+                <h5 class="text-danger"><i class="bi bi-file-earmark-pdf-fill"></i> Jathagam (Horoscope PDF)</h5>
+                <div th:if="${profile.jathagamUrl != null}" class="mb-3">
+                    <div class="p-3 bg-white rounded-3 border mb-2 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-file-pdf-fill text-danger fs-3"></i>
+                            <div>
+                                <strong class="d-block small text-dark">Jathagam Document</strong>
+                                <span class="badge bg-success-subtle text-success small">Uploaded</span>
+                            </div>
+                        </div>
+                        <a th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill font-weight-bold">
+                            <i class="bi bi-download me-1"></i> View / PDF
+                        </a>
+                    </div>
+                </div>
+
+                <form action="/my-profile/upload-jathagam" method="post" enctype="multipart/form-data" class="mt-2">
+                    <label class="btn btn-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-upload me-1"></i> Upload Jathagam PDF
+                        <input type="file" name="jathagamFile" accept=".pdf,image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+                <div class="small text-muted text-center mt-2 fs-7">PDF or Image format accepted. Helps matched candidates compare horoscopes.</div>
+            </div>
+
             <div class="section-card">
                 <h5><i class="bi bi-briefcase-fill text-danger"></i> Career Details</h5>
                 <div class="mb-3"><label class="small text-muted">Education</label><div class="fw-bold text-dark" th:text="${profile.education}">Degree</div></div>
