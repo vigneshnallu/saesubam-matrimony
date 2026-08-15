@@ -276,15 +276,15 @@
 
             <!-- Payment Reference / UTR Input -->
             <div class="mb-3">
-                <label class="form-label-custom">Payment Reference / UTR (optional)</label>
-                <input type="text" name="utrNumber" class="form-control-custom" placeholder="e.g. 4012xxxx or 12-digit UTR No.">
+                <label class="form-label-custom">Payment Reference / UTR Number <span class="text-danger">*</span></label>
+                <input type="text" name="utrNumber" id="utrNumberInput" class="form-control-custom" placeholder="Enter 12-digit UTR or Transaction Ref No." required minlength="6">
             </div>
 
             <!-- Upload Payment Screenshot Input -->
             <div class="mb-3">
                 <label class="form-label-custom">Upload payment screenshot <span class="text-danger">*</span></label>
                 <div class="upload-drop-zone" id="uploadZone">
-                    <input type="file" name="screenshotFile" id="screenshotInput" class="upload-file-input" accept="image/*" onchange="previewScreenshot(this)">
+                    <input type="file" name="screenshotFile" id="screenshotInput" class="upload-file-input" accept="image/*" onchange="previewScreenshot(this)" required>
                     <div id="uploadPrompt">
                         <i class="bi bi-upload fs-3 text-danger d-block mb-1"></i>
                         <span class="fw-bold text-white small" id="fileNameDisplay">Choose screenshot</span>

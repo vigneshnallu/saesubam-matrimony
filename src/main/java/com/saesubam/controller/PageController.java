@@ -734,24 +734,33 @@ public class PageController {
             return "redirect:/?loginRequired=true";
         }
 
-        // Validate uploaded screenshot
-        if (screenshotFile != null && !screenshotFile.isEmpty()) {
-            try {
-                String originalFilename = screenshotFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-                String filename = "payment_proof_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+        // Server-Side Mandatory Validation: UTR Number and Payment Screenshot Proof
+        if (utrNumber == null || utrNumber.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Payment Submission Failed: Payment Reference / UTR Number is required.");
+            return "redirect:/payment?plan=" + plan;
+        }
 
-                Path uploadDir = Paths.get("./uploads/payments");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
+        if (screenshotFile == null || screenshotFile.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Payment Submission Failed: Uploading payment screenshot proof is required.");
+            return "redirect:/payment?plan=" + plan;
+        }
 
-                Path destination = uploadDir.resolve(filename);
-                Files.copy(screenshotFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-            } catch (Exception e) {
-                System.out.println("Error saving payment screenshot: " + e.getMessage());
+        // Save uploaded payment screenshot proof
+        try {
+            String originalFilename = screenshotFile.getOriginalFilename();
+            String ext = (originalFilename != null && originalFilename.contains("."))
+                ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
+            String filename = "payment_proof_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+
+            Path uploadDir = Paths.get("./uploads/payments");
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
             }
+
+            Path destination = uploadDir.resolve(filename);
+            Files.copy(screenshotFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            System.out.println("Error saving payment screenshot: " + e.getMessage());
         }
 
         String planCode = plan.toUpperCase();
