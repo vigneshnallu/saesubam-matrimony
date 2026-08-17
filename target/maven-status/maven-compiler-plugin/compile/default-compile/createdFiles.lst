@@ -23,7 +23,6 @@ com\saesubam\model\UserProfileView.class
 com\saesubam\repositories\UserInterestRepository.class
 com\saesubam\controller\RegistrationController.class
 com\saesubam\repositories\CasteAndReligionRepository.class
-com\saesubam\config\DataInitializer.class
 com\saesubam\annotation\SequenceEntityProperty.class
 com\saesubam\util\CacheControlInterceptor.class
 com\saesubam\service\VerificationService.class
@@ -51,4 +50,3 @@ com\saesubam\repositories\UserActivityRepository.class
 com\saesubam\annotation\EntityProperty.class
 com\saesubam\annotation\TableEntityProperty.class
 com\saesubam\controller\ProfileController.class
-com\saesubam\controller\PageController.class
