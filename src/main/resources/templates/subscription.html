@@ -299,6 +299,42 @@
         </div>
     </div>
 
+    <!-- Payment Transaction History Table -->
+    <div th:if="${paymentHistory != null and !paymentHistory.isEmpty()}" class="card border-0 rounded-4 shadow-sm mb-5 bg-white p-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-receipt-cutoff text-danger me-2"></i> Your Payment & Subscription History</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Plan Name</th>
+                        <th>Amount</th>
+                        <th>UTR / Reference No</th>
+                        <th>Payment Proof</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="tx : ${paymentHistory}">
+                        <td class="small fw-semibold text-dark" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
+                        <td><span class="badge bg-danger-subtle text-danger fw-bold" th:text="${tx.planCode}">GOLD</span></td>
+                        <td class="fw-bold text-dark" th:text="'₹' + ${tx.amount}">₹1499</td>
+                        <td><code class="text-primary fw-bold" th:text="${tx.utrNumber}">UTR_123456</code></td>
+                        <td>
+                            <a th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}" th:href="${tx.screenshotUrl}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill fw-bold">
+                                <i class="bi bi-image me-1"></i> View Screenshot
+                            </a>
+                            <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 fw-bold"><i class="bi bi-check-circle-fill me-1"></i> ACTIVE & VERIFIED</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="text-center max-w-700 mx-auto mb-5">
         <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-2"><i class="bi bi-star-fill me-1"></i> Upgrade Your Matchmaking</span>
         <h2 class="fw-bold text-dark display-6 mb-2">Choose Your Matrimony Package</h2>

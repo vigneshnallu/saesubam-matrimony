@@ -27,6 +27,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\CasteAndReligion.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\ChatMessage.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\MembershipType.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\PaymentTransaction.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\Profiles.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\UserActivity.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\UserBookmark.java
@@ -35,6 +36,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\model\Users.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\CasteAndReligionRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\ChatMessageRepository.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\PaymentTransactionRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\ProfileRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserActivityRepository.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\repositories\UserBookmarkRepository.java

@@ -24,10 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.saesubam.model.MembershipType;
+import com.saesubam.model.PaymentTransaction;
 import com.saesubam.model.Profiles;
 import com.saesubam.model.UserBookmark;
 import com.saesubam.model.UserInterest;
 import com.saesubam.model.Users;
+import com.saesubam.repositories.PaymentTransactionRepository;
 import com.saesubam.service.ProfileService;
 import com.saesubam.service.UserBookmarkService;
 import com.saesubam.service.UserInterestService;
@@ -62,6 +64,9 @@ public class PageController {
     /** The verification service. */
     @Autowired
     private VerificationService verificationService;
+
+    @Autowired
+    private PaymentTransactionRepository paymentTransactionRepository;
 
     /** The mail sender. */
     @Autowired(required = false)
@@ -819,7 +824,9 @@ public class PageController {
         if (currentUser == null) {
             return "redirect:/?loginRequired=true";
         }
+        List<PaymentTransaction> myPayments = paymentTransactionRepository.findByUserIdOrderByCreatedAtDesc(currentUser.getId());
         model.addAttribute("user", currentUser);
+        model.addAttribute("paymentHistory", myPayments);
         return "subscription";
     }
 
@@ -931,8 +938,20 @@ public class PageController {
             MembershipType type = MembershipType.valueOf(planCode);
             userService.upgradeMembership(currentUser.getId(), type);
             session.setAttribute("loggedInUser", userService.getUserById(currentUser.getId()));
+
+            // Save Payment Transaction Record in Database against Candidate User ID
+            String screenshotUrlPath = (filename != null && !filename.isEmpty()) ? "/uploads/payments/" + filename : "";
+            PaymentTransaction paymentTransaction = new PaymentTransaction(
+                currentUser,
+                planCode,
+                amount,
+                txnId,
+                screenshotUrlPath
+            );
+            paymentTransactionRepository.save(paymentTransaction);
+            System.out.println("✅ Saved PaymentTransaction record to Database for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
-            System.out.println("Payment upgrade error: " + e.getMessage());
+            System.out.println("Payment upgrade/transaction save error: " + e.getMessage());
         }
 
         // Dispatch Automated Email Notification to Admin vigneshn051995@gmail.com with screenshot attachment
