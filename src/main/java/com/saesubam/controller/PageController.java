@@ -72,11 +72,19 @@ public class PageController {
      * @param session the session
      * @return the logged in user
      */
-    // Helper method to retrieve or fallback logged-in user
+    // Helper method to retrieve or fallback logged-in user with zero-latency session caching
     private Users getLoggedInUser(HttpSession session) {
         Users sessionUser = (Users) session.getAttribute("loggedInUser");
         if (sessionUser != null) {
-            return userService.getUserById(sessionUser.getId());
+            if (sessionUser.getProfile() != null) {
+                return sessionUser;
+            }
+            Users dbUser = userService.getUserById(sessionUser.getId());
+            if (dbUser != null) {
+                session.setAttribute("loggedInUser", dbUser);
+                return dbUser;
+            }
+            return sessionUser;
         }
         return null;
     }
