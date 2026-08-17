@@ -54,3 +54,4 @@ com\saesubam\annotation\EntityProperty.class
 com\saesubam\annotation\TableEntityProperty.class
 com\saesubam\controller\ProfileController.class
 com\saesubam\controller\PageController.class
+com\saesubam\controller\AdminController.class
