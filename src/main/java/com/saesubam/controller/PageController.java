@@ -290,6 +290,12 @@ public class PageController {
         Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
         List<Profiles> recommendedMatches = profileService.getRecommendedMatches(currentProfile);
 
+        if (currentUser != null && currentUser.getId() != null && recommendedMatches != null) {
+            recommendedMatches = recommendedMatches.stream()
+                .filter(m -> m.getUser() == null || !currentUser.getId().equals(m.getUser().getId()))
+                .collect(java.util.stream.Collectors.toList());
+        }
+
         long totalProfiles = profileService.getAllProfiles().size();
         long pendingInterests = interestService.countPendingReceivedInterests(currentUser);
         long sentInterestsCount = interestService.getSentInterests(currentUser).size();
@@ -333,6 +339,12 @@ public class PageController {
         }
         List<Profiles> profilesList =
             profileService.searchProfiles(gender, minAge, maxAge, religion, caste, education, city, maritalStatus);
+
+        if (currentUser != null && currentUser.getId() != null && profilesList != null) {
+            profilesList = profilesList.stream()
+                .filter(p -> p.getUser() == null || !currentUser.getId().equals(p.getUser().getId()))
+                .collect(java.util.stream.Collectors.toList());
+        }
 
         model.addAttribute("user", currentUser);
         model.addAttribute("profiles", profilesList);
