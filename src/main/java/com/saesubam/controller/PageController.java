@@ -106,8 +106,13 @@ public class PageController {
      * @return the string
      */
     @GetMapping("/register")
-    public String register(Model model) {
-        model.addAttribute("user", new Users());
+    public String register(HttpSession session, Model model) {
+        Users pendingUser = (Users) session.getAttribute("pendingRegistrationUser");
+        if (pendingUser != null) {
+            model.addAttribute("user", pendingUser);
+        } else {
+            model.addAttribute("user", new Users());
+        }
         return "register";
     }
 
