@@ -31,9 +31,6 @@ public class LoginController {
         }
 
         session.setAttribute("loggedInUser", dbUser);
-        if ("ADMIN".equalsIgnoreCase(dbUser.getRole())) {
-            return "redirect:/admin/dashboard";
-        }
         return "redirect:/dashboard";
     }
 }

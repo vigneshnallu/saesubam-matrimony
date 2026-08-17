@@ -47,12 +47,32 @@ public class AdminController {
         return null;
     }
 
+    @GetMapping("/login")
+    public String adminLoginPage() {
+        return "admin-login";
+    }
+
+    @PostMapping("/login")
+    public String processAdminLogin(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users dbUser = userService.findByEmail(email != null ? email.trim() : "");
+        if (dbUser == null || !dbUser.getPassword().equals(password)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid Admin Email or Password.");
+            return "redirect:/admin/login";
+        }
+        if (!"ADMIN".equalsIgnoreCase(dbUser.getRole())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Access Denied: Account does not have Administrator privileges.");
+            return "redirect:/admin/login";
+        }
+        session.setAttribute("loggedInUser", dbUser);
+        return "redirect:/admin/dashboard";
+    }
+
     @GetMapping({"", "/", "/dashboard", "/users"})
     public String adminDashboard(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Users adminUser = getAdminUser(session);
         if (adminUser == null) {
             redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
 
         List<Users> usersList = userService.getAllUsers();
