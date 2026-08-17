@@ -84,7 +84,7 @@ public class VerificationServiceImpl implements VerificationService {
         if (mailSender != null) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("saesubam.matrimony@gmail.com");
+                message.setFrom("vigneshn051995@gmail.com");
                 message.setTo(user.getEmail());
                 message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
                 message.setText("Dear " + user.getName() + ",\n\n"
@@ -210,7 +210,7 @@ public class VerificationServiceImpl implements VerificationService {
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
                     SimpleMailMessage message = new SimpleMailMessage();
-                    message.setFrom("saesubam.matrimony@gmail.com");
+                    message.setFrom("vigneshn051995@gmail.com");
                     message.setTo(email);
                     message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
                     message.setText("Dear " + (name != null ? name : "Member") + ",\n\n"

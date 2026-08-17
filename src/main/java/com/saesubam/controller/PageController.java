@@ -860,7 +860,7 @@ public class PageController {
                 MimeMessage mimeMessage = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-                helper.setFrom("saesubam.matrimony@gmail.com");
+                helper.setFrom("vigneshn051995@gmail.com");
                 helper.setTo("vigneshn051995@gmail.com");
                 helper.setSubject("💳 [SaeSubam Matrimony] Payment Screenshot & Details from " + currentUser.getName() + " (UTR: " + txnId + ")");
 

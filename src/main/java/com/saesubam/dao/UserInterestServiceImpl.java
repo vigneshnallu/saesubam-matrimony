@@ -68,7 +68,7 @@ public class UserInterestServiceImpl implements UserInterestService {
         if (mailSender != null && receiver.getEmail() != null) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("saesubam.matrimony@gmail.com");
+                message.setFrom("vigneshn051995@gmail.com");
                 message.setTo(receiver.getEmail());
                 message.setSubject("💖 New Express Interest: " + sender.getName() + " expressed interest in your profile!");
                 message.setText("Dear " + receiver.getName() + ",\n\n"
@@ -122,7 +122,7 @@ public class UserInterestServiceImpl implements UserInterestService {
         if (mailSender != null && sender.getEmail() != null) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("saesubam.matrimony@gmail.com");
+                message.setFrom("vigneshn051995@gmail.com");
                 message.setTo(sender.getEmail());
                 message.setSubject("🎉 Match Accepted! " + receiver.getName() + " accepted your interest proposal!");
                 message.setText("Dear " + sender.getName() + ",\n\n"
