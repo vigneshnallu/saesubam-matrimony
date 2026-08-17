@@ -828,6 +828,26 @@ public class PageController {
     }
 
     /**
+     * Admin data overview for inspecting all registered profiles and user data.
+     *
+     * @param session the session
+     * @param model the model
+     * @return the string
+     */
+    @GetMapping("/admin/data")
+    public String adminDataOverview(HttpSession session, Model model) {
+        List<Users> usersList = userService.getAllUsers();
+        List<Profiles> profilesList = profileService.getAllProfiles();
+
+        model.addAttribute("usersList", usersList);
+        model.addAttribute("profilesList", profilesList);
+        model.addAttribute("totalUsers", usersList != null ? usersList.size() : 0);
+        model.addAttribute("totalProfiles", profilesList != null ? profilesList.size() : 0);
+
+        return "admin-data";
+    }
+
+    /**
      * Verify upi vpa.
      *
      * @param vpa the vpa
