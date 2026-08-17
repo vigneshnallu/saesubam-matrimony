@@ -152,6 +152,42 @@
             }
         }
 
+        .interest-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .interest-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        /* Passport Size Profile Photo */
+        .interest-user-img {
+            width: 85px !important;
+            height: 105px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            flex-shrink: 0;
+            border: 1.5px solid #e2e8f0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+
+        .interest-user-img:hover {
+            transform: scale(1.03);
+            border-color: #e11d48;
+        }
+
         /* Live Chat Alignment & Bubble Styling */
         .chat-row {
             display: flex;
@@ -279,23 +315,32 @@
         <div class="tab-pane fade show active" id="received" role="tabpanel">
             <div th:if="${receivedInterests != null and not #lists.isEmpty(receivedInterests)}">
                 <div class="interest-card" th:each="item : ${receivedInterests}">
-                    <img th:src="${item.sender.profile != null and item.sender.profile.photoUrl != null ? item.sender.profile.photoUrl : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200'}" alt="sender" class="interest-user-img">
+                    <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}">
+                        <img th:src="${item.sender.profile != null and item.sender.profile.photoUrl != null ? item.sender.profile.photoUrl : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200'}" alt="sender" class="interest-user-img">
+                    </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
-                            <h5 class="fw-bold mb-0" th:text="${item.sender.name}">Sender Name</h5>
+                            <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}" class="text-decoration-none text-dark">
+                                <h5 class="fw-bold mb-0" th:text="${item.sender.name}">Sender Name</h5>
+                            </a>
                             <span class="badge bg-warning-subtle text-warning px-3 py-1 rounded-pill" th:text="${item.status}">PENDING</span>
                         </div>
                         <p class="text-muted small mb-2" th:text="${item.sender.profile != null ? item.sender.profile.occupation + ' • ' + item.sender.profile.city : 'Member'}">Profession • City</p>
                         <span class="small text-muted"><i class="bi bi-clock me-1"></i> Expressed interest on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
                     </div>
 
-                    <div class="d-flex gap-2" th:if="${item.status.name() == 'PENDING'}">
-                        <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
-                            <button type="submit" class="btn btn-success fw-bold px-4 rounded-3"><i class="bi bi-check-circle me-1"></i> Accept</button>
-                        </form>
-                        <form th:action="@{/api/interests/decline/{id}(id=${item.id})}" method="post">
-                            <button type="submit" class="btn btn-outline-secondary fw-bold px-3 rounded-3"><i class="bi bi-x-circle me-1"></i> Decline</button>
-                        </form>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 py-2">
+                            <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                        </a>
+                        <div class="d-flex gap-2" th:if="${item.status.name() == 'PENDING'}">
+                            <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
+                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-check-circle me-1"></i> Accept</button>
+                            </form>
+                            <form th:action="@{/api/interests/decline/{id}(id=${item.id})}" method="post">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-x-circle me-1"></i> Decline</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,16 +356,22 @@
         <div class="tab-pane fade" id="sent" role="tabpanel">
             <div th:if="${sentInterests != null and not #lists.isEmpty(sentInterests)}">
                 <div class="interest-card" th:each="item : ${sentInterests}">
-                    <img th:src="${item.receiver.profile != null and item.receiver.profile.photoUrl != null ? item.receiver.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="receiver" class="interest-user-img">
+                    <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}">
+                        <img th:src="${item.receiver.profile != null and item.receiver.profile.photoUrl != null ? item.receiver.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="receiver" class="interest-user-img">
+                    </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
-                            <h5 class="fw-bold mb-0" th:text="${item.receiver.name}">Receiver Name</h5>
+                            <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="text-decoration-none text-dark">
+                                <h5 class="fw-bold mb-0" th:text="${item.receiver.name}">Receiver Name</h5>
+                            </a>
                             <span class="badge" th:classappend="${item.status.name() == 'ACCEPTED' ? 'bg-success-subtle text-success' : (item.status.name() == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
                         </div>
                         <p class="text-muted small mb-2" th:text="${item.receiver.profile != null ? item.receiver.profile.occupation + ' • ' + item.receiver.profile.city : 'Member'}">Profession • City</p>
                         <span class="small text-muted"><i class="bi bi-send me-1"></i> Interest sent on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
                     </div>
-                    <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3">View Profile</a>
+                    <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 py-2">
+                        <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                    </a>
                 </div>
             </div>
 
@@ -336,14 +387,18 @@
         <div class="tab-pane fade" id="accepted" role="tabpanel">
             <div th:if="${acceptedMatches != null and not #lists.isEmpty(acceptedMatches)}">
                 <div class="interest-card border-success border-2 shadow-sm" th:each="item : ${acceptedMatches}" th:with="partner=${item.sender.id == user.id ? item.receiver : item.sender}">
-                    <img th:src="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="partner" class="interest-user-img border border-2 border-success">
+                    <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}">
+                        <img th:src="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="partner" class="interest-user-img border border-2 border-success">
+                    </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
                             <div>
-                                <h5 class="fw-bold mb-0 text-dark">
-                                    <span th:text="${partner.name}">Partner Name</span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle ms-2 fs-6 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> Connected Partner</span>
-                                </h5>
+                                <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="text-decoration-none text-dark">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <span th:text="${partner.name}">Partner Name</span>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle ms-2 fs-6 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> Connected Partner</span>
+                                    </h5>
+                                </a>
                                 <p class="text-muted small mb-1 mt-1" th:text="${partner.profile != null ? partner.profile.occupation + ' • ' + partner.profile.city + ' • ' + partner.profile.education : 'Member'}">Profession • City</p>
                             </div>
                         </div>
@@ -355,15 +410,20 @@
                         </div>
                     </div>
 
-                    <!-- Interactive Actions: Live Chat & WhatsApp -->
+                    <!-- Interactive Actions: Live Chat, View Profile & WhatsApp -->
                     <div class="d-flex flex-column gap-2">
                         <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
                                 th:attr="onclick='openChatModal(' + ${partner.id} + ', \'' + ${partner.name} + '\', \'' + ${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'} + '\')'">
                             <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Partner
                         </button>
-                        <a th:href="${'https://api.whatsapp.com/send?phone=91' + (partner.mobile != null ? partner.mobile : '6369541046')}" target="_blank" class="btn btn-outline-success btn-sm fw-bold px-3 rounded-3">
-                            <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                        </a>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
+                                <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                            </a>
+                            <a th:href="${'https://api.whatsapp.com/send?phone=91' + (partner.mobile != null ? partner.mobile : '6369541046')}" target="_blank" class="btn btn-outline-success btn-sm fw-bold px-3 rounded-3 w-100">
+                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
