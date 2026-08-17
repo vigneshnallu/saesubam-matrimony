@@ -30,9 +30,13 @@ public class RegistrationController {
             result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
         }
 
-        Users existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser != null && (existingUser.isEmailVerified() || existingUser.isMobileVerified())) {
-            result.rejectValue("email", "error.user", "Email address is already registered");
+        try {
+            Users existingUser = userService.findByEmail(user.getEmail());
+            if (existingUser != null && (existingUser.isEmailVerified() || existingUser.isMobileVerified())) {
+                result.rejectValue("email", "error.user", "Email address is already registered");
+            }
+        } catch (Throwable t) {
+            System.err.println("⚠️ Notice checking existing user during registration: " + t.getMessage());
         }
 
         if (result.hasErrors()) {
