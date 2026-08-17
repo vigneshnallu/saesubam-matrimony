@@ -390,6 +390,31 @@ public class PageController {
             return "redirect:/profiles";
         }
 
+        // 1. Check & Handle Plan Expiry
+        if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
+            && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
+            userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
+            currentUser = userService.getUserById(currentUser.getId());
+            session.setAttribute("loggedInUser", currentUser);
+        }
+
+        // 2. Track & Increment Profile View Quotas for Active Subscriptions
+        boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
+        if (!isOwnProfile && currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
+            @SuppressWarnings("unchecked")
+            java.util.Set<Long> viewedProfileIds = (java.util.Set<Long>) session.getAttribute("viewedProfileIds");
+            if (viewedProfileIds == null) {
+                viewedProfileIds = new java.util.HashSet<>();
+                session.setAttribute("viewedProfileIds", viewedProfileIds);
+            }
+            if (!viewedProfileIds.contains(id)) {
+                viewedProfileIds.add(id);
+                currentUser.setProfileViewsCount(currentUser.getProfileViewsCount() + 1);
+                userService.updateUser(currentUser);
+                session.setAttribute("loggedInUser", currentUser);
+            }
+        }
+
         boolean interestSent = currentUser != null && targetProfile.getUser() != null
             && interestService.hasSentInterest(currentUser, targetProfile.getUser());
         boolean isInterestAccepted = currentUser != null && targetProfile.getUser() != null
@@ -401,6 +426,11 @@ public class PageController {
         model.addAttribute("interestSent", interestSent);
         model.addAttribute("isInterestAccepted", isInterestAccepted);
         model.addAttribute("isBookmarked", isBookmarked);
+        model.addAttribute("isMembershipActive", currentUser.isMembershipActive());
+        model.addAttribute("hasRemainingViews", currentUser.hasRemainingProfileViews());
+        model.addAttribute("viewsUsed", currentUser.getProfileViewsCount());
+        model.addAttribute("maxViews", currentUser.getMaxProfileViews());
+        model.addAttribute("membershipExpiryDate", currentUser.getMembershipExpiryDate());
 
         return "profile-detail";
     }

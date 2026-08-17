@@ -95,6 +95,19 @@ public class UserServiceImpl implements UserService {
     public Users upgradeMembership(Long userId, MembershipType membershipType) {
         Users user = getUserById(userId);
         user.setMembershipType(membershipType);
+        user.setProfileViewsCount(0);
+
+        if (membershipType == MembershipType.GOLD) {
+            user.setMaxProfileViews(100);
+            user.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(90));
+        } else if (membershipType == MembershipType.PREMIUM || membershipType == MembershipType.PLATINUM) {
+            user.setMaxProfileViews(999999);
+            user.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(365));
+        } else {
+            user.setMaxProfileViews(0);
+            user.setMembershipExpiryDate(null);
+        }
+
         return userRepository.save(user);
     }
 }

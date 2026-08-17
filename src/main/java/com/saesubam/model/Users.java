@@ -53,6 +53,12 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private MembershipType membershipType = MembershipType.FREE;
 
+    private LocalDateTime membershipExpiryDate;
+
+    private Integer profileViewsCount = 0;
+
+    private Integer maxProfileViews = 0;
+
     private String role = "USER";
 
     private boolean emailVerified = false;
@@ -252,5 +258,49 @@ public class Users {
 
     public void setProfile(Profiles profile) {
         this.profile = profile;
+    }
+
+    public LocalDateTime getMembershipExpiryDate() {
+        return membershipExpiryDate;
+    }
+
+    public void setMembershipExpiryDate(LocalDateTime membershipExpiryDate) {
+        this.membershipExpiryDate = membershipExpiryDate;
+    }
+
+    public Integer getProfileViewsCount() {
+        return profileViewsCount != null ? profileViewsCount : 0;
+    }
+
+    public void setProfileViewsCount(Integer profileViewsCount) {
+        this.profileViewsCount = profileViewsCount;
+    }
+
+    public Integer getMaxProfileViews() {
+        return maxProfileViews != null ? maxProfileViews : 0;
+    }
+
+    public void setMaxProfileViews(Integer maxProfileViews) {
+        this.maxProfileViews = maxProfileViews;
+    }
+
+    public boolean isMembershipActive() {
+        if (membershipType == null || membershipType == MembershipType.FREE) {
+            return false;
+        }
+        return membershipExpiryDate == null || LocalDateTime.now().isBefore(membershipExpiryDate);
+    }
+
+    public boolean hasRemainingProfileViews() {
+        if (!isMembershipActive()) {
+            return false;
+        }
+        if (membershipType == MembershipType.PREMIUM || membershipType == MembershipType.PLATINUM) {
+            return true; // Unlimited profile views
+        }
+        if (membershipType == MembershipType.GOLD) {
+            return getProfileViewsCount() < 100; // Gold limit is 100 profiles
+        }
+        return false;
     }
 }
