@@ -163,4 +163,75 @@ public class AdminController {
 
         return "redirect:/admin/dashboard";
     }
+
+    @GetMapping("/external-editor")
+    public String externalEditorPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+        model.addAttribute("adminUser", adminUser);
+        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("membershipTypes", MembershipType.values());
+        return "admin-external-editor";
+    }
+
+    @PostMapping("/external-editor/save")
+    public String saveExternalDbUpdate(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String userEmail,
+            @RequestParam String membershipType,
+            @RequestParam Integer profileViewsCount,
+            @RequestParam Integer maxProfileViews,
+            @RequestParam(required = false) String expiryDate,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            Users targetUser = null;
+            if (userId != null) {
+                targetUser = userRepository.findById(userId).orElse(null);
+            }
+            if (targetUser == null && userEmail != null && !userEmail.trim().isEmpty()) {
+                targetUser = userRepository.findByEmail(userEmail.trim());
+            }
+
+            if (targetUser == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error: No matching user found by ID (" + userId + ") or Email (" + userEmail + ").");
+                return "redirect:/admin/external-editor";
+            }
+
+            MembershipType newType = MembershipType.valueOf(membershipType);
+            targetUser.setMembershipType(newType);
+            targetUser.setProfileViewsCount(profileViewsCount != null ? profileViewsCount : 0);
+            targetUser.setMaxProfileViews(maxProfileViews != null ? maxProfileViews : 0);
+
+            if (expiryDate != null && !expiryDate.trim().isEmpty()) {
+                try {
+                    LocalDateTime parsedDate = LocalDateTime.parse(expiryDate.trim() + "T23:59:59");
+                    targetUser.setMembershipExpiryDate(parsedDate);
+                } catch (Exception ex) {
+                    System.err.println("Notice parsing expiry date: " + ex.getMessage());
+                }
+            } else {
+                targetUser.setMembershipExpiryDate(null);
+            }
+
+            userRepository.save(targetUser);
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                "✅ DIRECT DB UPDATE SUCCESSFUL! Candidate User #" + targetUser.getId() + " (" + targetUser.getName() + ") plan updated to " + newType + " with " + profileViewsCount + "/" + maxProfileViews + " views quota.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed DB Update: " + e.getMessage());
+        }
+
+        return "redirect:/admin/external-editor";
+    }
 }
