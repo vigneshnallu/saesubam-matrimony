@@ -268,10 +268,10 @@
                 <h3 class="fw-bold text-dark mb-1">
                     Current Plan: <span class="text-danger" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
                 </h3>
-                <p class="text-muted small mb-0" th:if="${user.membershipExpiryDate != null}">
+                <p class="text-muted small mb-0" th:if="${user.membershipType != null and user.membershipType.name() != 'FREE' and user.membershipExpiryDate != null}">
                     <i class="bi bi-calendar-check-fill me-1 text-success"></i> Valid Until: <strong class="text-dark" th:text="${#temporals.format(user.membershipExpiryDate, 'dd MMM yyyy')}">15 Nov 2026</strong>
                 </p>
-                <p class="text-muted small mb-0" th:if="${user.membershipExpiryDate == null}">
+                <p class="text-muted small mb-0" th:if="${user.membershipType == null or user.membershipType.name() == 'FREE'}">
                     <i class="bi bi-info-circle me-1 text-secondary"></i> Free Account (Upgrade to Gold or Premium to unlock candidate views)
                 </p>
             </div>

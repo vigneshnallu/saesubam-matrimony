@@ -302,6 +302,16 @@
                 <div><i class="bi bi-geo-alt-fill me-1 text-danger"></i> <span th:text="${profile.city} + ', ' + ${profile.state}">Bengaluru, KA</span></div>
             </div>
 
+            <!-- Quota Limit Reached Warning Alert -->
+            <div th:if="${user != null and user.membershipType != null and user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews)}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
+                <div class="d-flex align-items-center gap-2 fw-bold text-danger mb-1">
+                    <i class="bi bi-exclamation-octagon-fill fs-5"></i> Gold Quota Limit Reached (100 / 100 Views Used)
+                </div>
+                <div class="small text-dark">
+                    You have reached your 100 candidate profile views & proposal limit for Gold Plan. <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade to Premium Plan</a> for unlimited profile views and proposal requests!
+                </div>
+            </div>
+
             <div class="d-flex gap-3 flex-wrap">
                 <div th:if="${isInterestAccepted}">
                     <button class="btn btn-success btn-lg rounded-3 fw-bold px-4" disabled>
@@ -310,7 +320,7 @@
                 </div>
                 <div th:if="${!isInterestAccepted}">
                     <form th:action="@{/api/interests/send/{id}(id=${profile.id})}" method="post">
-                        <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent}">
+                        <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent or (user != null and user.membershipType != null and user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews))}">
                             <i class="bi bi-heart-fill me-2"></i> <span th:text="${interestSent ? 'Interest Sent' : 'Send Express Interest'}">Send Express Interest</span>
                         </button>
                     </form>

@@ -52,6 +52,12 @@ public class InterestsController {
                     return "redirect:/profile/" + profileId;
                 }
 
+                // Validate Plan Expiry & Quota Limit (Block sending interest when 100 views limit is reached or plan expired)
+                if (sender.getMembershipType() != null && sender.getMembershipType() != com.saesubam.model.MembershipType.FREE && (!sender.isMembershipActive() || !sender.hasRemainingProfileViews())) {
+                    redirectAttributes.addFlashAttribute("infoMessage", "You have reached your 100 profile view & proposal limit for Gold Plan. Please upgrade to Premium for unlimited proposals!");
+                    return "redirect:/profile/" + profileId;
+                }
+
                 interestService.sendInterest(sender, targetProfile.getUser());
                 redirectAttributes.addFlashAttribute("successMessage", "Express interest sent successfully!");
             } else {
