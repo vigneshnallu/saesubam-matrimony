@@ -264,13 +264,31 @@
     </div>
 
     <!-- Advanced Filter Bar -->
-    <div class="filter-card">
+    <div class="filter-card bg-white p-4 rounded-4 shadow-sm border mb-4">
+        <form action="/profiles" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3 col-sm-6">
+                    <label class="form-label small fw-bold text-secondary">Looking For</label>
+                    <select name="gender" class="form-select rounded-3">
+                        <option value="">All Genders (Brides & Grooms)</option>
+                        <option value="Female" th:selected="${paramGender == 'Female'}">Bride (Female)</option>
+                        <option value="Male" th:selected="${paramGender == 'Male'}">Groom (Male)</option>
                     </select>
                 </div>
 
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold">Caste</label>
-                    <select name="caste" class="form-select border-1">
+                <div class="col-md-2 col-sm-6">
+                    <label class="form-label small fw-bold text-secondary">Min Age</label>
+                    <input type="number" name="minAge" class="form-control rounded-3" placeholder="18" th:value="${paramMinAge}" min="18" max="70">
+                </div>
+
+                <div class="col-md-2 col-sm-6">
+                    <label class="form-label small fw-bold text-secondary">Max Age</label>
+                    <input type="number" name="maxAge" class="form-control rounded-3" placeholder="60" th:value="${paramMaxAge}" min="18" max="70">
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <label class="form-label small fw-bold text-secondary">Caste / Community</label>
+                    <select name="caste" class="form-select rounded-3">
                         <option value="">Any Caste</option>
                         <option value="Devar" th:selected="${paramCaste == 'Devar'}">Devar / Thevar</option>
                         <option value="Maravar" th:selected="${paramCaste == 'Maravar'}">Devar - Maravar</option>
@@ -296,9 +314,9 @@
                     </select>
                 </div>
 
-                <div class="col-md-2 d-flex align-items-end gap-2">
-                    <button type="submit" class="btn btn-danger w-100 fw-bold py-2"><i class="bi bi-filter me-1"></i> Filter</button>
-                    <a href="/profiles" class="btn btn-outline-secondary py-2"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <div class="col-md-2 col-sm-12 d-flex gap-2">
+                    <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3"><i class="bi bi-filter me-1"></i> Filter</button>
+                    <a href="/profiles" class="btn btn-outline-secondary py-2 rounded-3" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
                 </div>
             </div>
         </form>
