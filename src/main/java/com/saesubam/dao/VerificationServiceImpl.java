@@ -206,12 +206,15 @@ public class VerificationServiceImpl implements VerificationService {
         System.out.println("📧 [FREE EMAIL OTP GENERATED] To " + email + " (" + name + "): " + otpStr);
         System.out.println("=================================================");
 
-        if (mailSender != null && email != null && !email.trim().isEmpty()) {
+        if (mailSender == null) {
+            System.err.println("❌ [SMTP DIAGNOSTIC ERROR] JavaMailSender is NULL! Check Spring Mail configuration.");
+        } else if (email != null && !email.trim().isEmpty()) {
+            System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating background email dispatch to: " + email);
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
                     SimpleMailMessage message = new SimpleMailMessage();
                     message.setFrom("vigneshn051995@gmail.com");
-                    message.setTo(email);
+                    message.setTo(email.trim());
                     message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
                     message.setText("Dear " + (name != null ? name : "Member") + ",\n\n"
                             + "Your 6-digit OTP code for SaeSubam Matrimony account registration & verification is: " + otpStr + "\n\n"
@@ -220,7 +223,8 @@ public class VerificationServiceImpl implements VerificationService {
                     mailSender.send(message);
                     System.out.println("✅ REAL MAIL SENT SUCCESSFULLY via Gmail SMTP to " + email);
                 } catch (Throwable t) {
-                    System.err.println("⚠️ [SMTP NOTICE] Could not send email to " + email + " due to SMTP: " + t.getMessage());
+                    System.err.println("❌ [SMTP ERROR FAILED] Could not send email to " + email + ": " + t.getMessage());
+                    t.printStackTrace();
                 }
             });
         }
