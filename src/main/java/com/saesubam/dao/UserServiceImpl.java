@@ -95,7 +95,9 @@ public class UserServiceImpl implements UserService {
     public Users upgradeMembership(Long userId, MembershipType membershipType) {
         Users user = getUserById(userId);
         user.setMembershipType(membershipType);
-        user.setProfileViewsCount(0);
+        if (user.getProfileViewsCount() == null) {
+            user.setProfileViewsCount(0);
+        }
 
         if (membershipType == MembershipType.GOLD) {
             user.setMaxProfileViews(100);
