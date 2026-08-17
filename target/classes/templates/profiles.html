@@ -230,7 +230,10 @@
     </div>
 
     <div class="sidebar-user">
-        <img th:src="${user != null and user.profile != null and user.profile.photoUrl != null ? user.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}" alt="user">
+        <img th:if="${user != null and user.profile != null and user.profile.photoUrl != null}" th:src="${user.profile.photoUrl}" alt="user" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+        <div th:if="${user == null or user.profile == null or user.profile.photoUrl == null}" class="rounded-circle bg-light border text-secondary d-flex align-items-center justify-content-center" style="width:44px; height:44px; flex-shrink:0;">
+            <i class="bi bi-person-fill fs-5"></i>
+        </div>
         <div class="overflow-hidden">
             <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user != null ? user.name : 'Member'}">User Name</h6>
             <span class="badge bg-danger-subtle text-danger small" th:text="${user != null ? user.membershipType : 'FREE'}">FREE</span>
@@ -253,48 +256,15 @@
             <i class="bi bi-list fs-5 me-1"></i> Menu
         </button>
     </div>
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h3 class="fw-bold mb-1">Browse Matrimony Profiles</h3>
-            <p class="text-muted mb-0">Discover verified proposals matching your religion, caste, education, and location.</p>
-        </div>
-        <div class="text-muted fw-bold">
-            Showing <span class="text-danger" th:text="${profiles != null ? profiles.size() : 0}">0</span> Profiles
+            <p class="text-muted mb-0">Discover verified brides and grooms based on your preferred criteria.</p>
         </div>
     </div>
 
     <!-- Advanced Filter Bar -->
     <div class="filter-card">
-        <form action="/profiles" method="get">
-            <div class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold">Looking For</label>
-                    <select name="gender" class="form-select border-1">
-                        <option value="">All Genders</option>
-                        <option value="Female" th:selected="${paramGender == 'Female'}">Bride (Female)</option>
-                        <option value="Male" th:selected="${paramGender == 'Male'}">Groom (Male)</option>
-                    </select>
-                </div>
-
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold">Min Age</label>
-                    <input type="number" name="minAge" class="form-control" placeholder="18" th:value="${paramMinAge}">
-                </div>
-
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold">Max Age</label>
-                    <input type="number" name="maxAge" class="form-control" placeholder="60" th:value="${paramMaxAge}">
-                </div>
-
-                <div class="col-md-2">
-                    <label class="form-label small fw-bold">Religion</label>
-                    <select name="religion" class="form-select border-1">
-                        <option value="">Any Religion</option>
-                        <option value="Hindu" th:selected="${paramReligion == 'Hindu'}">Hindu</option>
-                        <option value="Christian" th:selected="${paramReligion == 'Christian'}">Christian</option>
-                        <option value="Muslim" th:selected="${paramReligion == 'Muslim'}">Muslim</option>
-                        <option value="Sikh" th:selected="${paramReligion == 'Sikh'}">Sikh</option>
-                        <option value="Jain" th:selected="${paramReligion == 'Jain'}">Jain</option>
                     </select>
                 </div>
 
@@ -339,7 +309,10 @@
         <div class="col-md-4" th:each="p : ${profiles}">
             <div class="profile-card">
                 <div class="profile-img-container">
-                    <img th:src="${p.photoUrl != null ? p.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500'}" alt="profile">
+                    <img th:if="${p.photoUrl != null}" th:src="${p.photoUrl}" alt="profile">
+                    <div th:if="${p.photoUrl == null}" class="d-flex align-items-center justify-content-center bg-light border text-muted" style="height:280px; width:100%;">
+                        <i class="bi bi-person-fill display-1 text-secondary"></i>
+                    </div>
                     <span class="badge-verified"><i class="bi bi-patch-check-fill me-1"></i> Verified</span>
                 </div>
                 <div class="profile-card-body">

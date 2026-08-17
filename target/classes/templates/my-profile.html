@@ -235,7 +235,10 @@
     </div>
 
     <div class="sidebar-user">
-        <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}" alt="user">
+        <img th:if="${profile != null and profile.photoUrl != null}" th:src="${profile.photoUrl}" alt="user" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+        <div th:if="${profile == null or profile.photoUrl == null}" class="rounded-circle bg-light border text-secondary d-flex align-items-center justify-content-center" style="width:44px; height:44px; flex-shrink:0;">
+            <i class="bi bi-person-fill fs-5"></i>
+        </div>
         <div class="overflow-hidden">
             <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user != null ? user.name : 'Member'}">User Name</h6>
             <span class="badge bg-danger-subtle text-danger small" th:text="${user != null ? user.membershipType : 'FREE'}">FREE</span>
@@ -272,7 +275,11 @@
         <div class="d-flex gap-3 flex-wrap justify-content-center">
             <!-- Primary Photo Box -->
             <div class="text-center">
-                <img th:src="${profile != null and profile.photoUrl != null ? profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500'}" alt="photo" class="profile-main-img mb-2">
+                <img th:if="${profile != null and profile.photoUrl != null}" th:src="${profile.photoUrl}" alt="photo" class="profile-main-img mb-2">
+                <div th:if="${profile == null or profile.photoUrl == null}" class="profile-main-img mb-2 d-flex flex-column align-items-center justify-content-center bg-light border text-muted">
+                    <i class="bi bi-person-fill display-3 text-secondary mb-1"></i>
+                    <span class="small text-muted">No Main Photo</span>
+                </div>
                 <form action="/my-profile/upload-photo" method="post" enctype="multipart/form-data">
                     <label class="btn btn-outline-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
                         <i class="bi bi-camera-fill me-1"></i> Main Photo
@@ -283,7 +290,11 @@
 
             <!-- Additional Self Photo Box -->
             <div class="text-center">
-                <img th:src="${profile != null and profile.secondaryPhotoUrl != null ? profile.secondaryPhotoUrl : 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500'}" alt="secondary photo" class="profile-main-img mb-2 border border-danger-subtle">
+                <img th:if="${profile != null and profile.secondaryPhotoUrl != null}" th:src="${profile.secondaryPhotoUrl}" alt="secondary photo" class="profile-main-img mb-2 border border-danger-subtle">
+                <div th:if="${profile == null or profile.secondaryPhotoUrl == null}" class="profile-main-img mb-2 d-flex flex-column align-items-center justify-content-center bg-light border text-muted border-dashed">
+                    <i class="bi bi-images display-3 text-secondary mb-1"></i>
+                    <span class="small text-muted">No 2nd Photo</span>
+                </div>
                 <form action="/my-profile/upload-secondary-photo" method="post" enctype="multipart/form-data">
                     <label class="btn btn-outline-secondary btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
                         <i class="bi bi-images me-1"></i> Additional Photo

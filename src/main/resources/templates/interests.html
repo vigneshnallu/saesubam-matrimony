@@ -260,7 +260,10 @@
         <a href="/subscription"><i class="bi bi-gem"></i> Membership Plan</a>
     </div>
     <div class="sidebar-user" th:if="${user != null}">
-        <img th:src="${user.profile != null and user.profile.photoUrl != null ? user.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'}" alt="Profile">
+        <img th:if="${user.profile != null and user.profile.photoUrl != null}" th:src="${user.profile.photoUrl}" alt="Profile" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+        <div th:if="${user.profile == null or user.profile.photoUrl == null}" class="rounded-circle bg-light border text-secondary d-flex align-items-center justify-content-center" style="width:44px; height:44px; flex-shrink:0;">
+            <i class="bi bi-person-fill fs-5"></i>
+        </div>
         <div class="overflow-hidden">
             <div class="fw-bold text-truncate" th:text="${user.name}">User Name</div>
             <span class="badge bg-danger-subtle text-danger small rounded-pill" th:text="${user.membershipType}">GOLD</span>
@@ -316,7 +319,10 @@
             <div th:if="${receivedInterests != null and not #lists.isEmpty(receivedInterests)}">
                 <div class="interest-card" th:each="item : ${receivedInterests}">
                     <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}">
-                        <img th:src="${item.sender.profile != null and item.sender.profile.photoUrl != null ? item.sender.profile.photoUrl : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200'}" alt="sender" class="interest-user-img">
+                        <img th:if="${item.sender.profile != null and item.sender.profile.photoUrl != null}" th:src="${item.sender.profile.photoUrl}" alt="sender" class="interest-user-img">
+                        <div th:if="${item.sender.profile == null or item.sender.profile.photoUrl == null}" class="interest-user-img d-flex align-items-center justify-content-center bg-light border text-muted">
+                            <i class="bi bi-person-fill fs-2 text-secondary"></i>
+                        </div>
                     </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
@@ -357,7 +363,10 @@
             <div th:if="${sentInterests != null and not #lists.isEmpty(sentInterests)}">
                 <div class="interest-card" th:each="item : ${sentInterests}">
                     <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}">
-                        <img th:src="${item.receiver.profile != null and item.receiver.profile.photoUrl != null ? item.receiver.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="receiver" class="interest-user-img">
+                        <img th:if="${item.receiver.profile != null and item.receiver.profile.photoUrl != null}" th:src="${item.receiver.profile.photoUrl}" alt="receiver" class="interest-user-img">
+                        <div th:if="${item.receiver.profile == null or item.receiver.profile.photoUrl == null}" class="interest-user-img d-flex align-items-center justify-content-center bg-light border text-muted">
+                            <i class="bi bi-person-fill fs-2 text-secondary"></i>
+                        </div>
                     </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
@@ -388,7 +397,10 @@
             <div th:if="${acceptedMatches != null and not #lists.isEmpty(acceptedMatches)}">
                 <div class="interest-card border-success border-2 shadow-sm" th:each="item : ${acceptedMatches}" th:with="partner=${item.sender.id == user.id ? item.receiver : item.sender}">
                     <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}">
-                        <img th:src="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'}" alt="partner" class="interest-user-img border border-2 border-success">
+                        <img th:if="${partner.profile != null and partner.profile.photoUrl != null}" th:src="${partner.profile.photoUrl}" alt="partner" class="interest-user-img border border-2 border-success">
+                        <div th:if="${partner.profile == null or partner.profile.photoUrl == null}" class="interest-user-img border border-2 border-success d-flex align-items-center justify-content-center bg-light text-muted">
+                            <i class="bi bi-person-fill fs-2 text-secondary"></i>
+                        </div>
                     </a>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start mb-1">
@@ -410,20 +422,15 @@
                         </div>
                     </div>
 
-                    <!-- Interactive Actions: Live Chat, View Profile & WhatsApp -->
+                    <!-- Interactive Actions: Live Chat & View Profile -->
                     <div class="d-flex flex-column gap-2">
                         <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
-                                th:attr="onclick='openChatModal(' + ${partner.id} + ', \'' + ${partner.name} + '\', \'' + ${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200'} + '\')'">
+                                th:attr="onclick='openChatModal(' + ${partner.id} + ', \'' + ${partner.name} + '\', \'' + ${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : ''} + '\')'">
                             <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Partner
                         </button>
-                        <div class="d-flex gap-2">
-                            <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
-                                <i class="bi bi-person-bounding-box me-1"></i> View Profile
-                            </a>
-                            <a th:href="${'https://api.whatsapp.com/send?phone=91' + (partner.mobile != null ? partner.mobile : '6369541046')}" target="_blank" class="btn btn-outline-success btn-sm fw-bold px-3 rounded-3 w-100">
-                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                            </a>
-                        </div>
+                        <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
+                            <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                        </a>
                     </div>
                 </div>
             </div>
