@@ -123,7 +123,6 @@ public class PageController {
         Users pendingUser = (Users) session.getAttribute("pendingRegistrationUser");
         if (pendingUser != null) {
             model.addAttribute("user", pendingUser);
-            model.addAttribute("pendingOtpCode", session.getAttribute("pendingOtpCode"));
             return "verify-otp";
         }
 

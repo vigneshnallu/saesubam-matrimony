@@ -160,12 +160,6 @@
         </div>
     </div>
 
-    <!-- Active OTP Banner -->
-    <div class="alert alert-info border-0 rounded-3 text-start mb-3" th:if="${pendingOtpCode != null}">
-        <div class="fw-bold"><i class="bi bi-shield-lock-fill me-1 text-primary"></i> Generated OTP Code: <span class="badge bg-primary fs-6 px-3 py-1 ms-1" th:text="${pendingOtpCode}">123456</span></div>
-        <div class="small text-muted mt-1"><i class="bi bi-key-fill text-warning me-1"></i> Or enter Master Test OTP: <strong class="text-dark">123456</strong></div>
-    </div>
-
     <!-- Error Alert -->
     <div class="alert alert-danger border-0 rounded-3 shadow-sm text-start mb-3" th:if="${error}">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${error}">Invalid OTP</span>
