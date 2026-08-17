@@ -830,6 +830,19 @@ public class PageController {
         return "subscription";
     }
 
+    @GetMapping({"/admin/external-editor", "/external-editor", "/admin-editor"})
+    public String directExternalEditor(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        Users currentUser = getLoggedInUser(session);
+        if (currentUser == null || !"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+        model.addAttribute("adminUser", currentUser);
+        model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("membershipTypes", MembershipType.values());
+        return "admin-external-editor";
+    }
+
     /**
      * Checkout page.
      *

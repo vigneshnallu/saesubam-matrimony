@@ -164,7 +164,7 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
-    @GetMapping("/external-editor")
+    @GetMapping({"/external-editor", "/admin-editor"})
     public String externalEditorPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Users adminUser = getAdminUser(session);
         if (adminUser == null) {
