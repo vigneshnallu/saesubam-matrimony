@@ -17,4 +17,6 @@ public interface VerificationService {
     String sendEmailVerification(Users user);
 
     boolean verifyEmailToken(String token);
+
+    String generateAndSendEmailOtp(String email, String name);
 }

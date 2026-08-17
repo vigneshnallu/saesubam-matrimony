@@ -196,4 +196,33 @@ public class VerificationServiceImpl implements VerificationService {
 
         return true;
     }
+
+    @Override
+    public String generateAndSendEmailOtp(String email, String name) {
+        int otp = 100000 + random.nextInt(900000); // 6-digit OTP
+        String otpStr = String.valueOf(otp);
+
+        System.out.println("=================================================");
+        System.out.println("📧 [FREE EMAIL OTP GENERATED] To " + email + " (" + name + "): " + otpStr);
+        System.out.println("=================================================");
+
+        if (mailSender != null && email != null && !email.trim().isEmpty()) {
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setFrom("saesubam.matrimony@gmail.com");
+                message.setTo(email);
+                message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
+                message.setText("Dear " + (name != null ? name : "Member") + ",\n\n"
+                        + "Your 6-digit OTP code for SaeSubam Matrimony account registration & verification is: " + otpStr + "\n\n"
+                        + "This code is valid for 15 minutes. Please do not share it with anyone.\n\n"
+                        + "Regards,\nSaeSubam Matrimony Team");
+                mailSender.send(message);
+                System.out.println("✅ REAL MAIL SENT SUCCESSFULLY via Gmail SMTP to " + email);
+            } catch (Throwable t) {
+                System.err.println("⚠️ [SMTP NOTICE] Could not send email to " + email + " due to SMTP: " + t.getMessage());
+            }
+        }
+
+        return otpStr;
+    }
 }

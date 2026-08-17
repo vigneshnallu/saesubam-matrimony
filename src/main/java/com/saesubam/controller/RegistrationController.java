@@ -30,7 +30,8 @@ public class RegistrationController {
             result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
         }
 
-        if (userService.findByEmail(user.getEmail()) != null) {
+        Users existingUser = userService.findByEmail(user.getEmail());
+        if (existingUser != null && (existingUser.isEmailVerified() || existingUser.isMobileVerified())) {
             result.rejectValue("email", "error.user", "Email address is already registered");
         }
 
@@ -38,13 +39,13 @@ public class RegistrationController {
             return "register";
         }
 
-        Users savedUser = userService.createUser(user);
+        // Generate 6-digit OTP and store pending user registration in session (Do NOT save to DB yet!)
+        String otpCode = verificationService.generateAndSendEmailOtp(user.getEmail(), user.getName());
 
-        // Send Free Email OTP & Mobile OTP
-        verificationService.sendEmailOtp(savedUser);
-        verificationService.sendMobileOtp(savedUser);
+        session.setAttribute("pendingRegistrationUser", user);
+        session.setAttribute("pendingOtpCode", otpCode);
+        session.setAttribute("pendingOtpExpiry", java.time.LocalDateTime.now().plusMinutes(15));
 
-        session.setAttribute("pendingVerificationUserId", savedUser.getId());
         return "redirect:/verify-otp";
     }
 }
