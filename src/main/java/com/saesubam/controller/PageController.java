@@ -745,12 +745,16 @@ public class PageController {
             return "redirect:/payment?plan=" + plan;
         }
 
-        // Save uploaded payment screenshot proof
+        // Save uploaded payment screenshot proof with Username & User ID for admin verification
         try {
             String originalFilename = screenshotFile.getOriginalFilename();
             String ext = (originalFilename != null && originalFilename.contains("."))
                 ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-            String filename = "payment_proof_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+            
+            String safeUsername = currentUser.getName() != null 
+                ? currentUser.getName().replaceAll("[^a-zA-Z0-9]", "_") 
+                : "User";
+            String filename = "payment_proof_" + safeUsername + "_ID" + (100000 + currentUser.getId()) + "_" + System.currentTimeMillis() + ext;
 
             Path uploadDir = Paths.get("./uploads/payments");
             if (!Files.exists(uploadDir)) {

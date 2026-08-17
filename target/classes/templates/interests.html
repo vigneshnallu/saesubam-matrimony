@@ -148,8 +148,63 @@
                 width: 100%;
             }
             .chat-bubble {
-                max-width: 88%;
+                max-width: 88% !important;
             }
+        }
+
+        /* Live Chat Alignment & Bubble Styling */
+        .chat-row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .chat-row-me {
+            justify-content: flex-end;
+        }
+        .chat-row-partner {
+            justify-content: flex-start;
+        }
+
+        .chat-bubble {
+            max-width: 72%;
+            padding: 12px 18px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-size: 15px;
+            line-height: 1.45;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .chat-bubble-me {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+        }
+
+        .chat-bubble-partner {
+            background: #ffffff;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-time {
+            font-size: 11px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .chat-bubble-me .chat-time {
+            color: rgba(255, 255, 255, 0.85);
+            text-align: right;
+        }
+
+        .chat-bubble-partner .chat-time {
+            color: #94a3b8;
+            text-align: right;
         }
     </style>
 </head>
@@ -392,6 +447,18 @@
         }
     }
 
+    function formatCurrentTime() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        var formattedHours = hours < 10 ? '0' + hours : hours;
+        var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+        return formattedHours + ':' + formattedMinutes + ' ' + ampm;
+    }
+
     function fetchChatMessages() {
         if (!currentPartnerId) return;
 
@@ -406,14 +473,20 @@
 
                 var html = '';
                 data.forEach(function(msg) {
-                    var bubbleClass = msg.isMe ? 'chat-bubble-me' : 'chat-bubble-partner';
-                    html += '<div class="chat-bubble ' + bubbleClass + '">';
-                    html += '<div>' + escapeHtml(msg.content) + '</div>';
-                    html += '<div class="chat-time text-end">' + msg.time + '</div>';
+                    var isMe = msg.isMe;
+                    var rowClass = isMe ? 'chat-row-me' : 'chat-row-partner';
+                    var bubbleClass = isMe ? 'chat-bubble-me' : 'chat-bubble-partner';
+                    var timeDisplay = msg.time || formatCurrentTime();
+
+                    html += '<div class="chat-row ' + rowClass + '">';
+                    html += '  <div class="chat-bubble ' + bubbleClass + '">';
+                    html += '    <div class="msg-content">' + escapeHtml(msg.content) + '</div>';
+                    html += '    <div class="chat-time">' + timeDisplay + '</div>';
+                    html += '  </div>';
                     html += '</div>';
                 });
 
-                var shouldScroll = (stream.scrollTop + stream.clientHeight >= stream.scrollHeight - 50);
+                var shouldScroll = (stream.scrollTop + stream.clientHeight >= stream.scrollHeight - 60);
                 stream.innerHTML = html;
 
                 if (shouldScroll || stream.scrollTop === 0) {
@@ -432,6 +505,22 @@
         if (!content || !currentPartnerId) return;
 
         input.value = '';
+
+        // Instant visual feedback for user
+        var stream = document.getElementById('chatMessageStream');
+        var nowTime = formatCurrentTime();
+        var newMsgHtml = '<div class="chat-row chat-row-me">' +
+                         '  <div class="chat-bubble chat-bubble-me">' +
+                         '    <div class="msg-content">' + escapeHtml(content) + '</div>' +
+                         '    <div class="chat-time">' + nowTime + '</div>' +
+                         '  </div>' +
+                         '</div>';
+        
+        var loadingEl = document.getElementById('chatLoadingState');
+        if (loadingEl) loadingEl.remove();
+
+        stream.insertAdjacentHTML('beforeend', newMsgHtml);
+        stream.scrollTop = stream.scrollHeight;
 
         fetch('/api/chat/send', {
             method: 'POST',

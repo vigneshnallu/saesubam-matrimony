@@ -151,9 +151,17 @@ public class DataInitializer implements CommandLineRunner {
             connected1.setStatus(UserInterest.InterestStatus.ACCEPTED);
             userInterestRepository.save(connected1);
 
-            chatMessageRepository.save(new ChatMessage(karthik, priya, "Hi Priya! Great to connect with you on SaeSubam Matrimony."));
-            chatMessageRepository.save(new ChatMessage(priya, karthik, "Hello Karthik! Nice to meet you. I noticed your profile and liked your professional background."));
-            chatMessageRepository.save(new ChatMessage(karthik, priya, "Thank you! I would love to talk more about our families and interests."));
+            ChatMessage m1 = new ChatMessage(karthik, priya, "Hi Priya! Great to connect with you on SaeSubam Matrimony.");
+            m1.setTimestamp(java.time.LocalDateTime.now().minusMinutes(12));
+            chatMessageRepository.save(m1);
+
+            ChatMessage m2 = new ChatMessage(priya, karthik, "Hello Karthik! Nice to meet you. I noticed your profile and liked your professional background.");
+            m2.setTimestamp(java.time.LocalDateTime.now().minusMinutes(7));
+            chatMessageRepository.save(m2);
+
+            ChatMessage m3 = new ChatMessage(karthik, priya, "Thank you! I would love to talk more about our families and interests.");
+            m3.setTimestamp(java.time.LocalDateTime.now().minusMinutes(2));
+            chatMessageRepository.save(m3);
         }
 
         if (priya != null && anand != null && userInterestRepository.findBySenderAndReceiver(priya, anand).isEmpty()) {
