@@ -31,7 +31,9 @@ import com.saesubam.service.UserBookmarkService;
 import com.saesubam.service.UserInterestService;
 import com.saesubam.service.UserService;
 import com.saesubam.service.VerificationService;
-
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -59,6 +61,10 @@ public class PageController {
     /** The verification service. */
     @Autowired
     private VerificationService verificationService;
+
+    /** The mail sender. */
+    @Autowired(required = false)
+    private JavaMailSender mailSender;
 
     /**
      * Gets the logged in user.
@@ -797,23 +803,26 @@ public class PageController {
             return "redirect:/payment?plan=" + plan;
         }
 
+        String filename = "";
+        Path destination = null;
+
         // Save uploaded payment screenshot proof with Username & User ID for admin verification
         try {
             String originalFilename = screenshotFile.getOriginalFilename();
             String ext = (originalFilename != null && originalFilename.contains("."))
                 ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-            
+
             String safeUsername = currentUser.getName() != null 
                 ? currentUser.getName().replaceAll("[^a-zA-Z0-9]", "_") 
                 : "User";
-            String filename = "payment_proof_" + safeUsername + "_ID" + (100000 + currentUser.getId()) + "_" + System.currentTimeMillis() + ext;
+            filename = "payment_proof_" + safeUsername + "_ID" + (100000 + currentUser.getId()) + "_" + System.currentTimeMillis() + ext;
 
             Path uploadDir = Paths.get("./uploads/payments");
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
             }
 
-            Path destination = uploadDir.resolve(filename);
+            destination = uploadDir.resolve(filename);
             Files.copy(screenshotFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             System.out.println("Error saving payment screenshot: " + e.getMessage());
@@ -824,6 +833,11 @@ public class PageController {
             planCode = "PREMIUM";
         }
 
+        int amount = "PREMIUM".equals(planCode) ? 499 : ("PLATINUM".equals(planCode) ? 2999 : 1499);
+        String txnId = (utrNumber != null && !utrNumber.trim().isEmpty()) 
+            ? utrNumber.trim() 
+            : ("UTR_" + (100000000000L + (long)(new java.util.Random().nextDouble() * 899999999999L)));
+
         try {
             MembershipType type = MembershipType.valueOf(planCode);
             userService.upgradeMembership(currentUser.getId(), type);
@@ -832,11 +846,49 @@ public class PageController {
             System.out.println("Payment upgrade error: " + e.getMessage());
         }
 
-        String txnId = (utrNumber != null && !utrNumber.trim().isEmpty()) 
-            ? utrNumber.trim() 
-            : ("UTR_" + (100000000000L + (long)(new java.util.Random().nextDouble() * 899999999999L)));
+        // Dispatch Automated Email Notification to Admin vigneshn051995@gmail.com with screenshot attachment
+        if (mailSender != null) {
+            try {
+                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        int amount = "PREMIUM".equals(planCode) ? 499 : ("PLATINUM".equals(planCode) ? 2999 : 1499);
+                helper.setFrom("saesubam.matrimony@gmail.com");
+                helper.setTo("vigneshn051995@gmail.com");
+                helper.setSubject("💳 [SaeSubam Matrimony] Payment Screenshot & Details from " + currentUser.getName() + " (UTR: " + txnId + ")");
+
+                String emailBody = "Dear Admin,\n\n"
+                    + "A candidate has uploaded a payment proof screenshot and submitted transaction details on SaeSubam Matrimony.\n\n"
+                    + "=================================================\n"
+                    + "CANDIDATE & PAYMENT TRANSACTION DETAILS:\n"
+                    + "=================================================\n"
+                    + "Candidate Name: " + currentUser.getName() + "\n"
+                    + "Matrimony User ID: " + (100000 + currentUser.getId()) + "\n"
+                    + "Registered Email: " + currentUser.getEmail() + "\n"
+                    + "Registered Mobile: " + currentUser.getMobile() + "\n"
+                    + "Selected Plan: " + planCode + "\n"
+                    + "Payment Amount: ₹" + amount + "\n"
+                    + "UTR / Reference Number: " + txnId + "\n"
+                    + "Submission Time: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")) + "\n"
+                    + "Saved Screenshot Filename: " + filename + "\n"
+                    + "Direct Screenshot Link: https://saesubam-matrimony.onrender.com/uploads/payments/" + filename + "\n"
+                    + "=================================================\n\n"
+                    + "The payment screenshot image file is attached to this email for your verification.\n\n"
+                    + "Regards,\nSaeSubam Matrimony Automated Payment Service";
+
+                helper.setText(emailBody);
+
+                if (destination != null && Files.exists(destination)) {
+                    helper.addAttachment(filename, destination.toFile());
+                }
+
+                mailSender.send(mimeMessage);
+                System.out.println("=================================================");
+                System.out.println("✅ PAYMENT PROOF EMAIL DISPATCHED TO ADMIN: vigneshn051995@gmail.com");
+                System.out.println("=================================================");
+            } catch (Throwable t) {
+                System.err.println("⚠️ [SMTP NOTICE] Failed to send payment email to vigneshn051995@gmail.com: " + t.getMessage());
+            }
+        }
 
         return "redirect:/payment-success?txnId=" + txnId + "&plan=" + plan.toUpperCase() + "&amount=" + amount
             + "&method=UPI_QR_VERIFICATION";
