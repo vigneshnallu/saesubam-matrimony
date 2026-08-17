@@ -280,13 +280,13 @@
             <div style="min-width: 280px;" th:if="${user.membershipType != null and user.membershipType.name() == 'GOLD'}">
                 <div class="d-flex justify-content-between small fw-bold mb-1">
                     <span>Gold Profile Views Quota</span>
-                    <span class="text-danger" th:text="${user.profileViewsCount} + ' / 100 Views'">35 / 100 Views</span>
+                    <span class="text-danger" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + (${user.maxProfileViews != null and user.maxProfileViews > 0 ? user.maxProfileViews : 100}) + ' Views'">14 / 100 Views</span>
                 </div>
                 <div class="progress rounded-pill bg-light border" style="height: 10px;">
-                    <div class="progress-bar bg-danger rounded-pill" role="progressbar" th:style="'width: ' + (${user.profileViewsCount} * 100 / 100) + '%;'"></div>
+                    <div class="progress-bar bg-danger rounded-pill" role="progressbar" th:style="'width: ' + (${user.maxProfileViews != null and user.maxProfileViews > 0 ? ((user.profileViewsCount != null ? user.profileViewsCount : 0) * 100 / user.maxProfileViews) : 0}) + '%;'"></div>
                 </div>
                 <div class="small text-muted mt-1 text-end">
-                    <span class="fw-bold text-dark" th:text="${100 - user.profileViewsCount}">65</span> views remaining
+                    <span class="fw-bold text-dark" th:text="${(user.maxProfileViews != null and user.maxProfileViews > 0 ? user.maxProfileViews : 100) - (user.profileViewsCount != null ? user.profileViewsCount : 0)}">86</span> views remaining
                 </div>
             </div>
 
