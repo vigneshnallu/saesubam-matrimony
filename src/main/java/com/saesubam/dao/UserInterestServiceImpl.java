@@ -233,6 +233,20 @@ public class UserInterestServiceImpl implements UserInterestService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isInterestAccepted(Users user1, Users user2) {
+        if (user1 == null || user2 == null || user1.getId() == null || user2.getId() == null) return false;
+
+        boolean sentAccepted = userInterestRepository.findBySender(user1).stream()
+            .anyMatch(ui -> ui != null && ui.getReceiver() != null && ui.getReceiver().getId().equals(user2.getId()) && ui.getStatus() == InterestStatus.ACCEPTED);
+            
+        if (sentAccepted) return true;
+
+        return userInterestRepository.findBySender(user2).stream()
+            .anyMatch(ui -> ui != null && ui.getReceiver() != null && ui.getReceiver().getId().equals(user1.getId()) && ui.getStatus() == InterestStatus.ACCEPTED);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public long countPendingReceivedInterests(Users receiver) {
         return userInterestRepository.countByReceiverAndStatus(receiver, InterestStatus.PENDING);
     }

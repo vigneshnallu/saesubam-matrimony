@@ -382,11 +382,14 @@ public class PageController {
 
         boolean interestSent = currentUser != null && targetProfile.getUser() != null
             && interestService.hasSentInterest(currentUser, targetProfile.getUser());
+        boolean isInterestAccepted = currentUser != null && targetProfile.getUser() != null
+            && interestService.isInterestAccepted(currentUser, targetProfile.getUser());
         boolean isBookmarked = currentUser != null && bookmarkService.isBookmarked(currentUser, targetProfile);
 
         model.addAttribute("user", currentUser);
         model.addAttribute("profile", targetProfile);
         model.addAttribute("interestSent", interestSent);
+        model.addAttribute("isInterestAccepted", isInterestAccepted);
         model.addAttribute("isBookmarked", isBookmarked);
 
         return "profile-detail";

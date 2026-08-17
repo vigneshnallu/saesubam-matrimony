@@ -20,5 +20,7 @@ public interface UserInterestService {
 
     boolean hasSentInterest(Users sender, Users receiver);
 
+    boolean isInterestAccepted(Users user1, Users user2);
+
     long countPendingReceivedInterests(Users receiver);
 }

@@ -303,11 +303,18 @@
             </div>
 
             <div class="d-flex gap-3 flex-wrap">
-                <form th:action="@{/api/interests/send/{id}(id=${profile.id})}" method="post">
-                    <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent}">
-                        <i class="bi bi-heart-fill me-2"></i> <span th:text="${interestSent ? 'Interest Sent' : 'Send Express Interest'}">Send Express Interest</span>
+                <div th:if="${isInterestAccepted}">
+                    <button class="btn btn-success btn-lg rounded-3 fw-bold px-4" disabled>
+                        <i class="bi bi-patch-check-fill me-2"></i> Interest Accepted & Unlocked
                     </button>
-                </form>
+                </div>
+                <div th:if="${!isInterestAccepted}">
+                    <form th:action="@{/api/interests/send/{id}(id=${profile.id})}" method="post">
+                        <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent}">
+                            <i class="bi bi-heart-fill me-2"></i> <span th:text="${interestSent ? 'Interest Sent' : 'Send Express Interest'}">Send Express Interest</span>
+                        </button>
+                    </form>
+                </div>
 
                 <form th:action="@{/api/bookmark/toggle/{id}(id=${profile.id})}" method="post">
                     <button type="submit" class="btn btn-outline-secondary btn-lg rounded-3 fw-bold px-4">
@@ -315,7 +322,7 @@
                     </button>
                 </form>
 
-                <a th:if="${profile.jathagamUrl != null}" th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-outline-primary btn-lg rounded-3 fw-bold px-4">
+                <a th:if="${(isInterestAccepted or (user != null and user.membershipType != null and user.membershipType.name() != 'FREE')) and profile.jathagamUrl != null}" th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-outline-primary btn-lg rounded-3 fw-bold px-4">
                     <i class="bi bi-file-earmark-pdf-fill me-2 text-danger"></i> View Jathagam PDF
                 </a>
             </div>
@@ -343,23 +350,66 @@
             </div>
 
             <!-- Horoscope / Jathagam Section -->
-            <div class="section-card bg-light border-danger-subtle" th:if="${profile.jathagamUrl != null}">
-                <h5 class="text-danger"><i class="bi bi-file-earmark-pdf-fill"></i> Jathagam (Horoscope Document)</h5>
-                <p class="text-muted small mb-3">Candidate has uploaded their official Jathagam / Horoscope document for family matching.</p>
-                <a th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-danger rounded-3 fw-bold px-4 py-2">
-                    <i class="bi bi-download me-2"></i> Download / View Candidate Jathagam (PDF)
-                </a>
-            </div>
+            <div class="section-card bg-light border-danger-subtle">
+                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                    <h5 class="text-danger mb-0"><i class="bi bi-brightness-high-fill me-2"></i> Jathagam & Horoscope Details</h5>
+                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${isInterestAccepted}"><i class="bi bi-unlock-fill me-1"></i> Interest Accepted - Jathagam Unlocked</span>
+                    <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!isInterestAccepted and (user == null or user.membershipType == null or user.membershipType.name() == 'FREE')}"><i class="bi bi-lock-fill me-1"></i> Interest Required to Unlock Full Jathagam</span>
+                </div>
 
-            <!-- Religious Details -->
-            <div class="section-card">
-                <h5><i class="bi bi-brightness-high-fill text-danger"></i> Religious & Cultural Background</h5>
-                <div class="detail-row">
-                    <div class="detail-item"><label>Religion</label><span th:text="${profile.religion}">Hindu</span></div>
+                <!-- Religious Astro Details Summary -->
+                <div class="detail-row mb-3">
+                    <div class="detail-item"><label>Star / Rasi</label><span th:text="${profile.starRasi != null ? profile.starRasi : 'Not Specified'}">Uttiratadi</span></div>
+                    <div class="detail-item"><label>Gothram</label><span th:text="${profile.gothram != null ? profile.gothram : 'Vadhula'}">Vadhula</span></div>
                     <div class="detail-item"><label>Caste / Subcaste</label><span th:text="${profile.caste} + ' / ' + ${profile.subCaste}">Brahmin / Iyer</span></div>
-                    <div class="detail-item"><label>Gothram</label><span th:text="${profile.gothram}">Vadhula</span></div>
-                    <div class="detail-item"><label>Star / Rasi</label><span th:text="${profile.starRasi}">Uttiratadi</span></div>
-                    <div class="detail-item"><label>Dosham</label><span th:text="${profile.dosham}">No</span></div>
+                    <div class="detail-item"><label>Dosham</label><span th:text="${profile.dosham != null ? profile.dosham : 'No'}">No</span></div>
+                </div>
+
+                <!-- Unlocked Jathagam Grid & Document -->
+                <div th:if="${isInterestAccepted or (user != null and user.membershipType != null and user.membershipType.name() != 'FREE')}">
+                    <div class="bg-white p-3 rounded-3 border mb-3">
+                        <h6 class="fw-bold text-dark text-center mb-2"><i class="bi bi-grid-3x3-gap-fill text-danger me-1"></i> Traditional 12-Rasi Jathagam Chart Grid</h6>
+                        
+                        <!-- 12 Rasi Chart Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 65px); gap: 3px; background-color: #e11d48; border: 2px solid #e11d48; border-radius: 10px; overflow: hidden; max-width: 460px; margin: 0 auto;">
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Meenam</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Mesham</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Rishabam</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Mithunam</div>
+
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Kumbam</div>
+                            <div style="grid-column: 2 / span 2; grid-row: 2 / span 2; background:#fff1f2; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#e11d48; font-weight:700;">
+                                <i class="bi bi-brightness-high-fill fs-4 mb-1"></i>
+                                <div style="font-size:12px;">RASI CHART</div>
+                                <div class="badge bg-danger-subtle text-danger mt-1" style="font-size:10px;" th:text="${profile.starRasi != null ? profile.starRasi : 'Jathagam'}">Uttiratadi</div>
+                            </div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Katagam</div>
+
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Makaram</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Simmam</div>
+
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Dhanusu</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Vrischikam</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Thulaam</div>
+                            <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Kanni</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${profile.jathagamUrl != null}" class="text-center pt-2">
+                        <a th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-danger rounded-3 fw-bold px-4 py-2">
+                            <i class="bi bi-download me-2"></i> Download / View Candidate Jathagam Document (PDF)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Locked Jathagam Alert -->
+                <div th:if="${!isInterestAccepted and (user == null or user.membershipType == null or user.membershipType.name() == 'FREE')}" class="alert alert-warning border-0 rounded-3 text-start mb-0">
+                    <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-1">
+                        <i class="bi bi-lock-fill text-warning fs-5"></i> Full Jathagam Chart & Document Locked
+                    </div>
+                    <div class="small text-muted">
+                        Express interest in <span class="fw-bold text-dark" th:text="${profile.fullName}">this candidate</span>. Once your interest proposal is <strong>accepted</strong>, full Jathagam chart details and contact information will unlock automatically!
+                    </div>
                 </div>
             </div>
 
@@ -388,14 +438,24 @@
             <!-- Contact Details -->
             <div class="section-card bg-light border-danger-subtle">
                 <h5 class="text-danger"><i class="bi bi-telephone-fill"></i> Contact Information</h5>
-                <div th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE'}">
-                    <div class="mb-3"><label class="small text-muted">Contact Mobile</label><div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile}">+91 98765 43210</div></div>
-                    <div><label class="small text-muted">Contact Person</label><div class="fw-bold text-dark" th:text="${profile.contactPerson}">Parent</div></div>
+                <div th:if="${isInterestAccepted or (user != null and user.membershipType != null and user.membershipType.name() != 'FREE')}">
+                    <div class="mb-3">
+                        <label class="small text-muted">Contact Mobile</label>
+                        <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile}">+91 98765 43210</div>
+                        <a th:href="'tel:' + ${profile.contactMobile}" class="btn btn-sm btn-outline-success rounded-pill mt-1 fw-bold"><i class="bi bi-telephone-out-fill me-1"></i> Call Candidate</a>
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted">Contact Person</label>
+                        <div class="fw-bold text-dark" th:text="${profile.contactPerson != null ? profile.contactPerson : 'Parent'}">Parent</div>
+                    </div>
+                    <div class="badge bg-success-subtle text-success p-2 w-100 text-wrap">
+                        <i class="bi bi-patch-check-fill me-1"></i> Contact Unlocked (Interest Accepted)
+                    </div>
                 </div>
-                <div th:if="${user == null or user.membershipType == null or user.membershipType.name() == 'FREE'}" class="text-center py-3">
+                <div th:if="${!isInterestAccepted and (user == null or user.membershipType == null or user.membershipType.name() == 'FREE')}" class="text-center py-3">
                     <i class="bi bi-lock-fill display-5 text-danger mb-2 d-block"></i>
-                    <h6 class="fw-bold text-dark mb-2">Upgrade to View Phone Number</h6>
-                    <p class="small text-muted mb-3">Direct contact phone numbers are visible to Premium & Gold members.</p>
+                    <h6 class="fw-bold text-dark mb-2">Unlock Contact Number</h6>
+                    <p class="small text-muted mb-3">Send Express Interest and get accepted, or upgrade to a Premium plan to view direct phone numbers.</p>
                     <a href="/subscription" class="btn btn-danger btn-sm rounded-3 fw-bold px-3">Upgrade Membership</a>
                 </div>
             </div>
