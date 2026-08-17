@@ -52,8 +52,14 @@ public class InterestsController {
                     return "redirect:/profile/" + profileId;
                 }
 
-                // Validate Plan Expiry & Quota Limit (Block sending interest when 100 views limit is reached or plan expired)
-                if (sender.getMembershipType() != null && sender.getMembershipType() != com.saesubam.model.MembershipType.FREE && (!sender.isMembershipActive() || !sender.hasRemainingProfileViews())) {
+                // 1. FREE Plan restriction: Cannot send Express Interest proposal until upgrading plan
+                if (sender.getMembershipType() == null || sender.getMembershipType() == com.saesubam.model.MembershipType.FREE) {
+                    redirectAttributes.addFlashAttribute("infoMessage", "Sending Express Interest proposals requires an active Gold or Premium plan. Please upgrade your membership to proceed!");
+                    return "redirect:/subscription";
+                }
+
+                // 2. Validate Plan Expiry & Quota Limit (Block sending interest when 100 views limit is reached or plan expired)
+                if (!sender.isMembershipActive() || !sender.hasRemainingProfileViews()) {
                     redirectAttributes.addFlashAttribute("infoMessage", "You have reached your 100 profile view & proposal limit for Gold Plan. Please upgrade to Premium for unlimited proposals!");
                     return "redirect:/profile/" + profileId;
                 }

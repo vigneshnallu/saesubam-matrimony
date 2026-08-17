@@ -302,6 +302,16 @@
                 <div><i class="bi bi-geo-alt-fill me-1 text-danger"></i> <span th:text="${profile.city} + ', ' + ${profile.state}">Bengaluru, KA</span></div>
             </div>
 
+            <!-- FREE Plan Lock Alert -->
+            <div th:if="${user != null and (user.membershipType == null or user.membershipType.name() == 'FREE')}" class="alert alert-warning border-0 rounded-3 shadow-sm mb-3">
+                <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-1">
+                    <i class="bi bi-lock-fill text-warning fs-5"></i> Express Interest Locked for Free Account
+                </div>
+                <div class="small text-muted">
+                    Sending Express Interest proposals requires an active subscription. <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade to Gold or Premium Plan</a> to send proposals to candidate profiles!
+                </div>
+            </div>
+
             <!-- Quota Limit Reached Warning Alert -->
             <div th:if="${user != null and user.membershipType != null and user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews)}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
                 <div class="d-flex align-items-center gap-2 fw-bold text-danger mb-1">
@@ -319,8 +329,14 @@
                     </button>
                 </div>
                 <div th:if="${!isInterestAccepted}">
-                    <form th:action="@{/api/interests/send/{id}(id=${profile.id})}" method="post">
-                        <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent or (user != null and user.membershipType != null and user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews))}">
+                    <!-- FREE Plan User: Redirect to Subscription -->
+                    <a th:if="${user != null and (user.membershipType == null or user.membershipType.name() == 'FREE')}" href="/subscription" class="btn btn-warning text-dark btn-lg rounded-3 fw-bold px-4">
+                        <i class="bi bi-lock-fill me-2"></i> Upgrade Plan to Express Interest
+                    </a>
+
+                    <!-- Paid Plan User (GOLD / PREMIUM): Form submit -->
+                    <form th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE'}" th:action="@{/api/interests/send/{id}(id=${profile.id})}" method="post">
+                        <button type="submit" class="btn btn-danger btn-lg rounded-3 fw-bold px-4" th:disabled="${interestSent or (user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews))}">
                             <i class="bi bi-heart-fill me-2"></i> <span th:text="${interestSent ? 'Interest Sent' : 'Send Express Interest'}">Send Express Interest</span>
                         </button>
                     </form>
