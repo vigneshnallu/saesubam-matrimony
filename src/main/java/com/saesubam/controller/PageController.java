@@ -969,48 +969,78 @@ public class PageController {
         }
 
         // Dispatch Automated Email Notification to Admin vigneshn051995@gmail.com with screenshot attachment
-        if (mailSender != null) {
+        final String finalFilename = filename;
+        final Path finalDestination = destination;
+        final String finalTxnId = txnId;
+        final String finalPlanCode = planCode;
+        final int finalAmount = amount;
+        final Users finalUser = currentUser;
+
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
             try {
-                MimeMessage mimeMessage = mailSender.createMimeMessage();
+                JavaMailSender activeSender = mailSender;
+                if (activeSender == null) {
+                    System.out.println("⚠️ [SMTP DIAGNOSTIC] Spring mailSender was null, constructing fallback JavaMailSenderImpl...");
+                    org.springframework.mail.javamail.JavaMailSenderImpl impl = new org.springframework.mail.javamail.JavaMailSenderImpl();
+                    impl.setHost("smtp.gmail.com");
+                    impl.setPort(587);
+                    impl.setUsername("vigneshn051995@gmail.com");
+                    impl.setPassword("inszhpkobjgntzbu");
+
+                    java.util.Properties props = impl.getJavaMailProperties();
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.starttls.enable", "true");
+                    props.put("mail.smtp.starttls.required", "true");
+                    props.put("mail.smtp.ssl.trust", "*");
+                    props.put("mail.smtp.connectiontimeout", "15000");
+                    props.put("mail.smtp.timeout", "15000");
+
+                    activeSender = impl;
+                }
+
+                MimeMessage mimeMessage = activeSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
                 helper.setFrom("vigneshn051995@gmail.com");
                 helper.setTo("vigneshn051995@gmail.com");
-                helper.setSubject("💳 [SaeSubam Matrimony] Payment Screenshot & Details from " + currentUser.getName()
-                    + " (UTR: " + txnId + ")");
+                helper.setSubject("💳 [SaeSubam Matrimony] Payment Screenshot & Details from " + finalUser.getName()
+                    + " (UTR: " + finalTxnId + ")");
 
                 String emailBody = "Dear Admin,\n\n"
                     + "A candidate has uploaded a payment proof screenshot and submitted transaction details on SaeSubam Matrimony.\n\n"
                     + "=================================================\n"
                     + "CANDIDATE & PAYMENT TRANSACTION DETAILS:\n"
-                    + "=================================================\n" + "Candidate Name: " + currentUser.getName()
-                    + "\n" + "Matrimony User ID: " + (100000 + currentUser.getId()) + "\n" + "Registered Email: "
-                    + currentUser.getEmail() + "\n" + "Registered Mobile: " + currentUser.getMobile() + "\n"
-                    + "Selected Plan: " + planCode + "\n" + "Payment Amount: ₹" + amount + "\n"
-                    + "UTR / Reference Number: " + txnId + "\n" + "Submission Time: "
-                    + java.time.LocalDateTime.now()
-                        .format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"))
-                    + "\n" + "Saved Screenshot Filename: " + filename + "\n"
-                    + "Direct Screenshot Link: https://saesubam-matrimony.onrender.com/uploads/payments/" + filename
-                    + "\n" + "=================================================\n\n"
+                    + "=================================================\n"
+                    + "Candidate Name: " + finalUser.getName() + "\n"
+                    + "Matrimony User ID: " + (100000 + finalUser.getId()) + "\n"
+                    + "Registered Email: " + finalUser.getEmail() + "\n"
+                    + "Registered Mobile: " + finalUser.getMobile() + "\n"
+                    + "Selected Plan: " + finalPlanCode + "\n"
+                    + "Payment Amount: ₹" + finalAmount + "\n"
+                    + "UTR / Reference Number: " + finalTxnId + "\n"
+                    + "Submission Time: " + java.time.LocalDateTime.now()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")) + "\n"
+                    + "Saved Screenshot Filename: " + finalFilename + "\n"
+                    + "Direct Screenshot Link: https://saesubam-matrimony.onrender.com/uploads/payments/" + finalFilename + "\n"
+                    + "=================================================\n\n"
                     + "The payment screenshot image file is attached to this email for your verification.\n\n"
                     + "Regards,\nSaeSubam Matrimony Automated Payment Service";
 
                 helper.setText(emailBody);
 
-                if (destination != null && Files.exists(destination)) {
-                    helper.addAttachment(filename, destination.toFile());
+                if (finalDestination != null && Files.exists(finalDestination)) {
+                    helper.addAttachment(finalFilename, finalDestination.toFile());
                 }
 
-                mailSender.send(mimeMessage);
+                activeSender.send(mimeMessage);
                 System.out.println("=================================================");
                 System.out.println("✅ PAYMENT PROOF EMAIL DISPATCHED TO ADMIN: vigneshn051995@gmail.com");
                 System.out.println("=================================================");
             } catch (Throwable t) {
-                System.err.println(
-                    "⚠️ [SMTP NOTICE] Failed to send payment email to vigneshn051995@gmail.com: " + t.getMessage());
+                System.err.println("❌ [SMTP ERROR FAILED] Could not send payment email to vigneshn051995@gmail.com: " + t.getMessage());
+                t.printStackTrace();
             }
-        }
+        });
 
         return "redirect:/payment-success?txnId=" + txnId + "&plan=" + plan.toUpperCase() + "&amount=" + amount
             + "&method=UPI_QR_VERIFICATION";
