@@ -25,7 +25,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<Profiles> getAllProfiles() {
-        return profileRepository.findAll();
+        List<Profiles> all = profileRepository.findAll();
+        List<Profiles> filtered = new ArrayList<>();
+        for (Profiles p : all) {
+            if (p.getUser() == null || !"ADMIN".equalsIgnoreCase(p.getUser().getRole())) {
+                filtered.add(p);
+            }
+        }
+        return filtered;
     }
 
     @Override
@@ -60,6 +67,12 @@ public class ProfileServiceImpl implements ProfileService {
     public List<Profiles> searchProfiles(String gender, Integer minAge, Integer maxAge, String religion, String caste, String education, String city, String maritalStatus) {
         Specification<Profiles> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            // Exclude ADMIN role users from matrimony search results
+            predicates.add(cb.or(
+                cb.isNull(root.get("user")),
+                cb.notEqual(cb.upper(root.get("user").get("role")), "ADMIN")
+            ));
 
             if (gender != null && !gender.trim().isEmpty()) {
                 predicates.add(cb.equal(cb.lower(root.get("gender")), gender.toLowerCase().trim()));
@@ -108,9 +121,13 @@ public class ProfileServiceImpl implements ProfileService {
         String targetGender = "Female".equalsIgnoreCase(userProfile.getGender()) ? "Male" : "Female";
         
         List<Profiles> oppositeGenderProfiles = profileRepository.findByGender(targetGender);
-        if (oppositeGenderProfiles.isEmpty()) {
-            return profileRepository.findAll();
+        List<Profiles> sourceList = oppositeGenderProfiles.isEmpty() ? profileRepository.findAll() : oppositeGenderProfiles;
+        List<Profiles> filtered = new ArrayList<>();
+        for (Profiles p : sourceList) {
+            if (p.getUser() == null || !"ADMIN".equalsIgnoreCase(p.getUser().getRole())) {
+                filtered.add(p);
+            }
         }
-        return oppositeGenderProfiles;
+        return filtered;
     }
 }
