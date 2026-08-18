@@ -891,7 +891,7 @@ public class PageController {
      * @param redirectAttributes the redirect attributes
      * @return the string
      */
-    @PostMapping("/checkout/process-payment")
+    @PostMapping({"/checkout/process-payment", "/payment/process"})
     public String processPayment(@RequestParam String plan, @RequestParam(required = false) String utrNumber,
         @RequestParam(value = "screenshotFile", required = false) MultipartFile screenshotFile, HttpSession session,
         RedirectAttributes redirectAttributes) {
