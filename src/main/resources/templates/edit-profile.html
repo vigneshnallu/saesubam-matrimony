@@ -351,13 +351,36 @@
 
             <div class="row g-3 mb-3">
                 <div class="col-md-4">
-                    <label class="form-label">Gothram</label>
+                    <label class="form-label">Gothram (கோத்திரம்)</label>
                     <input type="text" th:field="*{gothram}" class="form-control" placeholder="e.g. Vadhula, Bharadwaja">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Star / Rasi</label>
-                    <input type="text" th:field="*{starRasi}" class="form-control" placeholder="e.g. Rohini, Uttiratadi">
+                    <label class="form-label fw-bold text-dark">Rasi (ராசி)</label>
+                    <select th:field="*{rasi}" class="form-select border-danger" id="rasiSelect" onchange="onRasiChange('rasiSelect', 'natchathiramSelect', '')">
+                        <option value="">-- Select Rasi (ராசி) --</option>
+                        <option value="Mesham">Mesham (மேஷம்)</option>
+                        <option value="Rishabham">Rishabham (ரிஷபம்)</option>
+                        <option value="Mithunam">Mithunam (மிதுனம்)</option>
+                        <option value="Katakham">Katakham (கடகம்)</option>
+                        <option value="Simham">Simham (சிம்மம்)</option>
+                        <option value="Kanni">Kanni (கன்னி)</option>
+                        <option value="Thulaam">Thulaam (துலாம்)</option>
+                        <option value="Vrischikam">Vrischikam (விருச்சிகம்)</option>
+                        <option value="Dhanusu">Dhanusu (தனுசு)</option>
+                        <option value="Makaram">Makaram (மகரம்)</option>
+                        <option value="Kumbham">Kumbham (கும்பம்)</option>
+                        <option value="Meenam">Meenam (மீனம்)</option>
+                    </select>
                 </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-dark">Natchathiram / Star (நட்சத்திரம்)</label>
+                    <select th:field="*{natchathiram}" class="form-select border-danger" id="natchathiramSelect">
+                        <option value="">-- Select Rasi First --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
                 <div class="col-md-4">
                     <label class="form-label">Dosham</label>
                     <select th:field="*{dosham}" class="form-select">
@@ -420,7 +443,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+<script src="/js/lang.js"></script>
+<script src="/js/rasi-natchathiram.js"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentStar = /*[[${profile.natchathiram != null ? profile.natchathiram : profile.starRasi}]]*/ '';
+        if (document.getElementById('rasiSelect')) {
+            onRasiChange('rasiSelect', 'natchathiramSelect', currentStar);
+        }
+    });
+
     function toggleMobileSidebar() {
         var sidebar = document.querySelector('.sidebar');
         var overlay = document.querySelector('.sidebar-overlay');

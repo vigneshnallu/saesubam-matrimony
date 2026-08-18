@@ -41,6 +41,10 @@ public class Profiles {
 
     private String gothram;
 
+    private String rasi;
+
+    private String natchathiram;
+
     private String starRasi;
 
     private String dosham = "No";
@@ -204,7 +208,26 @@ public class Profiles {
         this.gothram = gothram;
     }
 
+    public String getRasi() {
+        return rasi;
+    }
+
+    public void setRasi(String rasi) {
+        this.rasi = rasi;
+    }
+
+    public String getNatchathiram() {
+        return natchathiram;
+    }
+
+    public void setNatchathiram(String natchathiram) {
+        this.natchathiram = natchathiram;
+    }
+
     public String getStarRasi() {
+        if ((rasi != null && !rasi.isEmpty()) || (natchathiram != null && !natchathiram.isEmpty())) {
+            return (natchathiram != null ? natchathiram : "") + (rasi != null ? " (" + rasi + ")" : "");
+        }
         return starRasi;
     }
 

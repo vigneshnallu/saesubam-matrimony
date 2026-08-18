@@ -401,7 +401,8 @@
 
                 <!-- Religious Astro Details Summary -->
                 <div class="detail-row mb-3">
-                    <div class="detail-item"><label>Star / Rasi</label><span th:text="${profile.starRasi != null ? profile.starRasi : 'Not Specified'}">Uttiratadi</span></div>
+                    <div class="detail-item"><label>Rasi (ராசி)</label><span class="fw-bold text-danger" th:text="${profile.rasi != null ? profile.rasi : 'Not Specified'}">Mesham</span></div>
+                    <div class="detail-item"><label>Natchathiram (நட்சத்திரம்)</label><span class="fw-bold text-danger" th:text="${profile.natchathiram != null ? profile.natchathiram : (profile.starRasi != null ? profile.starRasi : 'Not Specified')}">Aswini</span></div>
                     <div class="detail-item"><label>Gothram</label><span th:text="${profile.gothram != null ? profile.gothram : 'Vadhula'}">Vadhula</span></div>
                     <div class="detail-item"><label>Caste / Subcaste</label><span th:text="${profile.caste} + ' / ' + ${profile.subCaste}">Brahmin / Iyer</span></div>
                     <div class="detail-item"><label>Dosham</label><span th:text="${profile.dosham != null ? profile.dosham : 'No'}">No</span></div>

@@ -350,7 +350,8 @@
                     <div class="detail-item"><label>Religion</label><span th:text="${profile.religion}">Hindu</span></div>
                     <div class="detail-item"><label>Caste / Subcaste</label><span th:text="${profile.caste} + ' / ' + ${profile.subCaste}">Brahmin</span></div>
                     <div class="detail-item"><label>Gothram</label><span th:text="${profile.gothram}">Vadhula</span></div>
-                    <div class="detail-item"><label>Star / Rasi</label><span th:text="${profile.starRasi}">Star</span></div>
+                    <div class="detail-item"><label>Rasi (ராசி)</label><span class="fw-bold text-danger" th:text="${profile.rasi != null ? profile.rasi : 'Not Specified'}">Mesham</span></div>
+                    <div class="detail-item"><label>Natchathiram (நட்சத்திரம்)</label><span class="fw-bold text-danger" th:text="${profile.natchathiram != null ? profile.natchathiram : (profile.starRasi != null ? profile.starRasi : 'Not Specified')}">Aswini</span></div>
                 </div>
             </div>
         </div>
