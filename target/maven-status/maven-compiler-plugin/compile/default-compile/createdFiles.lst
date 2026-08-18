@@ -51,6 +51,7 @@ com\saesubam\model\PaymentTransaction.class
 com\saesubam\model\UserBookmark.class
 com\saesubam\repositories\UserActivityRepository.class
 com\saesubam\annotation\EntityProperty.class
+com\saesubam\config\MailConfig.class
 com\saesubam\annotation\TableEntityProperty.class
 com\saesubam\controller\ProfileController.class
 com\saesubam\controller\PageController.class

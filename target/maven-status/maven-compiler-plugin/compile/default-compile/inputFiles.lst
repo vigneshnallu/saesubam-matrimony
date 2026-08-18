@@ -7,6 +7,7 @@ D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesu
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\annotation\SequenceEntityProperty.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\annotation\TableEntityProperty.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\config\DataInitializer.java
+D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\config\MailConfig.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\config\WebConfig.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\AdminController.java
 D:\workspace2026\dev\appilcation\spring-boot-starter-web\src\main\java\com\saesubam\controller\BookmarkController.java

@@ -80,22 +80,26 @@ public class VerificationServiceImpl implements VerificationService {
         System.out.println("📧 [FREE EMAIL OTP SENT] To " + user.getEmail() + " (" + user.getName() + "): " + otpStr);
         System.out.println("=================================================");
 
-        // Send real email if JavaMailSender is configured
-        if (mailSender != null) {
-            try {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("vigneshn051995@gmail.com");
-                message.setTo(user.getEmail());
-                message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
-                message.setText("Dear " + user.getName() + ",\n\n"
-                        + "Your 6-digit OTP code for SaeSubam Matrimony account login & verification is: " + otpStr + "\n\n"
-                        + "This code is valid for 15 minutes. Please do not share it with anyone.\n\n"
-                        + "Regards,\nSaeSubam Matrimony Team");
-                mailSender.send(message);
-                System.out.println("✅ REAL MAIL SENT SUCCESSFULLY via Gmail SMTP to " + user.getEmail());
-            } catch (Throwable t) {
-                System.err.println("⚠️ [SMTP NOTICE] Could not send email to " + user.getEmail() + " due to SMTP Authentication: " + t.getMessage());
-            }
+        if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
+            final String targetEmail = user.getEmail().trim();
+            final String targetName = user.getName();
+            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                try {
+                    JavaMailSender sender = getActiveMailSender();
+                    SimpleMailMessage message = new SimpleMailMessage();
+                    message.setFrom("vigneshn051995@gmail.com");
+                    message.setTo(targetEmail);
+                    message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
+                    message.setText("Dear " + (targetName != null ? targetName : "Member") + ",\n\n"
+                            + "Your 6-digit OTP code for SaeSubam Matrimony account login & verification is: " + otpStr + "\n\n"
+                            + "This code is valid for 15 minutes. Please do not share it with anyone.\n\n"
+                            + "Regards,\nSaeSubam Matrimony Team");
+                    sender.send(message);
+                    System.out.println("✅ REAL MAIL SENT SUCCESSFULLY via Gmail SMTP to " + targetEmail);
+                } catch (Throwable t) {
+                    System.err.println("⚠️ [SMTP NOTICE] Could not send email to " + targetEmail + ": " + t.getMessage());
+                }
+            });
         }
 
         return otpStr;
@@ -197,6 +201,27 @@ public class VerificationServiceImpl implements VerificationService {
         return true;
     }
 
+    private JavaMailSender getActiveMailSender() {
+        if (mailSender != null) {
+            return mailSender;
+        }
+        System.out.println("⚠️ [SMTP DIAGNOSTIC] Spring mailSender was null in VerificationServiceImpl, constructing fallback JavaMailSenderImpl...");
+        org.springframework.mail.javamail.JavaMailSenderImpl impl = new org.springframework.mail.javamail.JavaMailSenderImpl();
+        impl.setHost("smtp.gmail.com");
+        impl.setPort(587);
+        impl.setUsername("vigneshn051995@gmail.com");
+        impl.setPassword("inszhpkobjgntzbu");
+
+        java.util.Properties props = impl.getJavaMailProperties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.smtp.ssl.trust", "*");
+        props.put("mail.smtp.connectiontimeout", "15000");
+        props.put("mail.smtp.timeout", "15000");
+        return impl;
+    }
+
     @Override
     public String generateAndSendEmailOtp(String email, String name) {
         int otp = 100000 + random.nextInt(900000); // 6-digit OTP
@@ -206,24 +231,23 @@ public class VerificationServiceImpl implements VerificationService {
         System.out.println("📧 [FREE EMAIL OTP GENERATED] To " + email + " (" + name + "): " + otpStr);
         System.out.println("=================================================");
 
-        if (mailSender == null) {
-            System.err.println("❌ [SMTP DIAGNOSTIC ERROR] JavaMailSender is NULL! Check Spring Mail configuration.");
-        } else if (email != null && !email.trim().isEmpty()) {
-            System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating background email dispatch to: " + email);
+        if (email != null && !email.trim().isEmpty()) {
+            System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating background registration OTP email dispatch to: " + email);
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
+                    JavaMailSender sender = getActiveMailSender();
                     SimpleMailMessage message = new SimpleMailMessage();
                     message.setFrom("vigneshn051995@gmail.com");
                     message.setTo(email.trim());
-                    message.setSubject("SaeSubam Matrimony - Your Email OTP Code: " + otpStr);
+                    message.setSubject("SaeSubam Matrimony - Your Registration OTP Code: " + otpStr);
                     message.setText("Dear " + (name != null ? name : "Member") + ",\n\n"
                             + "Your 6-digit OTP code for SaeSubam Matrimony account registration & verification is: " + otpStr + "\n\n"
                             + "This code is valid for 15 minutes. Please do not share it with anyone.\n\n"
                             + "Regards,\nSaeSubam Matrimony Team");
-                    mailSender.send(message);
-                    System.out.println("✅ REAL MAIL SENT SUCCESSFULLY via Gmail SMTP to " + email);
+                    sender.send(message);
+                    System.out.println("✅ REGISTRATION OTP EMAIL SENT SUCCESSFULLY via Gmail SMTP to " + email);
                 } catch (Throwable t) {
-                    System.err.println("❌ [SMTP ERROR FAILED] Could not send email to " + email + ": " + t.getMessage());
+                    System.err.println("❌ [SMTP ERROR FAILED] Could not send registration OTP email to " + email + ": " + t.getMessage());
                     t.printStackTrace();
                 }
             });
