@@ -265,6 +265,24 @@
         </div>
     </div>
 
+    <div class="top-navbar bg-white p-3 px-4 rounded-4 shadow-sm border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-dark" data-i18n="membership_plan">Membership Plan</h3>
+            <p class="text-muted small mb-0">Choose your matrimony plan & unlock verified candidate contact details.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+            <!-- Language Switcher Pill Desktop -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-1" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
+                    🇬🇧 EN
+                </button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-danger">
+                    🇮🇳 தமிழ்
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Active Membership Status & Quota Progress Card -->
     <div class="card border-0 rounded-4 shadow-sm mb-4 bg-white p-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
@@ -273,15 +291,6 @@
                     <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold">
                         <i class="bi bi-person-badge-fill me-1"></i> ACTIVE SUBSCRIPTION STATUS
                     </span>
-                    <!-- Language Switcher Pill Desktop -->
-                    <div class="btn-group btn-group-sm rounded-pill border bg-white p-1 shadow-sm" role="group">
-                        <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
-                            🇬🇧 EN
-                        </button>
-                        <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-danger">
-                            🇮🇳 தமிழ்
-                        </button>
-                    </div>
                 </div>
                 <h3 class="fw-bold text-dark mb-1">
                     Current Plan: <span class="text-danger" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>

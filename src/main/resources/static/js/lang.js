@@ -15,7 +15,7 @@ const translations = {
         "contact_details": "Contact Details",
         "jathagam_chart": "Horoscope / Jathagam Chart",
         "locked_notice": "Contact and Jathagam details are locked until mutual interest is accepted.",
-        "upgrade_plan": "Upgrade Your Matchmaking",
+        "upgrade_plan": "Upgrade Plan",
         "choose_package": "Choose Your Matrimony Package",
         "free_basic": "Free Basic",
         "gold_premium": "Gold Premium",
@@ -171,10 +171,18 @@ function applyLanguage(lang) {
 
     // Update active UI toggle button states
     document.querySelectorAll(".lang-btn-en").forEach(btn => {
-        btn.classList.toggle("active", currentLang === "en");
+        if (currentLang === "en") {
+            btn.className = "btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 bg-danger text-white shadow-sm";
+        } else {
+            btn.className = "btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-secondary bg-transparent";
+        }
     });
     document.querySelectorAll(".lang-btn-ta").forEach(btn => {
-        btn.classList.toggle("active", currentLang === "ta");
+        if (currentLang === "ta") {
+            btn.className = "btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 bg-danger text-white shadow-sm";
+        } else {
+            btn.className = "btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-secondary bg-transparent";
+        }
     });
 }
 
