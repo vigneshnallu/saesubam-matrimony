@@ -287,13 +287,19 @@
             <!-- Upload Payment Screenshot Input -->
             <div class="mb-3">
                 <label class="form-label-custom">Upload payment screenshot <span class="text-danger">*</span></label>
-                <div class="upload-drop-zone" id="uploadZone">
+                <div class="upload-drop-zone position-relative" id="uploadZone">
                     <input type="file" name="screenshotFile" id="screenshotInput" class="upload-file-input" accept="image/*" onchange="handleScreenshotUpload(this)" required>
                     <div id="uploadPrompt">
                         <i class="bi bi-upload fs-3 text-danger d-block mb-1" id="uploadIcon"></i>
                         <span class="fw-bold text-white small" id="fileNameDisplay">Choose screenshot</span>
                         <div class="small text-white-50 fs-7 mt-1" id="uploadSubtext">PNG, JPG, JPEG (Max 10MB)</div>
                     </div>
+                </div>
+                <!-- Interactive Preview Icon Action Button (Appears only when screenshot is selected) -->
+                <div id="previewBtnContainer" class="mt-2 text-end d-none">
+                    <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold shadow-sm" onclick="openScreenshotModal()">
+                        <i class="bi bi-eye-fill me-1"></i> Preview Image
+                    </button>
                 </div>
             </div>
 
@@ -311,12 +317,36 @@
     </div>
 </div>
 
+<!-- Screenshot Preview Modal -->
+<div class="modal fade" id="screenshotModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="background:#111827; color:#fff;">
+            <div class="modal-header border-bottom border-secondary px-4 py-3 d-flex justify-content-between align-items-center">
+                <h6 class="modal-title fw-bold text-white mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-image-fill text-danger fs-5"></i> Payment Proof Screenshot Preview
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center bg-black bg-opacity-50">
+                <img id="modalPreviewImg" src="" alt="Payment Screenshot Preview" class="img-fluid rounded-3 shadow border border-secondary" style="max-height: 70vh; object-fit: contain;">
+            </div>
+            <div class="modal-footer border-top border-secondary px-4 py-2 justify-content-between">
+                <span class="small text-muted" id="modalFileName">screenshot.png</span>
+                <button type="button" class="btn btn-sm btn-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    var currentScreenshotDataUrl = null;
+
     function handleScreenshotUpload(input) {
         var nameDisplay = document.getElementById('fileNameDisplay');
         var icon = document.getElementById('uploadIcon');
         var subtext = document.getElementById('uploadSubtext');
+        var previewBtnContainer = document.getElementById('previewBtnContainer');
 
         if (input.files && input.files[0]) {
             var file = input.files[0];
@@ -327,7 +357,18 @@
             if (subtext) {
                 subtext.innerText = 'Screenshot file selected';
             }
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                currentScreenshotDataUrl = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            if (previewBtnContainer) {
+                previewBtnContainer.classList.remove('d-none');
+            }
         } else {
+            currentScreenshotDataUrl = null;
             nameDisplay.innerText = 'Choose screenshot';
             if (icon) {
                 icon.className = 'bi bi-upload fs-3 text-danger d-block mb-1';
@@ -335,6 +376,25 @@
             if (subtext) {
                 subtext.innerText = 'PNG, JPG, JPEG (Max 10MB)';
             }
+            if (previewBtnContainer) {
+                previewBtnContainer.classList.add('d-none');
+            }
+        }
+    }
+
+    function openScreenshotModal() {
+        if (currentScreenshotDataUrl) {
+            var modalImg = document.getElementById('modalPreviewImg');
+            var input = document.getElementById('screenshotInput');
+            var modalFileName = document.getElementById('modalFileName');
+            if (modalImg) {
+                modalImg.src = currentScreenshotDataUrl;
+            }
+            if (modalFileName && input.files && input.files[0]) {
+                modalFileName.innerText = input.files[0].name;
+            }
+            var modal = new bootstrap.Modal(document.getElementById('screenshotModal'));
+            modal.show();
         }
     }
 
