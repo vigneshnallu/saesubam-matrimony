@@ -1,7 +1,9 @@
+/*
+ * 
+ */
 package com.saesubam.controller;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +25,31 @@ import com.saesubam.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * The Class AdminController.
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
+    /** The user service. */
     @Autowired
     private UserService userService;
 
+    /** The user repository. */
     @Autowired
     private UserRepository userRepository;
 
+    /** The payment transaction repository. */
     @Autowired
     private PaymentTransactionRepository paymentTransactionRepository;
 
+    /**
+     * Gets the admin user.
+     *
+     * @param session the session
+     * @return the admin user
+     */
     private Users getAdminUser(HttpSession session) {
         Users sessionUser = (Users) session.getAttribute("loggedInUser");
         if (sessionUser != null && sessionUser.getId() != null) {
@@ -47,26 +61,50 @@ public class AdminController {
         return null;
     }
 
+    /**
+     * Admin login page.
+     *
+     * @return the string
+     */
     @GetMapping("/login")
     public String adminLoginPage() {
         return "admin-login";
     }
 
+    /**
+     * Process admin login.
+     *
+     * @param email the email
+     * @param password the password
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @PostMapping("/login")
-    public String processAdminLogin(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String processAdminLogin(@RequestParam String email, @RequestParam String password, HttpSession session,
+        RedirectAttributes redirectAttributes) {
         Users dbUser = userService.findByEmail(email != null ? email.trim() : "");
         if (dbUser == null || !dbUser.getPassword().equals(password)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid Admin Email or Password.");
             return "redirect:/admin/login";
         }
         if (!"ADMIN".equalsIgnoreCase(dbUser.getRole())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Access Denied: Account does not have Administrator privileges.");
+            redirectAttributes.addFlashAttribute("errorMessage",
+                "Access Denied: Account does not have Administrator privileges.");
             return "redirect:/admin/login";
         }
         session.setAttribute("loggedInUser", dbUser);
         return "redirect:/admin/dashboard";
     }
 
+    /**
+     * Admin dashboard.
+     *
+     * @param session the session
+     * @param model the model
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @GetMapping({"", "/", "/dashboard", "/users"})
     public String adminDashboard(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Users adminUser = getAdminUser(session);
@@ -85,8 +123,18 @@ public class AdminController {
         return "admin-dashboard";
     }
 
+    /**
+     * Edits the user form.
+     *
+     * @param id the id
+     * @param session the session
+     * @param model the model
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @GetMapping("/user/edit/{id}")
-    public String editUserForm(@PathVariable Long id, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+    public String editUserForm(@PathVariable Long id, HttpSession session, Model model,
+        RedirectAttributes redirectAttributes) {
         Users adminUser = getAdminUser(session);
         if (adminUser == null) {
             redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
@@ -106,21 +154,31 @@ public class AdminController {
         return "admin-edit-user";
     }
 
+    /**
+     * Update user admin.
+     *
+     * @param id the id
+     * @param name the name
+     * @param email the email
+     * @param mobile the mobile
+     * @param role the role
+     * @param membershipType the membership type
+     * @param profileViewsCount the profile views count
+     * @param maxProfileViews the max profile views
+     * @param expiryDate the expiry date
+     * @param emailVerified the email verified
+     * @param mobileVerified the mobile verified
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @PostMapping("/user/update/{id}")
-    public String updateUserAdmin(
-            @PathVariable Long id,
-            @RequestParam String name,
-            @RequestParam String email,
-            @RequestParam String mobile,
-            @RequestParam String role,
-            @RequestParam String membershipType,
-            @RequestParam Integer profileViewsCount,
-            @RequestParam Integer maxProfileViews,
-            @RequestParam(required = false) String expiryDate,
-            @RequestParam(defaultValue = "false") boolean emailVerified,
-            @RequestParam(defaultValue = "false") boolean mobileVerified,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+    public String updateUserAdmin(@PathVariable Long id, @RequestParam String name, @RequestParam String email,
+        @RequestParam String mobile, @RequestParam String role, @RequestParam String membershipType,
+        @RequestParam Integer profileViewsCount, @RequestParam Integer maxProfileViews,
+        @RequestParam(required = false) String expiryDate, @RequestParam(defaultValue = "false") boolean emailVerified,
+        @RequestParam(defaultValue = "false") boolean mobileVerified, HttpSession session,
+        RedirectAttributes redirectAttributes) {
 
         Users adminUser = getAdminUser(session);
         if (adminUser == null) {
@@ -155,8 +213,8 @@ public class AdminController {
 
             userRepository.save(user);
 
-            redirectAttributes.addFlashAttribute("successMessage", 
-                "Successfully updated candidate " + user.getName() + " (ID: " + user.getId() + ") plan and profile view counts!");
+            redirectAttributes.addFlashAttribute("successMessage", "Successfully updated candidate " + user.getName()
+                + " (ID: " + user.getId() + ") plan and profile view counts!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update user: " + e.getMessage());
         }
@@ -164,6 +222,14 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
+    /**
+     * External editor page.
+     *
+     * @param session the session
+     * @param model the model
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @GetMapping({"/external-editor", "/admin-editor"})
     public String externalEditorPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Users adminUser = getAdminUser(session);
@@ -177,16 +243,24 @@ public class AdminController {
         return "admin-external-editor";
     }
 
+    /**
+     * Save external db update.
+     *
+     * @param userId the user id
+     * @param userEmail the user email
+     * @param membershipType the membership type
+     * @param profileViewsCount the profile views count
+     * @param maxProfileViews the max profile views
+     * @param expiryDate the expiry date
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
     @PostMapping("/external-editor/save")
-    public String saveExternalDbUpdate(
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) String userEmail,
-            @RequestParam String membershipType,
-            @RequestParam Integer profileViewsCount,
-            @RequestParam Integer maxProfileViews,
-            @RequestParam(required = false) String expiryDate,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+    public String saveExternalDbUpdate(@RequestParam(required = false) Long userId,
+        @RequestParam(required = false) String userEmail, @RequestParam String membershipType,
+        @RequestParam Integer profileViewsCount, @RequestParam Integer maxProfileViews,
+        @RequestParam(required = false) String expiryDate, HttpSession session, RedirectAttributes redirectAttributes) {
 
         Users adminUser = getAdminUser(session);
         if (adminUser == null) {
@@ -204,7 +278,8 @@ public class AdminController {
             }
 
             if (targetUser == null) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Error: No matching user found by ID (" + userId + ") or Email (" + userEmail + ").");
+                redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error: No matching user found by ID (" + userId + ") or Email (" + userEmail + ").");
                 return "redirect:/admin/external-editor";
             }
 
@@ -227,7 +302,9 @@ public class AdminController {
             userRepository.save(targetUser);
 
             redirectAttributes.addFlashAttribute("successMessage",
-                "✅ DIRECT DB UPDATE SUCCESSFUL! Candidate User #" + targetUser.getId() + " (" + targetUser.getName() + ") plan updated to " + newType + " with " + profileViewsCount + "/" + maxProfileViews + " views quota.");
+                "✅ DIRECT DB UPDATE SUCCESSFUL! Candidate User #" + targetUser.getId() + " (" + targetUser.getName()
+                    + ") plan updated to " + newType + " with " + profileViewsCount + "/" + maxProfileViews
+                    + " views quota.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed DB Update: " + e.getMessage());
         }

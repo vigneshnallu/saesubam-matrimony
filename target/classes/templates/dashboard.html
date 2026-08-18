@@ -269,12 +269,12 @@
             <i class="bi bi-heart-fill"></i> SaeSubam
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/dashboard" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
-            <li><a href="/profiles"><i class="bi bi-people-fill"></i> Browse Profiles</a></li>
-            <li><a href="/interests"><i class="bi bi-envelope-heart-fill"></i> Match Interests</a></li>
-            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> Shortlisted Profiles</a></li>
-            <li><a href="/my-profile"><i class="bi bi-person-bounding-box"></i> My Profile</a></li>
-            <li><a href="/subscription"><i class="bi bi-gem"></i> Membership Plan</a></li>
+            <li><a href="/dashboard" class="active"><i class="bi bi-grid-1x2-fill"></i> <span data-i18n="dashboard">Dashboard</span></a></li>
+            <li><a href="/profiles"><i class="bi bi-people-fill"></i> <span data-i18n="browse_profiles">Browse Profiles</span></a></li>
+            <li><a href="/interests"><i class="bi bi-envelope-heart-fill"></i> <span data-i18n="match_interests">Match Interests</span></a></li>
+            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> <span data-i18n="shortlisted_profiles">Shortlisted Profiles</span></a></li>
+            <li><a href="/my-profile"><i class="bi bi-person-bounding-box"></i> <span data-i18n="my_profile">My Profile</span></a></li>
+            <li><a href="/subscription"><i class="bi bi-gem"></i> <span data-i18n="membership_plan">Membership Plan</span></a></li>
         </ul>
     </div>
 
@@ -301,18 +301,34 @@
         <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
             <i class="bi bi-heart-fill"></i> SaeSubam
         </div>
-        <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
-            <i class="bi bi-list fs-5 me-1"></i> Menu
-        </button>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Language Switcher Pill Mobile -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-white p-1 shadow-sm" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-en border-0 text-dark">🇬🇧 EN</button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-ta border-0 text-danger">🇮🇳 தமிழ்</button>
+            </div>
+            <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
+                <i class="bi bi-list fs-5 me-1"></i> Menu
+            </button>
+        </div>
     </div>
     <div class="top-navbar">
         <div>
             <h3 class="fw-bold mb-1">Welcome back, <span th:text="${user != null ? user.name : 'Member'}">Member</span>! 👋</h3>
             <p class="text-muted mb-0">Here is your daily matrimony activity and new partner recommendations.</p>
         </div>
-        <div class="d-flex gap-3">
-            <a href="/profiles" class="btn btn-outline-danger rounded-3 px-3"><i class="bi bi-search me-1"></i> Search Profiles</a>
-            <a href="/subscription" class="btn btn-danger rounded-3 px-3"><i class="bi bi-lightning-charge-fill me-1"></i> Upgrade Plan</a>
+        <div class="d-flex align-items-center gap-3">
+            <!-- Language Switcher Pill Desktop -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-white p-1 shadow-sm me-2" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
+                    🇬🇧 EN
+                </button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-danger">
+                    🇮🇳 தமிழ்
+                </button>
+            </div>
+            <a href="/profiles" class="btn btn-outline-danger rounded-3 px-3"><i class="bi bi-search me-1"></i> <span data-i18n="browse_profiles">Browse Profiles</span></a>
+            <a href="/subscription" class="btn btn-danger rounded-3 px-3"><i class="bi bi-lightning-charge-fill me-1"></i> <span data-i18n="upgrade_plan">Upgrade Plan</span></a>
         </div>
     </div>
 
@@ -405,6 +421,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/lang.js"></script>
 <script>
     function toggleMobileSidebar() {
         var sidebar = document.querySelector('.sidebar');
