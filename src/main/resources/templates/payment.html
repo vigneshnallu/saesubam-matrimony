@@ -277,7 +277,11 @@
             <!-- Payment Reference / UTR Input -->
             <div class="mb-3">
                 <label class="form-label-custom">Payment Reference / UTR Number <span class="text-danger">*</span></label>
-                <input type="text" name="utrNumber" id="utrNumberInput" class="form-control-custom" placeholder="Enter 12-digit UTR or Transaction Ref No." required minlength="6">
+                <input type="text" name="utrNumber" id="utrNumberInput" class="form-control-custom" 
+                       placeholder="Enter 12 to 22 digit UTR or Alphanumeric Ref No." 
+                       required minlength="12" maxlength="22" pattern="[a-zA-Z0-9]{12,22}"
+                       title="UTR / Payment Reference must be 12 to 22 alphanumeric characters (e.g. 202612345678 or UTR987654321012)">
+                <div class="small text-white-50 mt-1"><i class="bi bi-info-circle me-1"></i> UTR / Reference must be 12 to 22 alphanumeric characters.</div>
             </div>
 
             <!-- Upload Payment Screenshot Input -->
@@ -330,6 +334,24 @@
             nameDisplay.innerText = 'Choose screenshot';
         }
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                var utrInput = document.getElementById('utrNumberInput');
+                if (utrInput) {
+                    var val = utrInput.value.trim();
+                    var regex = /^[a-zA-Z0-9]{12,22}$/;
+                    if (!regex.test(val)) {
+                        e.preventDefault();
+                        alert('Payment Reference / UTR Number must be between 12 and 22 alphanumeric characters (e.g. 202612345678 or UTR987654321012).');
+                        utrInput.focus();
+                    }
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>

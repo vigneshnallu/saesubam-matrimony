@@ -900,10 +900,11 @@ public class PageController {
             return "redirect:/?loginRequired=true";
         }
 
-        // Server-Side Mandatory Validation: UTR Number and Payment Screenshot Proof
-        if (utrNumber == null || utrNumber.trim().isEmpty()) {
+        // Server-Side Mandatory Validation: UTR Number ranging from 12 to 22 alphanumeric characters
+        String trimmedUtr = (utrNumber != null) ? utrNumber.trim() : "";
+        if (trimmedUtr.isEmpty() || !trimmedUtr.matches("^[a-zA-Z0-9]{12,22}$")) {
             redirectAttributes.addFlashAttribute("error",
-                "Payment Submission Failed: Payment Reference / UTR Number is required.");
+                "Payment Submission Failed: UTR / Payment Reference Number must be between 12 and 22 alphanumeric characters.");
             return "redirect:/payment?plan=" + plan;
         }
 
