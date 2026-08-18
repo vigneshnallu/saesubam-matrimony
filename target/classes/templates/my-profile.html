@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - SaeSubam Matrimony</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --sidebar-width: 280px;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            color: #334155;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 24px 28px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .sidebar-menu {
+            padding: 20px 16px;
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: #fff1f2;
+            color: var(--primary);
+        }
+
+        .sidebar-user {
+            padding: 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-user img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px 40px;
+        }
+
+        .mobile-header {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        .hero-profile-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .profile-main-img {
+            width: 180px;
+            height: 220px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .section-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .section-card h5 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .detail-item span {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Mobile & Tablet Responsive Alignment */
+        @media (max-width: 991px) {
+            .sidebar {
+                left: -280px;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 14px;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+            .hero-profile-card {
+                flex-direction: column;
+                padding: 20px 16px;
+                gap: 20px;
+            }
+            .profile-main-img {
+                width: 100%;
+                height: 240px;
+            }
+            .detail-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li><a href="/profiles"><i class="bi bi-people-fill"></i> Browse Profiles</a></li>
+            <li><a href="/interests"><i class="bi bi-envelope-heart-fill"></i> Match Interests</a></li>
+            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> Shortlisted Profiles</a></li>
+            <li><a href="/my-profile" class="active"><i class="bi bi-person-bounding-box"></i> My Profile</a></li>
+            <li><a href="/subscription"><i class="bi bi-gem"></i> Membership Plan</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-user">
+        <img th:if="${profile != null and profile.photoUrl != null}" th:src="${profile.photoUrl}" alt="user" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+        <div th:if="${profile == null or profile.photoUrl == null}" class="rounded-circle bg-light border text-secondary d-flex align-items-center justify-content-center" style="width:44px; height:44px; flex-shrink:0;">
+            <i class="bi bi-person-fill fs-5"></i>
+        </div>
+        <div class="overflow-hidden">
+            <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user != null ? user.name : 'Member'}">User Name</h6>
+            <span class="badge bg-danger-subtle text-danger small" th:text="${user != null ? user.membershipType : 'FREE'}">FREE</span>
+        </div>
+        <a href="/logout" class="ms-auto text-muted fs-5"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Mobile Header -->
+    <div class="mobile-header justify-content-between align-items-center bg-white p-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Language Switcher Pill Mobile -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-white p-1 shadow-sm" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-en border-0 text-dark">🇬🇧 EN</button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-ta border-0 text-danger">🇮🇳 தமிழ்</button>
+            </div>
+            <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
+                <i class="bi bi-list fs-5 me-1"></i> Menu
+            </button>
+        </div>
+    </div>
+
+    <div class="top-navbar bg-white p-3 px-4 rounded-4 shadow-sm border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-dark" data-i18n="my_profile">My Profile</h3>
+            <p class="text-muted small mb-0">View and update your personal, religious, career, and family details.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+            <!-- Language Switcher Pill Desktop -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-1 me-2" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
+                    🇬🇧 EN
+                </button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-danger">
+                    🇮🇳 தமிழ்
+                </button>
+            </div>
+            <a href="/my-profile/edit" class="btn btn-danger btn-sm rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-1 shadow-sm"><i class="bi bi-pencil-square"></i> Edit Profile</a>
+        </div>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-profile-card">
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+            <!-- Primary Photo Box -->
+            <div class="text-center">
+                <img th:if="${profile != null and profile.photoUrl != null}" th:src="${profile.photoUrl}" alt="photo" class="profile-main-img mb-2">
+                <div th:if="${profile == null or profile.photoUrl == null}" class="profile-main-img mb-2 d-flex flex-column align-items-center justify-content-center bg-light border text-muted">
+                    <i class="bi bi-person-fill display-3 text-secondary mb-1"></i>
+                    <span class="small text-muted">No Main Photo</span>
+                </div>
+                <form action="/my-profile/upload-photo" method="post" enctype="multipart/form-data">
+                    <label class="btn btn-outline-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-camera-fill me-1"></i> Main Photo
+                        <input type="file" name="photoFile" accept="image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+            </div>
+
+            <!-- Additional Self Photo Box -->
+            <div class="text-center">
+                <img th:if="${profile != null and profile.secondaryPhotoUrl != null}" th:src="${profile.secondaryPhotoUrl}" alt="secondary photo" class="profile-main-img mb-2 border border-danger-subtle">
+                <div th:if="${profile == null or profile.secondaryPhotoUrl == null}" class="profile-main-img mb-2 d-flex flex-column align-items-center justify-content-center bg-light border text-muted border-dashed">
+                    <i class="bi bi-images display-3 text-secondary mb-1"></i>
+                    <span class="small text-muted">No 2nd Photo</span>
+                </div>
+                <form action="/my-profile/upload-secondary-photo" method="post" enctype="multipart/form-data">
+                    <label class="btn btn-outline-secondary btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-images me-1"></i> Additional Photo
+                        <input type="file" name="secondaryPhotoFile" accept="image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <h2 class="fw-bold text-dark mb-0" th:text="${profile != null ? profile.fullName : user.name}">User Name</h2>
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> Active Member</span>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" th:if="${user != null and user.mobileVerified}"><i class="bi bi-phone-fill me-1"></i> Mobile Verified</span>
+                <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill" th:if="${user != null and user.emailVerified}"><i class="bi bi-envelope-check-fill me-1"></i> Email Verified</span>
+            </div>
+
+            <p class="text-muted fs-5 mb-3">
+                <span th:text="${profile != null ? profile.age : 26}">26</span> Yrs,
+                <span th:text="${profile != null ? profile.gender : 'Female'}">Gender</span> •
+                <span class="text-danger fw-bold" th:text="${profile != null ? profile.religion + ' - ' + profile.caste : 'Hindu'}">Religion - Caste</span>
+            </p>
+
+            <div class="d-flex gap-4 text-muted small flex-wrap">
+                <div><i class="bi bi-envelope-fill me-1 text-danger"></i> <span th:text="${user.email}">user@gmail.com</span></div>
+                <div><i class="bi bi-telephone-fill me-1 text-danger"></i> <span th:text="${user.mobile}">9876543210</span></div>
+                <div><i class="bi bi-gem me-1 text-danger"></i> Plan: <span class="fw-bold text-dark" th:text="${user.membershipType}">FREE</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sections -->
+    <div class="row g-4" th:if="${profile != null}">
+        <div class="col-lg-8">
+            <div class="section-card">
+                <h5><i class="bi bi-person-lines-fill text-danger"></i> About Me</h5>
+                <p class="text-secondary leading-relaxed mb-0" th:text="${profile.aboutMe}">Profile description here.</p>
+            </div>
+
+            <div class="section-card">
+                <h5><i class="bi bi-card-checklist text-danger"></i> Personal Details</h5>
+                <div class="detail-row">
+                    <div class="detail-item"><label>Age & Height</label><span th:text="${profile.age} + ' Yrs / ' + ${profile.height}">26 Yrs / 5ft 4in</span></div>
+                    <div class="detail-item"><label>Marital Status</label><span th:text="${profile.maritalStatus}">Never Married</span></div>
+                    <div class="detail-item"><label>Mother Tongue</label><span th:text="${profile.motherTongue}">Tamil</span></div>
+                    <div class="detail-item"><label>Living City</label><span th:text="${profile.city} + ', ' + ${profile.state}">Chennai</span></div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <h5><i class="bi bi-brightness-high-fill text-danger"></i> Religious & Horoscope Background</h5>
+                <div class="detail-row">
+                    <div class="detail-item"><label>Religion</label><span th:text="${profile.religion}">Hindu</span></div>
+                    <div class="detail-item"><label>Caste / Subcaste</label><span th:text="${profile.caste} + ' / ' + ${profile.subCaste}">Brahmin</span></div>
+                    <div class="detail-item"><label>Gothram</label><span th:text="${profile.gothram}">Vadhula</span></div>
+                    <div class="detail-item"><label>Rasi (ராசி)</label><span class="fw-bold text-danger" th:text="${profile.rasi != null ? profile.rasi : 'Not Specified'}">Mesham</span></div>
+                    <div class="detail-item"><label>Natchathiram (நட்சத்திரம்)</label><span class="fw-bold text-danger" th:text="${profile.natchathiram != null ? profile.natchathiram : (profile.starRasi != null ? profile.starRasi : 'Not Specified')}">Aswini</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Jathagam / Horoscope PDF Card -->
+            <div class="section-card bg-light border-danger-subtle">
+                <h5 class="text-danger"><i class="bi bi-file-earmark-pdf-fill"></i> Jathagam (Horoscope PDF)</h5>
+                <div th:if="${profile.jathagamUrl != null}" class="mb-3">
+                    <div class="p-3 bg-white rounded-3 border mb-2 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-file-pdf-fill text-danger fs-3"></i>
+                            <div>
+                                <strong class="d-block small text-dark">Jathagam Document</strong>
+                                <span class="badge bg-success-subtle text-success small">Uploaded</span>
+                            </div>
+                        </div>
+                        <a th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill font-weight-bold">
+                            <i class="bi bi-download me-1"></i> View / PDF
+                        </a>
+                    </div>
+                </div>
+
+                <form action="/my-profile/upload-jathagam" method="post" enctype="multipart/form-data" class="mt-2">
+                    <label class="btn btn-danger btn-sm w-100 rounded-3 fw-bold position-relative overflow-hidden cursor-pointer">
+                        <i class="bi bi-upload me-1"></i> Upload Jathagam PDF
+                        <input type="file" name="jathagamFile" accept=".pdf,image/*" onchange="this.form.submit()" style="position:absolute; opacity:0; right:0; top:0; height:100%; cursor:pointer;">
+                    </label>
+                </form>
+                <div class="small text-muted text-center mt-2 fs-7">PDF or Image format accepted. Helps matched candidates compare horoscopes.</div>
+            </div>
+
+            <div class="section-card">
+                <h5><i class="bi bi-briefcase-fill text-danger"></i> Career Details</h5>
+                <div class="mb-3"><label class="small text-muted">Education</label><div class="fw-bold text-dark" th:text="${profile.education}">Degree</div></div>
+                <div class="mb-3"><label class="small text-muted">Occupation</label><div class="fw-bold text-dark" th:text="${profile.occupation}">Engineer</div></div>
+                <div><label class="small text-muted">Annual Income</label><div class="fw-bold text-dark" th:text="${profile.annualIncome}">₹10 - ₹15 Lakhs</div></div>
+            </div>
+
+            <div class="section-card">
+                <h5><i class="bi bi-house-door-fill text-danger"></i> Family & Contact</h5>
+                <div class="mb-3"><label class="small text-muted">Family Values</label><div class="fw-bold text-dark" th:text="${profile.familyValues}">Moderate</div></div>
+                <div class="mb-3"><label class="small text-muted">Contact Person</label><div class="fw-bold text-dark" th:text="${profile.contactPerson}">Self</div></div>
+                <div><label class="small text-muted">Contact Mobile</label><div class="fw-bold text-dark" th:text="${profile.contactMobile}">9876543210</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/lang.js"></script>
+<script>
+    function toggleMobileSidebar() {
+        var sidebar = document.querySelector('.sidebar');
+        var overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('show');
+    }
+</script>
+</body>
+</html>
