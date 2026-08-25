@@ -3,6 +3,8 @@
  */
 package com.saesubam.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,9 @@ public class DataInitializer implements CommandLineRunner {
     /** The chat message repository. */
     private final com.saesubam.repositories.ChatMessageRepository chatMessageRepository;
 
+    /** The payment transaction repository. */
+    private final com.saesubam.repositories.PaymentTransactionRepository paymentTransactionRepository;
+
     /**
      * Instantiates a new data initializer.
      *
@@ -41,15 +46,18 @@ public class DataInitializer implements CommandLineRunner {
      * @param profileRepository the profile repository
      * @param userInterestRepository the user interest repository
      * @param chatMessageRepository the chat message repository
+     * @param paymentTransactionRepository the payment transaction repository
      */
     @Autowired
     public DataInitializer(UserRepository userRepository, ProfileRepository profileRepository,
         UserInterestRepository userInterestRepository,
-        com.saesubam.repositories.ChatMessageRepository chatMessageRepository) {
+        com.saesubam.repositories.ChatMessageRepository chatMessageRepository,
+        com.saesubam.repositories.PaymentTransactionRepository paymentTransactionRepository) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userInterestRepository = userInterestRepository;
         this.chatMessageRepository = chatMessageRepository;
+        this.paymentTransactionRepository = paymentTransactionRepository;
     }
 
     /**
@@ -60,6 +68,19 @@ public class DataInitializer implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+        // Migration: Ensure unapproved transactions default to PENDING_APPROVAL
+        try {
+            List<com.saesubam.model.PaymentTransaction> list = paymentTransactionRepository.findAll();
+            for (com.saesubam.model.PaymentTransaction tx : list) {
+                if (tx.getPaymentStatus() == null || "ACTIVE_VERIFIED".equals(tx.getPaymentStatus()) || "ACTIVE".equals(tx.getPaymentStatus())) {
+                    tx.setPaymentStatus("PENDING_APPROVAL");
+                    paymentTransactionRepository.save(tx);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Notice updating payment transaction statuses: " + e.getMessage());
+        }
+
         if (profileRepository.count() > 0) {
             return; // Seed data already exists
         }

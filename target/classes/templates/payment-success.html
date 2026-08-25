@@ -91,7 +91,7 @@
     </div>
 
     <h3 class="fw-bold text-dark mb-1">Payment Proof Submitted!</h3>
-    <p class="text-muted mb-0">Your payment screenshot and UTR reference have been submitted for verification. Your membership plan has been activated.</p>
+    <p class="text-muted mb-0">Your payment screenshot and UTR reference have been submitted for verification. Your membership plan will be activated once verified by admin.</p>
 
     <!-- Receipt Breakdown -->
     <div class="receipt-box">
@@ -100,7 +100,7 @@
             <span class="fw-bold font-monospace text-dark" th:text="${txnId}">UTR_401234567890</span>
         </div>
         <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted small">Upgraded Membership:</span>
+            <span class="text-muted small">Selected Membership:</span>
             <span class="badge bg-warning text-dark fw-bold" th:text="${plan + ' PLAN'}">GOLD PLAN</span>
         </div>
         <div class="d-flex justify-content-between mb-2">
@@ -112,8 +112,8 @@
             <span class="fw-bold text-success fs-5">₹<span th:text="${amount}">999</span></span>
         </div>
         <div class="d-flex justify-content-between border-top pt-2 mt-2">
-            <span class="text-muted small">Status:</span>
-            <span class="badge bg-success-subtle text-success"><i class="bi bi-check-circle-fill me-1"></i> ACTIVE & VERIFIED</span>
+            <span class="text-muted small">Verification Status:</span>
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle fw-bold"><i class="bi bi-clock-history me-1"></i> PENDING APPROVAL</span>
         </div>
     </div>
 

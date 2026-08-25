@@ -168,6 +168,8 @@
                         <th>UTR Reference No</th>
                         <th>Payment Screenshot</th>
                         <th>Submission Date</th>
+                        <th>Verification Status</th>
+                        <th>Admin Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -175,7 +177,7 @@
                         <td class="fw-bold text-secondary" th:text="'#' + ${tx.id}">#1</td>
                         <td>
                             <div class="fw-bold text-dark" th:text="${tx.user != null ? tx.user.name : 'Unknown'}">Candidate</div>
-                            <span class="small text-muted" th:text="${tx.user != null ? 'ID: ' + tx.user.id : ''}">ID: 101</span>
+                            <span class="small text-muted" th:text="${tx.user != null ? 'ID: #' + (100000 + tx.user.id) : ''}">ID: 101001</span>
                         </td>
                         <td><span class="badge bg-danger-subtle text-danger fw-bold" th:text="${tx.planCode}">GOLD</span></td>
                         <td class="fw-bold text-dark" th:text="'₹' + ${tx.amount}">₹1499</td>
@@ -187,9 +189,37 @@
                             <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
                         <td class="small fw-semibold text-dark" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
+                        <td>
+                            <span th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}" class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-2 fw-bold">
+                                <i class="bi bi-clock-history me-1"></i> PENDING APPROVAL
+                            </span>
+                            <span th:if="${tx.paymentStatus == 'ACTIVE_VERIFIED' or tx.paymentStatus == 'VERIFIED' or tx.paymentStatus == 'APPROVED'}" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-bold">
+                                <i class="bi bi-check-circle-fill me-1"></i> VERIFIED & ACTIVE
+                            </span>
+                            <span th:if="${tx.paymentStatus == 'REJECTED'}" class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 fw-bold">
+                                <i class="bi bi-x-circle-fill me-1"></i> REJECTED
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1" th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}">
+                                <form th:action="@{/admin/payment/approve/{id}(id=${tx.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success fw-bold rounded-pill px-3 shadow-sm" onclick="return confirm('Approve this payment and activate candidate membership plan?')">
+                                        <i class="bi bi-check-lg me-1"></i> Approve
+                                    </button>
+                                </form>
+                                <form th:action="@{/admin/payment/reject/{id}(id=${tx.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-2 shadow-sm" onclick="return confirm('Reject this payment transaction proof?')">
+                                        <i class="bi bi-x-lg"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                            <span th:if="${tx.paymentStatus != 'PENDING_APPROVAL' and tx.paymentStatus != 'PENDING'}" class="small text-muted">
+                                Action Completed
+                            </span>
+                        </td>
                     </tr>
                     <tr th:if="${transactions == null or transactions.isEmpty()}">
-                        <td colspan="7" class="text-center text-muted py-4">No payment transactions recorded yet.</td>
+                        <td colspan="9" class="text-center text-muted py-4">No payment transactions recorded yet.</td>
                     </tr>
                 </tbody>
             </table>
