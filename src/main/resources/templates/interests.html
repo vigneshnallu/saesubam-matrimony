@@ -438,13 +438,13 @@
                         <div class="d-flex gap-2 mt-2 flex-wrap align-items-center">
                             <span class="badge bg-light text-dark border px-3 py-2 fs-6"><i class="bi bi-telephone-fill text-success me-1"></i> <span th:text="${partner.mobile}">+91 98765 43210</span></span>
                             <span class="badge bg-light text-dark border px-3 py-2 fs-6" th:if="${partner.email != null}"><i class="bi bi-envelope-fill text-primary me-1"></i> <span th:text="${partner.email}">partner@email.com</span></span>
-                        </div>
-                    </div>
-
-                    <!-- Interactive Actions: Live Chat & View Profile -->
+                     <!-- Interactive Actions: Live Chat & View Profile -->
                     <div class="d-flex flex-column gap-2">
                         <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
-                                th:attr="onclick='openChatModal(' + ${partner.id} + ', \'' + ${partner.name} + '\', \'' + ${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : ''} + '\')'">
+                                th:data-partner-id="${partner.id}"
+                                th:data-partner-name="${partner.name}"
+                                th:data-partner-photo="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : ''}"
+                                onclick="openChatModalFromBtn(this)">
                             <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Partner
                         </button>
                         <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
@@ -503,15 +503,23 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/lang.js"></script>
 <script>
     var currentPartnerId = null;
     var chatPollInterval = null;
     var chatBsModal = null;
 
+    function openChatModalFromBtn(btn) {
+        var partnerId = btn.getAttribute('data-partner-id');
+        var partnerName = btn.getAttribute('data-partner-name');
+        var partnerPhoto = btn.getAttribute('data-partner-photo');
+        openChatModal(partnerId, partnerName, partnerPhoto);
+    }
+
     function openChatModal(partnerId, partnerName, partnerPhoto) {
         currentPartnerId = partnerId;
         document.getElementById('chatPartnerName').innerText = partnerName;
-        document.getElementById('chatPartnerPhoto').src = partnerPhoto;
+        document.getElementById('chatPartnerPhoto').src = (partnerPhoto && partnerPhoto.trim() !== '') ? partnerPhoto : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
         document.getElementById('chatInputText').value = '';
 
         if (!chatBsModal) {
@@ -601,7 +609,7 @@
                          '    <div class="chat-time">' + nowTime + '</div>' +
                          '  </div>' +
                          '</div>';
-        
+
         var loadingEl = document.getElementById('chatLoadingState');
         if (loadingEl) loadingEl.remove();
 
@@ -632,14 +640,16 @@
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
-    document.getElementById('chatModal').addEventListener('hidden.bs.modal', function () {
-        stopChatPolling();
+    document.addEventListener("DOMContentLoaded", function() {
+        var modalEl = document.getElementById('chatModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                stopChatPolling();
+            });
+        }
     });
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/lang.js"></script>
-<script>
-    var currentPartnerId = null;
+    function toggleMobileSidebar() {
         var sidebar = document.querySelector('.sidebar');
         var overlay = document.querySelector('.sidebar-overlay');
         if (sidebar) sidebar.classList.toggle('show');
