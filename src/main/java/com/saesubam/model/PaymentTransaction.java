@@ -27,7 +27,7 @@ public class PaymentTransaction {
 
     private String utrNumber;
 
-    private String paymentStatus = "ACTIVE_VERIFIED";
+    private String paymentStatus = "PENDING_APPROVAL";
 
     private String paymentMethod = "UPI_QR_VERIFICATION";
 

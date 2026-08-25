@@ -354,7 +354,15 @@
                             <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
                         <td>
-                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2 fw-bold"><i class="bi bi-check-circle-fill me-1"></i> ACTIVE & VERIFIED</span>
+                            <span th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}" class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-2 fw-bold fs-7">
+                                <i class="bi bi-clock-history me-1"></i> PENDING APPROVAL
+                            </span>
+                            <span th:if="${tx.paymentStatus == 'ACTIVE_VERIFIED' or tx.paymentStatus == 'VERIFIED' or tx.paymentStatus == 'APPROVED'}" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-bold fs-7">
+                                <i class="bi bi-check-circle-fill me-1"></i> VERIFIED & ACTIVE
+                            </span>
+                            <span th:if="${tx.paymentStatus == 'REJECTED'}" class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 fw-bold fs-7">
+                                <i class="bi bi-x-circle-fill me-1"></i> REJECTED
+                            </span>
                         </td>
                     </tr>
                 </tbody>

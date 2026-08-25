@@ -311,4 +311,84 @@ public class AdminController {
 
         return "redirect:/admin/external-editor";
     }
+
+    /**
+     * Approve Candidate Payment Transaction & Activate Membership Plan.
+     *
+     * @param id the transaction id
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
+    @PostMapping("/payment/approve/{id}")
+    public String approvePaymentTransaction(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            PaymentTransaction transaction = paymentTransactionRepository.findById(id).orElse(null);
+            if (transaction == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error: Payment transaction not found.");
+                return "redirect:/admin/dashboard";
+            }
+
+            // Update Payment Status to VERIFIED
+            transaction.setPaymentStatus("ACTIVE_VERIFIED");
+            paymentTransactionRepository.save(transaction);
+
+            // Activate & Upgrade Candidate Membership Plan
+            Users candidateUser = transaction.getUser();
+            if (candidateUser != null) {
+                String planCode = transaction.getPlanCode();
+                if ("SILVER".equalsIgnoreCase(planCode)) {
+                    planCode = "PREMIUM";
+                }
+                MembershipType type = MembershipType.valueOf(planCode.toUpperCase());
+                userService.upgradeMembership(candidateUser.getId(), type);
+
+                redirectAttributes.addFlashAttribute("successMessage",
+                    "✅ PAYMENT VERIFIED & APPROVED! Candidate " + candidateUser.getName() + " (ID: #" + candidateUser.getId()
+                        + ") plan activated to " + type + " successfully!");
+            } else {
+                redirectAttributes.addFlashAttribute("successMessage", "✅ Payment transaction #" + id + " approved.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to approve payment: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
+
+    /**
+     * Reject Candidate Payment Transaction.
+     *
+     * @param id the transaction id
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
+    @PostMapping("/payment/reject/{id}")
+    public String rejectPaymentTransaction(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            PaymentTransaction transaction = paymentTransactionRepository.findById(id).orElse(null);
+            if (transaction != null) {
+                transaction.setPaymentStatus("REJECTED");
+                paymentTransactionRepository.save(transaction);
+                redirectAttributes.addFlashAttribute("errorMessage", "⚠️ Payment transaction #" + id + " has been rejected.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to reject payment: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
 }

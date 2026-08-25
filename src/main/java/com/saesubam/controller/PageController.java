@@ -956,11 +956,7 @@ public class PageController {
             : ("UTR_" + (100000000000L + (long) (new java.util.Random().nextDouble() * 899999999999L)));
 
         try {
-            MembershipType type = MembershipType.valueOf(planCode);
-            userService.upgradeMembership(currentUser.getId(), type);
-            session.setAttribute("loggedInUser", userService.getUserById(currentUser.getId()));
-
-            // Save Payment Transaction Record in Database against Candidate User ID
+            // Save Payment Transaction Record in Database with PENDING_APPROVAL status for Admin verification
             String screenshotUrlPath = (filename != null && !filename.isEmpty()) ? "/uploads/payments/" + filename : "";
             PaymentTransaction paymentTransaction = new PaymentTransaction(
                 currentUser,
@@ -969,10 +965,11 @@ public class PageController {
                 txnId,
                 screenshotUrlPath
             );
+            paymentTransaction.setPaymentStatus("PENDING_APPROVAL");
             paymentTransactionRepository.save(paymentTransaction);
-            System.out.println("✅ Saved PaymentTransaction record to Database for User ID: " + currentUser.getId() + ", UTR: " + txnId);
+            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL) to Database for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
-            System.out.println("Payment upgrade/transaction save error: " + e.getMessage());
+            System.out.println("Payment transaction save error: " + e.getMessage());
         }
 
         // Dispatch Automated Email Notification to Admin vigneshn051995@gmail.com with screenshot attachment
