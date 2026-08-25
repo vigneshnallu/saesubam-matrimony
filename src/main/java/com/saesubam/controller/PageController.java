@@ -21,7 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.saesubam.model.MembershipType;
 import com.saesubam.model.PaymentTransaction;
@@ -1231,5 +1238,36 @@ public class PageController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/?logout";
+    }
+
+    /**
+     * Fallback Resource Endpoint to reliably serve any uploaded file (payment proofs, profile photos, jathagam).
+     */
+    @GetMapping("/uploads/**")
+    @ResponseBody
+    public ResponseEntity<Resource> serveUploadedFile(HttpServletRequest request) {
+        try {
+            String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+            if (fullPath == null || !fullPath.startsWith("/uploads/")) {
+                return ResponseEntity.notFound().build();
+            }
+            String relativePath = fullPath.substring("/uploads/".length());
+            Path filePath = Paths.get("uploads").resolve(relativePath).normalize().toAbsolutePath();
+
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                String contentType = request.getServletContext().getMimeType(filePath.toString());
+                if (contentType == null) {
+                    contentType = "application/octet-stream";
+                }
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filePath.getFileName().toString() + "\"")
+                        .body(resource);
+            }
+        } catch (Exception e) {
+            System.err.println("Error serving uploaded file: " + e.getMessage());
+        }
+        return ResponseEntity.notFound().build();
     }
 }
