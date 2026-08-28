@@ -254,6 +254,40 @@
                 </div>
 
                 <div class="col-md-6">
+                    <label class="form-label">District / City</label>
+                    <select th:field="*{city}" class="form-select" required>
+                        <option value="">Select District</option>
+                        <option value="Madurai">Madurai</option>
+                        <option value="Dindigul">Dindigul</option>
+                        <option value="Theni">Theni</option>
+                        <option value="Virudhunagar">Virudhunagar</option>
+                        <option value="Sivagangai">Sivagangai / Karaikudi</option>
+                        <option value="Ramanathapuram">Ramanathapuram</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Coimbatore">Coimbatore</option>
+                        <option value="Trichy">Tiruchirappalli (Trichy)</option>
+                        <option value="Tirunelveli">Tirunelveli</option>
+                        <option value="Salem">Salem</option>
+                        <option value="Thanjavur">Thanjavur</option>
+                        <option value="Erode">Erode</option>
+                        <option value="Tiruppur">Tiruppur</option>
+                        <option value="Karur">Karur</option>
+                        <option value="Pudukkottai">Pudukkottai</option>
+                        <option value="Tuticorin">Thoothukudi (Tuticorin)</option>
+                        <option value="Tenkasi">Tenkasi</option>
+                        <option value="Kanyakumari">Kanyakumari / Nagercoil</option>
+                        <option value="Kanchipuram">Kanchipuram</option>
+                        <option value="Chengalpattu">Chengalpattu</option>
+                        <option value="Tiruvallur">Tiruvallur</option>
+                        <option value="Vellore">Vellore</option>
+                        <option value="Tiruvannamalai">Tiruvannamalai</option>
+                        <option value="Puducherry">Puducherry / Karaikal</option>
+                        <option value="Bengaluru">Bengaluru</option>
+                        <option value="Other">Other District</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label">Password</label>
                     <input type="password" th:field="*{password}" class="form-control" placeholder="Min 6 characters" required>
                     <div class="error-text" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>

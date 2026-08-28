@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
             profile.setGender(savedUser.getGender());
             profile.setCaste(savedUser.getCaste());
             profile.setContactMobile(savedUser.getMobile());
+            profile.setCity(savedUser.getCity() != null && !savedUser.getCity().trim().isEmpty() ? savedUser.getCity().trim() : "Madurai");
             profile.setAge(26);
             profile.setUser(savedUser);
             profile.setPhotoUrl(savedUser.getGender() != null && savedUser.getGender().equalsIgnoreCase("Female") ?

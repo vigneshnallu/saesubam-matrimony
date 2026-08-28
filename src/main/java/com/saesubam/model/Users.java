@@ -39,6 +39,8 @@ public class Users {
     @NotBlank
     private String caste;
 
+    private String city = "Madurai";
+
     @NotBlank(message = "Password is required")
     @Size(min = 6, max = 100, message = "Password must be at least 6 characters")
     private String password;
@@ -157,6 +159,14 @@ public class Users {
 
     public void setCaste(String caste) {
         this.caste = caste;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getMobile() {
