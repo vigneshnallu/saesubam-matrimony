@@ -333,21 +333,49 @@
                 <div class="col-md-2 col-sm-6">
                     <label class="form-label small fw-bold text-secondary">District / City</label>
                     <select name="city" class="form-select rounded-3">
-                        <option value="">All Districts</option>
-                        <option value="Madurai" th:selected="${paramCity == 'Madurai'}">📍 Madurai</option>
-                        <option value="Chennai" th:selected="${paramCity == 'Chennai'}">📍 Chennai</option>
-                        <option value="Coimbatore" th:selected="${paramCity == 'Coimbatore'}">📍 Coimbatore</option>
-                        <option value="Trichy" th:selected="${paramCity == 'Trichy'}">📍 Trichy</option>
-                        <option value="Tirunelveli" th:selected="${paramCity == 'Tirunelveli'}">📍 Tirunelveli</option>
-                        <option value="Salem" th:selected="${paramCity == 'Salem'}">📍 Salem</option>
-                        <option value="Dindigul" th:selected="${paramCity == 'Dindigul'}">📍 Dindigul</option>
-                        <option value="Theni" th:selected="${paramCity == 'Theni'}">📍 Theni</option>
-                        <option value="Virudhunagar" th:selected="${paramCity == 'Virudhunagar'}">📍 Virudhunagar</option>
-                        <option value="Sivagangai" th:selected="${paramCity == 'Sivagangai'}">📍 Sivagangai</option>
-                        <option value="Ramanathapuram" th:selected="${paramCity == 'Ramanathapuram'}">📍 Ramanathapuram</option>
-                        <option value="Thanjavur" th:selected="${paramCity == 'Thanjavur'}">📍 Thanjavur</option>
-                        <option value="Erode" th:selected="${paramCity == 'Erode'}">📍 Erode</option>
-                        <option value="Bengaluru" th:selected="${paramCity == 'Bengaluru'}">📍 Bengaluru</option>
+                        <option value="">All Tamil Districts</option>
+                        <optgroup label="Pandia Region (Madurai)">
+                            <option value="Madurai" th:selected="${paramCity == 'Madurai'}">📍 Madurai</option>
+                            <option value="Dindigul" th:selected="${paramCity == 'Dindigul'}">📍 Dindigul</option>
+                            <option value="Theni" th:selected="${paramCity == 'Theni'}">📍 Theni</option>
+                            <option value="Virudhunagar" th:selected="${paramCity == 'Virudhunagar'}">📍 Virudhunagar</option>
+                            <option value="Sivagangai" th:selected="${paramCity == 'Sivagangai'}">📍 Sivagangai / Karaikudi</option>
+                            <option value="Ramanathapuram" th:selected="${paramCity == 'Ramanathapuram'}">📍 Ramanathapuram</option>
+                        </optgroup>
+                        <optgroup label="Capital Region (Chennai)">
+                            <option value="Chennai" th:selected="${paramCity == 'Chennai'}">📍 Chennai</option>
+                            <option value="Kanchipuram" th:selected="${paramCity == 'Kanchipuram'}">📍 Kanchipuram</option>
+                            <option value="Chengalpattu" th:selected="${paramCity == 'Chengalpattu'}">📍 Chengalpattu</option>
+                            <option value="Tiruvallur" th:selected="${paramCity == 'Tiruvallur'}">📍 Tiruvallur</option>
+                            <option value="Vellore" th:selected="${paramCity == 'Vellore'}">📍 Vellore</option>
+                            <option value="Tiruvannamalai" th:selected="${paramCity == 'Tiruvannamalai'}">📍 Tiruvannamalai</option>
+                        </optgroup>
+                        <optgroup label="Kongu Region (Coimbatore & West)">
+                            <option value="Coimbatore" th:selected="${paramCity == 'Coimbatore'}">📍 Coimbatore</option>
+                            <option value="Tiruppur" th:selected="${paramCity == 'Tiruppur'}">📍 Tiruppur</option>
+                            <option value="Erode" th:selected="${paramCity == 'Erode'}">📍 Erode</option>
+                            <option value="Salem" th:selected="${paramCity == 'Salem'}">📍 Salem</option>
+                            <option value="Namakkal" th:selected="${paramCity == 'Namakkal'}">📍 Namakkal</option>
+                            <option value="Nilgiris" th:selected="${paramCity == 'Nilgiris'}">📍 Nilgiris (Ooty)</option>
+                        </optgroup>
+                        <optgroup label="Chola & Delta Region (Trichy)">
+                            <option value="Trichy" th:selected="${paramCity == 'Trichy'}">📍 Tiruchirappalli (Trichy)</option>
+                            <option value="Thanjavur" th:selected="${paramCity == 'Thanjavur'}">📍 Thanjavur</option>
+                            <option value="Karur" th:selected="${paramCity == 'Karur'}">📍 Karur</option>
+                            <option value="Pudukkottai" th:selected="${paramCity == 'Pudukkottai'}">📍 Pudukkottai</option>
+                            <option value="Tiruvarur" th:selected="${paramCity == 'Tiruvarur'}">📍 Tiruvarur</option>
+                            <option value="Nagapattinam" th:selected="${paramCity == 'Nagapattinam'}">📍 Nagapattinam</option>
+                        </optgroup>
+                        <optgroup label="Southern Region (Tirunelveli)">
+                            <option value="Tirunelveli" th:selected="${paramCity == 'Tirunelveli'}">📍 Tirunelveli</option>
+                            <option value="Tuticorin" th:selected="${paramCity == 'Tuticorin'}">📍 Thoothukudi (Tuticorin)</option>
+                            <option value="Tenkasi" th:selected="${paramCity == 'Tenkasi'}">📍 Tenkasi</option>
+                            <option value="Kanyakumari" th:selected="${paramCity == 'Kanyakumari'}">📍 Kanyakumari / Nagercoil</option>
+                        </optgroup>
+                        <optgroup label="Tamil Union Territory & Diaspora">
+                            <option value="Puducherry" th:selected="${paramCity == 'Puducherry'}">📍 Puducherry / Karaikal</option>
+                            <option value="Bengaluru" th:selected="${paramCity == 'Bengaluru'}">📍 Bengaluru</option>
+                        </optgroup>
                     </select>
                 </div>
 
