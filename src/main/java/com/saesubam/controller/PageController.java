@@ -956,18 +956,29 @@ public class PageController {
             : ("UTR_" + (100000000000L + (long) (new java.util.Random().nextDouble() * 899999999999L)));
 
         try {
-            // Save Payment Transaction Record in Database with PENDING_APPROVAL status for Admin verification
-            String screenshotUrlPath = (filename != null && !filename.isEmpty()) ? "/uploads/payments/" + filename : "";
+            // Encode uploaded payment screenshot image as permanent Base64 Data URL for persistent cloud storage
+            String screenshotDataUrl = "";
+            if (screenshotFile != null && !screenshotFile.isEmpty()) {
+                byte[] bytes = screenshotFile.getBytes();
+                String mimeType = screenshotFile.getContentType();
+                if (mimeType == null || mimeType.trim().isEmpty()) {
+                    mimeType = "image/png";
+                }
+                screenshotDataUrl = "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
+            } else if (filename != null && !filename.isEmpty()) {
+                screenshotDataUrl = "/uploads/payments/" + filename;
+            }
+
             PaymentTransaction paymentTransaction = new PaymentTransaction(
                 currentUser,
                 planCode,
                 amount,
                 txnId,
-                screenshotUrlPath
+                screenshotDataUrl
             );
             paymentTransaction.setPaymentStatus("PENDING_APPROVAL");
             paymentTransactionRepository.save(paymentTransaction);
-            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL) to Database for User ID: " + currentUser.getId() + ", UTR: " + txnId);
+            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL + Base64 Image) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
             System.out.println("Payment transaction save error: " + e.getMessage());
         }

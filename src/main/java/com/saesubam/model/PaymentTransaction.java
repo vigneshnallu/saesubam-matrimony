@@ -31,6 +31,8 @@ public class PaymentTransaction {
 
     private String paymentMethod = "UPI_QR_VERIFICATION";
 
+    @jakarta.persistence.Lob
+    @jakarta.persistence.Column(columnDefinition = "CLOB")
     private String screenshotUrl;
 
     private LocalDateTime createdAt = LocalDateTime.now();
