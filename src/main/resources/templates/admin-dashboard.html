@@ -132,7 +132,7 @@
                         <td class="small">
                             <div class="fw-bold" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + ${user.maxProfileViews != null ? user.maxProfileViews : 0} + ' Views'">35 / 100 Views</div>
                             <div class="progress rounded-pill mt-1" style="height: 6px; width: 100px;">
-                                <div class="progress-bar bg-danger" role="progressbar" th:style="'width: ' + (${user.maxProfileViews != null and user.maxProfileViews > 0} ? (${user.profileViewsCount} * 100 / ${user.maxProfileViews}) : 0) + '%;'"></div>
+                                <div class="progress-bar bg-danger" role="progressbar" th:style="'width: ' + (${user.maxProfileViews != null and user.maxProfileViews > 0 and user.profileViewsCount != null} ? (${user.profileViewsCount * 100 / user.maxProfileViews}) : 0) + '%;'"></div>
                             </div>
                         </td>
                         <td class="small">

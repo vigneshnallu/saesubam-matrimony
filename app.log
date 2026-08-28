@@ -1087,3 +1087,43 @@ org.springframework.expression.spel.SpelParseException: Expression [user.active 
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:840)
 
+2026-08-28T18:04:07.850+05:30  INFO 30192 --- [main] com.saesubam.SpringBootApplication       : Starting SpringBootApplication using Java 17.0.19 with PID 30192 (D:\workspace2026\dev\appilcation\spring-boot-starter-web\target\classes started by vign2415 in D:\workspace2026\dev\appilcation\spring-boot-starter-web)
+2026-08-28T18:04:07.853+05:30  INFO 30192 --- [main] com.saesubam.SpringBootApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-08-28T18:04:08.992+05:30  INFO 30192 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-28T18:04:09.103+05:30  INFO 30192 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 96 ms. Found 8 JPA repository interfaces.
+2026-08-28T18:04:09.980+05:30  INFO 30192 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-28T18:04:10.001+05:30  INFO 30192 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-28T18:04:10.002+05:30  INFO 30192 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2026-08-28T18:04:10.127+05:30  INFO 30192 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-28T18:04:10.127+05:30  INFO 30192 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2226 ms
+2026-08-28T18:04:10.470+05:30  INFO 30192 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-28T18:04:10.527+05:30  INFO 30192 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2026-08-28T18:04:10.575+05:30  INFO 30192 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-28T18:04:10.862+05:30  INFO 30192 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-28T18:04:10.897+05:30  INFO 30192 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-28T18:04:15.350+05:30  INFO 30192 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn1: url=jdbc:h2:file:./data/saesubamdb user=SA
+2026-08-28T18:04:15.352+05:30  INFO 30192 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-28T18:04:15.380+05:30  WARN 30192 --- [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-08-28T18:04:15.404+05:30  INFO 30192 --- [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-28T18:04:16.496+05:30  INFO 30192 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-28T18:04:16.559+05:30  INFO 30192 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-28T18:04:16.914+05:30  INFO 30192 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-28T18:04:17.773+05:30  WARN 30192 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-28T18:04:18.062+05:30  INFO 30192 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-08-28T18:04:18.096+05:30  WARN 30192 --- [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 733100f1-cb90-4aec-9e6a-15c52f08a181
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-08-28T18:04:18.107+05:30  INFO 30192 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-08-28T18:04:18.435+05:30  INFO 30192 --- [main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:file:./data/saesubamdb'
+2026-08-28T18:04:18.547+05:30  INFO 30192 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-28T18:04:18.564+05:30  INFO 30192 --- [main] com.saesubam.SpringBootApplication       : Started SpringBootApplication in 11.193 seconds (process running for 11.995)
