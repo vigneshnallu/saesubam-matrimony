@@ -77,6 +77,7 @@ public class Users {
 
     private LocalDateTime emailTokenExpiry;
 
+    @jakarta.persistence.Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean active = true;
 
     private LocalDateTime createdAt = LocalDateTime.now();
