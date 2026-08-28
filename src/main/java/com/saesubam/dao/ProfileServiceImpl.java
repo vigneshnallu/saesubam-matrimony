@@ -28,10 +28,14 @@ public class ProfileServiceImpl implements ProfileService {
         List<Profiles> all = profileRepository.findAll();
         List<Profiles> filtered = new ArrayList<>();
         for (Profiles p : all) {
-            if (p.getUser() == null || !"ADMIN".equalsIgnoreCase(p.getUser().getRole())) {
+            if (p.getUser() == null || (!"ADMIN".equalsIgnoreCase(p.getUser().getRole()) && p.getUser().isActive())) {
                 filtered.add(p);
             }
         }
+        filtered.sort((p1, p2) -> Long.compare(
+            p2.getId() != null ? p2.getId() : 0L,
+            p1.getId() != null ? p1.getId() : 0L
+        ));
         return filtered;
     }
 
@@ -109,7 +113,18 @@ public class ProfileServiceImpl implements ProfileService {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        return profileRepository.findAll(spec);
+        List<Profiles> results = profileRepository.findAll(spec);
+        List<Profiles> filtered = new ArrayList<>();
+        for (Profiles p : results) {
+            if (p.getUser() == null || (!"ADMIN".equalsIgnoreCase(p.getUser().getRole()) && p.getUser().isActive())) {
+                filtered.add(p);
+            }
+        }
+        filtered.sort((p1, p2) -> Long.compare(
+            p2.getId() != null ? p2.getId() : 0L,
+            p1.getId() != null ? p1.getId() : 0L
+        ));
+        return filtered;
     }
 
     @Override
@@ -124,10 +139,14 @@ public class ProfileServiceImpl implements ProfileService {
         List<Profiles> sourceList = oppositeGenderProfiles.isEmpty() ? profileRepository.findAll() : oppositeGenderProfiles;
         List<Profiles> filtered = new ArrayList<>();
         for (Profiles p : sourceList) {
-            if (p.getUser() == null || !"ADMIN".equalsIgnoreCase(p.getUser().getRole())) {
+            if (p.getUser() == null || (!"ADMIN".equalsIgnoreCase(p.getUser().getRole()) && p.getUser().isActive())) {
                 filtered.add(p);
             }
         }
+        filtered.sort((p1, p2) -> Long.compare(
+            p2.getId() != null ? p2.getId() : 0L,
+            p1.getId() != null ? p1.getId() : 0L
+        ));
         return filtered;
     }
 }

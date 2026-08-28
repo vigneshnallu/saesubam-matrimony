@@ -77,6 +77,8 @@ public class Users {
 
     private LocalDateTime emailTokenExpiry;
 
+    private boolean active = true;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -302,5 +304,13 @@ public class Users {
             return getProfileViewsCount() < 100; // Gold limit is 100 profiles
         }
         return false;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

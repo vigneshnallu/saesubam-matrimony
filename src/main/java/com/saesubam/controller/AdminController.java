@@ -391,4 +391,38 @@ public class AdminController {
 
         return "redirect:/admin/dashboard";
     }
+
+    /**
+     * Toggle Candidate User Active / Inactive status.
+     *
+     * @param id the user id
+     * @param session the session
+     * @param redirectAttributes the redirect attributes
+     * @return the string
+     */
+    @PostMapping("/users/toggle-status/{id}")
+    public String toggleUserStatus(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            Users targetUser = userRepository.findById(id).orElse(null);
+            if (targetUser != null) {
+                boolean newStatus = !targetUser.isActive();
+                targetUser.setActive(newStatus);
+                userRepository.save(targetUser);
+
+                String statusLabel = newStatus ? "ACTIVE (Visible on Dashboard)" : "INACTIVE (Hidden from Dashboard)";
+                redirectAttributes.addFlashAttribute("successMessage",
+                    "✅ Candidate User #" + targetUser.getId() + " (" + targetUser.getName() + ") status set to " + statusLabel + "!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update user status: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
 }

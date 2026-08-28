@@ -140,13 +140,28 @@
                             <span th:if="${user.membershipExpiryDate == null}" class="text-muted">No Expiry (Free)</span>
                         </td>
                         <td>
-                            <span class="badge bg-success-subtle text-success small" th:if="${user.emailVerified or user.mobileVerified}"><i class="bi bi-check-circle-fill me-1"></i> Verified</span>
-                            <span class="badge bg-secondary-subtle text-secondary small" th:if="${!user.emailVerified and !user.mobileVerified}">Unverified</span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle small me-1" th:if="${user.active}">
+                                <i class="bi bi-check-circle-fill me-1"></i> ACTIVE
+                            </span>
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle small me-1" th:if="${!user.active}">
+                                <i class="bi bi-x-circle-fill me-1"></i> INACTIVE
+                            </span>
+                            <span class="badge bg-light text-muted small border" th:if="${user.emailVerified or user.mobileVerified}">Verified</span>
                         </td>
                         <td class="text-end">
-                            <a th:href="@{/admin/user/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-3">
-                                <i class="bi bi-gear-fill me-1"></i> Edit Plan & Quota
-                            </a>
+                            <div class="d-flex justify-content-end align-items-center gap-1">
+                                <form th:action="@{/admin/users/toggle-status/{id}(id=${user.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm rounded-pill fw-bold px-3" 
+                                            th:classappend="${user.active ? 'btn-outline-danger' : 'btn-success'}"
+                                            th:onclick="${user.active ? 'return confirm(\'Deactivate candidate profile? (Will hide profile from Dashboard & Search)\')' : 'return confirm(\'Activate candidate profile? (Will make profile visible on Dashboard & Search)\')'}">
+                                        <i class="bi" th:classappend="${user.active ? 'bi-person-x-fill me-1' : 'bi-person-check-fill me-1'}"></i>
+                                        <span th:text="${user.active ? 'Deactivate' : 'Activate'}">Deactivate</span>
+                                    </button>
+                                </form>
+                                <a th:href="@{/admin/user/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold px-2">
+                                    <i class="bi bi-gear-fill me-1"></i> Edit Plan
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
