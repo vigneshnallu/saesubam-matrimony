@@ -103,7 +103,18 @@ public class ProfileServiceImpl implements ProfileService {
             }
 
             if (city != null && !city.trim().isEmpty()) {
-                predicates.add(cb.equal(cb.lower(root.get("city")), city.toLowerCase().trim()));
+                String[] cities = city.split(",");
+                List<Predicate> cityPredicates = new ArrayList<>();
+                for (String c : cities) {
+                    String trimmed = c.trim().toLowerCase();
+                    if (!trimmed.isEmpty()) {
+                        cityPredicates.add(cb.like(cb.lower(root.get("city")), "%" + trimmed + "%"));
+                        cityPredicates.add(cb.like(cb.lower(root.get("nativePlace")), "%" + trimmed + "%"));
+                    }
+                }
+                if (!cityPredicates.isEmpty()) {
+                    predicates.add(cb.or(cityPredicates.toArray(new Predicate[0])));
+                }
             }
 
             if (maritalStatus != null && !maritalStatus.trim().isEmpty()) {
