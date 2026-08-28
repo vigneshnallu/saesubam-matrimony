@@ -380,17 +380,62 @@
         </div>
     </div>
 
+    <!-- District & Region Wise Match Filter Card -->
+    <div class="card border-0 rounded-4 shadow-sm bg-white p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-danger fs-5"></i> District & Region Wise Match Filter
+                </h5>
+                <p class="text-muted small mb-0">Filter proposals by Madurai region or select your target district</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <select id="dashboardDistrictSelect" class="form-select form-select-sm rounded-pill border-danger-subtle fw-bold text-dark px-3" style="min-width: 200px;" onchange="filterDashboardByDistrict(this.value)">
+                    <option value="ALL">📍 All Districts & Regions</option>
+                    <option value="Madurai">📍 Madurai District & Region</option>
+                    <option value="Chennai">📍 Chennai Region</option>
+                    <option value="Coimbatore">📍 Coimbatore Region</option>
+                    <option value="Trichy">📍 Trichy / Thanjavur</option>
+                    <option value="Tirunelveli">📍 Tirunelveli / Tuticorin</option>
+                    <option value="Salem">📍 Salem / Erode</option>
+                    <option value="Dindigul">📍 Dindigul</option>
+                    <option value="Theni">📍 Theni</option>
+                    <option value="Virudhunagar">📍 Virudhunagar</option>
+                    <option value="Sivagangai">📍 Sivagangai / Karaikudi</option>
+                    <option value="Ramanathapuram">📍 Ramanathapuram</option>
+                    <option value="Thanjavur">📍 Thanjavur</option>
+                    <option value="Bengaluru">📍 Bengaluru (Tech Sector)</option>
+                </select>
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="filterDashboardByDistrict('ALL')">Reset</button>
+            </div>
+        </div>
+
+        <!-- District Region Quick Filter Pills -->
+        <div class="d-flex align-items-center gap-2 flex-wrap" id="districtPillsContainer">
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-danger" onclick="filterDashboardByDistrict('ALL', this)">All Regions</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Madurai', this)"><i class="bi bi-geo-alt me-1"></i> Madurai Region</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Chennai', this)"><i class="bi bi-geo-alt me-1"></i> Chennai Region</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Coimbatore', this)"><i class="bi bi-geo-alt me-1"></i> Coimbatore Region</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Trichy', this)"><i class="bi bi-geo-alt me-1"></i> Trichy Region</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Tirunelveli', this)"><i class="bi bi-geo-alt me-1"></i> Tirunelveli Region</button>
+            <button type="button" class="btn btn-sm rounded-pill fw-bold district-pill btn-outline-danger" onclick="filterDashboardByDistrict('Salem', this)"><i class="bi bi-geo-alt me-1"></i> Salem Region</button>
+        </div>
+    </div>
+
     <!-- Recommended Matches Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-1">Recommended Matches for You</h4>
-            <p class="text-muted small mb-0">Handpicked proposals based on your community and partner preferences</p>
+            <p class="text-muted small mb-0">Handpicked proposals based on your community, location, and partner preferences</p>
         </div>
         <a href="/profiles" class="text-danger fw-bold text-decoration-none">View All Matches <i class="bi bi-arrow-right"></i></a>
     </div>
 
     <div class="row g-4">
-        <div class="col-md-4" th:each="m : ${recommendedMatches}">
+        <div class="col-md-4 match-card-wrapper" th:each="m : ${recommendedMatches}" 
+             th:data-city="${m.city}" 
+             th:data-state="${m.state}" 
+             th:data-native="${m.nativePlace}">
             <div class="match-card">
                 <div class="match-img">
                     <img th:if="${m.photoUrl != null}" th:src="${m.photoUrl}" alt="match">
@@ -419,12 +464,78 @@
                 </div>
             </div>
         </div>
+
+        <div id="noDistrictMatchMsg" class="col-12 text-center py-5 bg-white rounded-4 shadow-sm border" style="display: none;">
+            <i class="bi bi-geo-alt-fill display-4 text-muted mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">No Candidate Matches Found in Selected District</h5>
+            <p class="text-muted small mb-3">Try choosing another Tamil Nadu district or click 'All Regions' to see all proposals.</p>
+            <button class="btn btn-danger btn-sm rounded-pill px-4 fw-bold" onclick="filterDashboardByDistrict('ALL')">Show All Regions</button>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/lang.js"></script>
 <script>
+    function filterDashboardByDistrict(districtKey, btnElement) {
+        if (btnElement) {
+            document.querySelectorAll('.district-pill').forEach(b => {
+                b.classList.remove('btn-danger');
+                b.classList.add('btn-outline-danger');
+            });
+            btnElement.classList.remove('btn-outline-danger');
+            btnElement.classList.add('btn-danger');
+        }
+        
+        var select = document.getElementById('dashboardDistrictSelect');
+        if (select && select.value !== districtKey) {
+            select.value = districtKey;
+        }
+
+        var cards = document.querySelectorAll('.match-card-wrapper');
+        var count = 0;
+        var target = (districtKey || 'all').toLowerCase().trim();
+
+        cards.forEach(card => {
+            var cardCity = (card.getAttribute('data-city') || '').toLowerCase();
+            var cardState = (card.getAttribute('data-state') || '').toLowerCase();
+            var cardNative = (card.getAttribute('data-native') || '').toLowerCase();
+
+            var isMatch = false;
+            if (target === 'all') {
+                isMatch = true;
+            } else if (target === 'madurai') {
+                isMatch = cardCity.includes('madurai') || cardNative.includes('madurai') ||
+                          cardCity.includes('dindigul') || cardCity.includes('theni') ||
+                          cardCity.includes('virudhunagar') || cardCity.includes('sivagangai') || cardCity.includes('ramanathapuram');
+            } else if (target === 'chennai') {
+                isMatch = cardCity.includes('chennai') || cardCity.includes('kanchipuram') || cardCity.includes('tiruvallur') || cardCity.includes('chengalpattu');
+            } else if (target === 'coimbatore') {
+                isMatch = cardCity.includes('coimbatore') || cardCity.includes('tiruppur') || cardCity.includes('erode') || cardCity.includes('nilgiris');
+            } else if (target === 'trichy') {
+                isMatch = cardCity.includes('trichy') || cardCity.includes('tiruchirappalli') || cardCity.includes('thanjavur') || cardCity.includes('karur') || cardCity.includes('pudukkottai');
+            } else if (target === 'tirunelveli') {
+                isMatch = cardCity.includes('tirunelveli') || cardCity.includes('tuticorin') || cardCity.includes('thoothukudi') || cardCity.includes('tenkasi') || cardCity.includes('kanyakumari');
+            } else if (target === 'salem') {
+                isMatch = cardCity.includes('salem') || cardCity.includes('namakkal') || cardCity.includes('dharmapuri') || cardCity.includes('krishnagiri');
+            } else {
+                isMatch = cardCity.includes(target) || cardNative.includes(target);
+            }
+
+            if (isMatch) {
+                card.style.display = '';
+                count++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        var noMatchMsg = document.getElementById('noDistrictMatchMsg');
+        if (noMatchMsg) {
+            noMatchMsg.style.display = (count === 0) ? 'block' : 'none';
+        }
+    }
+
     function toggleMobileSidebar() {
         var sidebar = document.querySelector('.sidebar');
         var overlay = document.querySelector('.sidebar-overlay');
