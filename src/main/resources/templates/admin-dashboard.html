@@ -36,14 +36,14 @@
 <body>
 
 <!-- Admin Navbar -->
-<nav class="admin-navbar d-flex justify-content-between align-items-center mb-4">
+<nav class="admin-navbar d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 shadow-sm">
     <div class="d-flex align-items-center gap-2">
         <i class="bi bi-shield-lock-fill text-danger fs-3"></i>
-        <span class="fs-4 fw-bold">SaeSubam Admin Panel</span>
-        <span class="badge bg-danger-subtle text-danger ms-2 px-2 py-1 fs-6">ADMINISTRATOR</span>
+        <span class="fs-4 fw-bold text-white">SaeSubam Admin Panel</span>
+        <span class="badge bg-danger-subtle text-danger ms-2 px-3 py-2 rounded-pill fs-6 fw-bold">ADMINISTRATOR</span>
     </div>
     <div class="d-flex align-items-center gap-3">
-        <span class="small opacity-75">Logged in as: <strong class="text-white" th:text="${adminUser.name}">Admin User</strong></span>
+        <span class="small text-light opacity-75"><i class="bi bi-person-circle me-1"></i> Logged in: <strong class="text-white" th:text="${adminUser.name}">Admin User</strong></span>
         <a href="/dashboard" class="btn btn-outline-light btn-sm rounded-pill px-3 fw-bold"><i class="bi bi-house-door-fill me-1"></i> User Site</a>
         <a href="/logout" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold"><i class="bi bi-box-arrow-right me-1"></i> Logout</a>
     </div>
@@ -52,37 +52,65 @@
 <div class="container-fluid px-4 pb-5">
 
     <!-- Alert Messages -->
-    <div th:if="${successMessage}" class="alert alert-success border-0 rounded-3 shadow-sm mb-4">
-        <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}">Success!</span>
+    <div th:if="${successMessage}" class="alert alert-success border-0 rounded-3 shadow-sm mb-4 d-flex align-items-center">
+        <i class="bi bi-check-circle-fill me-2 fs-5"></i> <span th:text="${successMessage}">Success!</span>
     </div>
-    <div th:if="${errorMessage}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-4">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorMessage}">Error!</span>
+    <div th:if="${errorMessage}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-4 d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i> <span th:text="${errorMessage}">Error!</span>
     </div>
 
     <!-- Quick Stats Summary Cards -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="text-muted small fw-bold">TOTAL REGISTERED USERS</div>
-                <div class="fs-2 fw-bold text-dark mt-1" th:text="${usersList != null ? usersList.size() : 0}">24</div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-bold">TOTAL USERS</div>
+                        <div class="fs-2 fw-bold text-dark mt-1" th:text="${usersList != null ? usersList.size() : 0}">24</div>
+                    </div>
+                    <div class="bg-danger-subtle text-danger rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <i class="bi bi-people-fill fs-4"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="text-muted small fw-bold">TOTAL PAYMENT TRANSACTIONS</div>
-                <div class="fs-2 fw-bold text-primary mt-1" th:text="${transactions != null ? transactions.size() : 0}">12</div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-bold">PAYMENTS</div>
+                        <div class="fs-2 fw-bold text-primary mt-1" th:text="${transactions != null ? transactions.size() : 0}">12</div>
+                    </div>
+                    <div class="bg-primary-subtle text-primary rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <i class="bi bi-receipt-cutoff fs-4"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="text-muted small fw-bold">GOLD USERS (100 QUOTA)</div>
-                <div class="fs-2 fw-bold text-warning mt-1">GOLD</div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-bold">GOLD PLAN QUOTA</div>
+                        <div class="fs-2 fw-bold text-warning mt-1">100 VIEWS</div>
+                    </div>
+                    <div class="bg-warning-subtle text-warning rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <i class="bi bi-gem fs-4"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="stat-card">
-                <div class="text-muted small fw-bold">SYSTEM STATUS</div>
-                <div class="fs-4 fw-bold text-success mt-1"><i class="bi bi-patch-check-fill me-1"></i> OPERATIONAL</div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small fw-bold">SYSTEM STATUS</div>
+                        <div class="fs-5 fw-bold text-success mt-2"><i class="bi bi-patch-check-fill me-1"></i> OPERATIONAL</div>
+                    </div>
+                    <div class="bg-success-subtle text-success rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                        <i class="bi bi-cpu-fill fs-4"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -91,65 +119,70 @@
     <div class="card-custom p-4 mb-5">
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
             <div>
-                <h4 class="fw-bold text-dark mb-1"><i class="bi bi-people-fill text-danger me-2"></i> Matrimony Users & Membership Management</h4>
-                <p class="text-muted small mb-0">Modify candidate plans, adjust profile view counts, update quotas, and edit credentials.</p>
+                <h4 class="fw-bold text-dark mb-1"><i class="bi bi-people-fill text-danger me-2"></i> Candidate Users & Membership Quotas</h4>
+                <p class="text-muted small mb-0">Modify candidate plans, adjust profile view counts, toggle active status, and edit details.</p>
             </div>
-            <input type="text" id="userSearchInput" onkeyup="filterUsers()" class="form-control form-control-sm w-auto" placeholder="Search by name, email, or mobile..." style="min-width: 280px;">
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="userSearchInput" onkeyup="filterUsers()" class="form-control form-control-sm ps-5 rounded-pill" placeholder="Search name, email, or mobile..." style="min-width: 300px;">
+            </div>
         </div>
 
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="usersTable">
                 <thead class="table-light small text-muted">
                     <tr>
-                        <th>User ID</th>
-                        <th>Candidate Name</th>
-                        <th>Email & Mobile</th>
-                        <th>Role</th>
-                        <th>Membership Plan</th>
-                        <th>Profile Views Quota</th>
-                        <th>Plan Expiry Date</th>
-                        <th>Status</th>
-                        <th class="text-end">Form Level Admin Action</th>
+                        <th class="py-3">User ID</th>
+                        <th class="py-3">Candidate Name</th>
+                        <th class="py-3">Email & Mobile</th>
+                        <th class="py-3">Role</th>
+                        <th class="py-3">Membership Plan</th>
+                        <th class="py-3">Profile Views Quota</th>
+                        <th class="py-3">Plan Expiry Date</th>
+                        <th class="py-3">Status</th>
+                        <th class="py-3 text-end text-nowrap">Admin Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="user : ${usersList}">
-                        <td class="fw-bold text-secondary" th:text="'#' + ${user.id}">#1001</td>
+                        <td class="fw-bold text-secondary text-nowrap" th:text="'#' + ${user.id}">#1001</td>
                         <td>
                             <div class="fw-bold text-dark" th:text="${user.name}">Priya Sundaram</div>
                             <span class="small text-muted" th:text="${user.gender != null ? user.gender : 'N/A'}">Female</span>
                         </td>
                         <td class="small">
-                            <div class="fw-semibold text-dark" th:text="${user.email}">priya@gmail.com</div>
-                            <div class="text-muted" th:text="${user.mobile}">9876543210</div>
+                            <div class="fw-semibold text-dark text-nowrap" th:text="${user.email}">priya@gmail.com</div>
+                            <div class="text-muted text-nowrap" th:text="${user.mobile}">9876543210</div>
                         </td>
                         <td>
-                            <span class="badge" th:classappend="${user.role == 'ADMIN' ? 'bg-danger' : 'bg-secondary'}" th:text="${user.role}">USER</span>
+                            <span class="badge rounded-pill px-3 py-1" th:classappend="${user.role == 'ADMIN' ? 'bg-danger' : 'bg-secondary'}" th:text="${user.role}">USER</span>
                         </td>
                         <td>
-                            <span class="badge" th:classappend="${user.membershipType != null and user.membershipType.name() == 'GOLD' ? 'bg-warning text-dark' : (user.membershipType != null and (user.membershipType.name() == 'PREMIUM' or user.membershipType.name() == 'PLATINUM') ? 'bg-success' : 'bg-light text-dark border')}" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${user.membershipType != null and user.membershipType.name() == 'GOLD' ? 'bg-warning text-dark' : (user.membershipType != null and (user.membershipType.name() == 'PREMIUM' or user.membershipType.name() == 'PLATINUM') ? 'bg-success' : 'bg-light text-dark border')}" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
                         </td>
                         <td class="small">
-                            <div class="fw-bold" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + ${user.maxProfileViews != null ? user.maxProfileViews : 0} + ' Views'">35 / 100 Views</div>
-                            <div class="progress rounded-pill mt-1" style="height: 6px; width: 100px;">
+                            <div class="fw-bold text-nowrap" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + ${user.maxProfileViews != null ? user.maxProfileViews : 0} + ' Views'">35 / 100 Views</div>
+                            <div class="progress rounded-pill mt-1" style="height: 6px; width: 110px;">
                                 <div class="progress-bar bg-danger" role="progressbar" th:style="'width: ' + (${user.maxProfileViews != null and user.maxProfileViews > 0 and user.profileViewsCount != null} ? (${user.profileViewsCount * 100 / user.maxProfileViews}) : 0) + '%;'"></div>
                             </div>
                         </td>
-                        <td class="small">
+                        <td class="small text-nowrap">
                             <span th:if="${user.membershipExpiryDate != null}" class="fw-semibold text-dark" th:text="${#temporals.format(user.membershipExpiryDate, 'dd MMM yyyy')}">15 Nov 2026</span>
                             <span th:if="${user.membershipExpiryDate == null}" class="text-muted">No Expiry (Free)</span>
                         </td>
                         <td>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle small me-1" th:if="${user.active}">
-                                <i class="bi bi-check-circle-fill me-1"></i> ACTIVE
-                            </span>
-                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle small me-1" th:if="${!user.active}">
-                                <i class="bi bi-x-circle-fill me-1"></i> INACTIVE
-                            </span>
-                            <span class="badge bg-light text-muted small border" th:if="${user.emailVerified or user.mobileVerified}">Verified</span>
+                            <div class="d-flex align-items-center gap-1 flex-wrap">
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1 small" th:if="${user.active}">
+                                    <i class="bi bi-check-circle-fill me-1"></i> ACTIVE
+                                </span>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-1 small" th:if="${!user.active}">
+                                    <i class="bi bi-x-circle-fill me-1"></i> INACTIVE
+                                </span>
+                                <span class="badge bg-light text-muted small border rounded-pill px-2 py-1" th:if="${user.emailVerified or user.mobileVerified}">Verified</span>
+                            </div>
                         </td>
-                        <td class="text-end">
-                            <div class="d-flex justify-content-end align-items-center gap-1">
+                        <td class="text-end text-nowrap">
+                            <div class="d-flex justify-content-end align-items-center gap-2">
                                 <form th:action="@{/admin/users/toggle-status/{id}(id=${user.id})}" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-sm rounded-pill fw-bold px-3" 
                                             th:classappend="${user.active ? 'btn-outline-danger' : 'btn-success'}"
@@ -158,7 +191,7 @@
                                         <span th:text="${user.active ? 'Deactivate' : 'Activate'}">Deactivate</span>
                                     </button>
                                 </form>
-                                <a th:href="@{/admin/user/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold px-2">
+                                <a th:href="@{/admin/user/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-secondary rounded-pill fw-bold px-3">
                                     <i class="bi bi-gear-fill me-1"></i> Edit Plan
                                 </a>
                             </div>
@@ -176,47 +209,47 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light small text-muted">
                     <tr>
-                        <th>Tx ID</th>
-                        <th>User ID & Candidate Name</th>
-                        <th>Plan Code</th>
-                        <th>Amount</th>
-                        <th>UTR Reference No</th>
-                        <th>Payment Screenshot</th>
-                        <th>Submission Date</th>
-                        <th>Verification Status</th>
-                        <th>Admin Action</th>
+                        <th class="py-3">Tx ID</th>
+                        <th class="py-3">Candidate Name</th>
+                        <th class="py-3">Plan Code</th>
+                        <th class="py-3">Amount</th>
+                        <th class="py-3">UTR Reference No</th>
+                        <th class="py-3">Payment Screenshot</th>
+                        <th class="py-3">Submission Date</th>
+                        <th class="py-3">Verification Status</th>
+                        <th class="py-3 text-end text-nowrap">Admin Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="tx : ${transactions}">
-                        <td class="fw-bold text-secondary" th:text="'#' + ${tx.id}">#1</td>
+                        <td class="fw-bold text-secondary text-nowrap" th:text="'#' + ${tx.id}">#1</td>
                         <td>
                             <div class="fw-bold text-dark" th:text="${tx.user != null ? tx.user.name : 'Unknown'}">Candidate</div>
-                            <span class="small text-muted" th:text="${tx.user != null ? 'ID: #' + (100000 + tx.user.id) : ''}">ID: 101001</span>
+                            <span class="small text-muted text-nowrap" th:text="${tx.user != null ? 'ID: #' + (100000 + tx.user.id) : ''}">ID: 101001</span>
                         </td>
-                        <td><span class="badge bg-danger-subtle text-danger fw-bold" th:text="${tx.planCode}">GOLD</span></td>
-                        <td class="fw-bold text-dark" th:text="'₹' + ${tx.amount}">₹1499</td>
-                        <td><code class="text-primary fw-bold" th:text="${tx.utrNumber}">UTR_123456</code></td>
+                        <td><span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-3 py-1" th:text="${tx.planCode}">GOLD</span></td>
+                        <td class="fw-bold text-dark text-nowrap" th:text="'₹' + ${tx.amount}">₹1499</td>
+                        <td><code class="text-primary fw-bold px-2 py-1 bg-light rounded border text-nowrap" th:text="${tx.utrNumber}">UTR_123456</code></td>
                         <td>
-                            <button type="button" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}" th:data-img="${tx.screenshotUrl}" class="btn btn-sm btn-outline-primary rounded-pill fw-bold" onclick="openPaymentProofModal(this)">
+                            <button type="button" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}" th:data-img="${tx.screenshotUrl}" class="btn btn-sm btn-outline-primary rounded-pill fw-bold text-nowrap" onclick="openPaymentProofModal(this)">
                                 <i class="bi bi-image me-1"></i> View Screenshot
                             </button>
                             <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
-                        <td class="small fw-semibold text-dark" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
+                        <td class="small fw-semibold text-dark text-nowrap" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
                         <td>
-                            <span th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}" class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-2 fw-bold">
+                            <span th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}" class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-2 fw-bold text-nowrap">
                                 <i class="bi bi-clock-history me-1"></i> PENDING APPROVAL
                             </span>
-                            <span th:if="${tx.paymentStatus == 'ACTIVE_VERIFIED' or tx.paymentStatus == 'VERIFIED' or tx.paymentStatus == 'APPROVED'}" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-bold">
+                            <span th:if="${tx.paymentStatus == 'ACTIVE_VERIFIED' or tx.paymentStatus == 'VERIFIED' or tx.paymentStatus == 'APPROVED'}" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-bold text-nowrap">
                                 <i class="bi bi-check-circle-fill me-1"></i> VERIFIED & ACTIVE
                             </span>
-                            <span th:if="${tx.paymentStatus == 'REJECTED'}" class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 fw-bold">
+                            <span th:if="${tx.paymentStatus == 'REJECTED'}" class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2 fw-bold text-nowrap">
                                 <i class="bi bi-x-circle-fill me-1"></i> REJECTED
                             </span>
                         </td>
-                        <td>
-                            <div class="d-flex gap-1" th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}">
+                        <td class="text-end text-nowrap">
+                            <div class="d-flex justify-content-end align-items-center gap-1" th:if="${tx.paymentStatus == 'PENDING_APPROVAL' or tx.paymentStatus == 'PENDING'}">
                                 <form th:action="@{/admin/payment/approve/{id}(id=${tx.id})}" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-success fw-bold rounded-pill px-3 shadow-sm" onclick="return confirm('Approve this payment and activate candidate membership plan?')">
                                         <i class="bi bi-check-lg me-1"></i> Approve
