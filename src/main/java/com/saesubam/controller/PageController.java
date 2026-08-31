@@ -866,7 +866,7 @@ public class PageController {
         }
 
         String planName = "Gold Plan";
-        int amount = 999;
+        int amount = 1499;
         String duration = "6 Months";
 
         if ("SILVER".equalsIgnoreCase(plan) || "PREMIUM".equalsIgnoreCase(plan)) {
@@ -875,7 +875,7 @@ public class PageController {
             duration = "3 Months";
         } else if ("PLATINUM".equalsIgnoreCase(plan)) {
             planName = "Platinum VIP";
-            amount = 1999;
+            amount = 2999;
             duration = "1 Year";
         }
 
