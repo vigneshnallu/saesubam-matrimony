@@ -380,37 +380,43 @@
         </div>
     </div>
 
-    <!-- District Wise Match Filter Card (Multi-Select) -->
-    <div class="card border-0 rounded-4 shadow-sm bg-white p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div>
-                <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                    <i class="bi bi-geo-alt-fill text-danger fs-5"></i> District Wise Match Filter (Multi-Select)
-                </h5>
-                <p class="text-muted small mb-0">Click one or multiple Tamil Nadu districts to view matching proposals</p>
+    <!-- Compact District Multi-Select Filter Bar -->
+    <div class="card border-0 rounded-4 shadow-sm bg-white p-3 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                <span class="fw-bold text-dark me-2">District Filter:</span>
+                
+                <div class="dropdown position-relative" style="min-width: 260px;">
+                    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center rounded-pill bg-white text-dark py-2 px-3 fw-semibold border-danger-subtle" type="button" id="dashboardDistrictMultiSelectBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <span id="dashboardSelectedDistrictsText" class="text-truncate">📍 All Tamil Districts</span>
+                    </button>
+                    <div class="dropdown-menu p-3 shadow-lg rounded-4 border-0 w-100 mt-1" style="max-height: 280px; overflow-y: auto;" aria-labelledby="dashboardDistrictMultiSelectBtn">
+                        <div class="form-check mb-2 pb-2 border-bottom">
+                            <input class="form-check-input" type="checkbox" id="dashSelectAllDistricts" onchange="toggleAllDashboardDistricts(this)">
+                            <label class="form-check-label fw-bold text-dark" for="dashSelectAllDistricts">Select All Districts</label>
+                        </div>
+                        <div id="dashboardDistrictCheckboxes">
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Madurai" id="ddst_Madurai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Madurai">📍 Madurai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Dindigul" id="ddst_Dindigul" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Dindigul">📍 Dindigul</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Theni" id="ddst_Theni" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Theni">📍 Theni</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Virudhunagar" id="ddst_Virudhunagar" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Virudhunagar">📍 Virudhunagar</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Sivagangai" id="ddst_Sivagangai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Sivagangai">📍 Sivagangai / Karaikudi</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Ramanathapuram" id="ddst_Ramanathapuram" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Ramanathapuram">📍 Ramanathapuram</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Chennai" id="ddst_Chennai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Chennai">📍 Chennai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Coimbatore" id="ddst_Coimbatore" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Coimbatore">📍 Coimbatore</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Trichy" id="ddst_Trichy" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Trichy">📍 Tiruchirappalli (Trichy)</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tirunelveli" id="ddst_Tirunelveli" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tirunelveli">📍 Tirunelveli</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Salem" id="ddst_Salem" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Salem">📍 Salem</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Thanjavur" id="ddst_Thanjavur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Thanjavur">📍 Thanjavur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Erode" id="ddst_Erode" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Erode">📍 Erode</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Bengaluru" id="ddst_Bengaluru" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Bengaluru">📍 Bengaluru</label></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="resetDashboardDistrictPills()">Reset All</button>
-            </div>
-        </div>
 
-        <!-- District Multi-Select Quick Pills -->
-        <div class="d-flex align-items-center gap-2 flex-wrap" id="districtPillsContainer">
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-danger" data-val="ALL" onclick="toggleDashboardDistrictPill(this)">All Districts</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Madurai" onclick="toggleDashboardDistrictPill(this)">📍 Madurai</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Dindigul" onclick="toggleDashboardDistrictPill(this)">📍 Dindigul</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Theni" onclick="toggleDashboardDistrictPill(this)">📍 Theni</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Virudhunagar" onclick="toggleDashboardDistrictPill(this)">📍 Virudhunagar</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Sivagangai" onclick="toggleDashboardDistrictPill(this)">📍 Sivagangai</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Ramanathapuram" onclick="toggleDashboardDistrictPill(this)">📍 Ramanathapuram</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Chennai" onclick="toggleDashboardDistrictPill(this)">📍 Chennai</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Coimbatore" onclick="toggleDashboardDistrictPill(this)">📍 Coimbatore</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Trichy" onclick="toggleDashboardDistrictPill(this)">📍 Trichy</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Tirunelveli" onclick="toggleDashboardDistrictPill(this)">📍 Tirunelveli</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Salem" onclick="toggleDashboardDistrictPill(this)">📍 Salem</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Thanjavur" onclick="toggleDashboardDistrictPill(this)">📍 Thanjavur</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Erode" onclick="toggleDashboardDistrictPill(this)">📍 Erode</button>
-            <button type="button" class="btn btn-sm rounded-pill fw-bold dashboard-dst-pill btn-outline-danger" data-val="Bengaluru" onclick="toggleDashboardDistrictPill(this)">📍 Bengaluru</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold" onclick="resetDashboardDistrictFilter()">Reset Filter</button>
         </div>
     </div>
 
@@ -469,47 +475,23 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/lang.js"></script>
 <script>
-    function toggleDashboardDistrictPill(pillBtn) {
-        var val = pillBtn.getAttribute('data-val');
-        var allBtn = document.querySelector('.dashboard-dst-pill[data-val="ALL"]');
-
-        if (val === 'ALL') {
-            document.querySelectorAll('.dashboard-dst-pill').forEach(b => {
-                b.classList.remove('btn-danger');
-                b.classList.add('btn-outline-danger');
-            });
-            allBtn.classList.remove('btn-outline-danger');
-            allBtn.classList.add('btn-danger');
-        } else {
-            if (allBtn) {
-                allBtn.classList.remove('btn-danger');
-                allBtn.classList.add('btn-outline-danger');
-            }
-            if (pillBtn.classList.contains('btn-danger')) {
-                pillBtn.classList.remove('btn-danger');
-                pillBtn.classList.add('btn-outline-danger');
-            } else {
-                pillBtn.classList.remove('btn-outline-danger');
-                pillBtn.classList.add('btn-danger');
-            }
-        }
-
-        filterDashboardBySelectedDistricts();
-    }
-
-    function resetDashboardDistrictPills() {
-        var allBtn = document.querySelector('.dashboard-dst-pill[data-val="ALL"]');
-        if (allBtn) {
-            toggleDashboardDistrictPill(allBtn);
-        }
-    }
-
-    function filterDashboardBySelectedDistricts() {
-        var selectedPills = Array.from(document.querySelectorAll('.dashboard-dst-pill.btn-danger')).map(b => b.getAttribute('data-val'));
+    function updateDashboardDistrictFilter() {
+        var checked = Array.from(document.querySelectorAll('.dash-dst-chk:checked')).map(cb => cb.value);
+        var btnText = document.getElementById('dashboardSelectedDistrictsText');
         
-        var isAllSelected = selectedPills.includes('ALL') || selectedPills.length === 0;
+        if (!btnText) return;
+
+        if (checked.length === 0) {
+            btnText.textContent = '📍 All Tamil Districts';
+        } else if (checked.length === 1) {
+            btnText.textContent = '📍 ' + checked[0];
+        } else {
+            btnText.textContent = '📍 ' + checked.length + ' Districts Selected';
+        }
+
         var cards = document.querySelectorAll('.match-card-wrapper');
         var count = 0;
+        var isAllSelected = checked.length === 0;
 
         cards.forEach(card => {
             var cardCity = (card.getAttribute('data-city') || '').toLowerCase();
@@ -519,8 +501,8 @@
             if (isAllSelected) {
                 isMatch = true;
             } else {
-                for (var i = 0; i < selectedPills.length; i++) {
-                    var target = selectedPills[i].toLowerCase().trim();
+                for (var i = 0; i < checked.length; i++) {
+                    var target = checked[i].toLowerCase().trim();
                     if (cardCity.includes(target) || cardNative.includes(target)) {
                         isMatch = true;
                         break;
@@ -540,6 +522,22 @@
         if (noMatchMsg) {
             noMatchMsg.style.display = (count === 0) ? 'block' : 'none';
         }
+    }
+
+    function toggleAllDashboardDistricts(selectAllCb) {
+        document.querySelectorAll('.dash-dst-chk').forEach(cb => {
+            cb.checked = selectAllCb.checked;
+        });
+        updateDashboardDistrictFilter();
+    }
+
+    function resetDashboardDistrictFilter() {
+        document.querySelectorAll('.dash-dst-chk').forEach(cb => {
+            cb.checked = false;
+        });
+        var selectAll = document.getElementById('dashSelectAllDistricts');
+        if (selectAll) selectAll.checked = false;
+        updateDashboardDistrictFilter();
     }
 
     function toggleMobileSidebar() {
