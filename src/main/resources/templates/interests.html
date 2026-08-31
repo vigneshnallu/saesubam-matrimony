@@ -344,7 +344,7 @@
                         </div>
                     </a>
                     <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}" class="text-decoration-none text-dark">
                                 <h5 class="fw-bold mb-0" th:text="${item.sender.name}">Sender Name</h5>
                             </a>
@@ -388,11 +388,11 @@
                         </div>
                     </a>
                     <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="text-decoration-none text-dark">
                                 <h5 class="fw-bold mb-0" th:text="${item.receiver.name}">Receiver Name</h5>
                             </a>
-                            <span class="badge" th:classappend="${item.status.name() == 'ACCEPTED' ? 'bg-success-subtle text-success' : (item.status.name() == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${item.status.name() == 'ACCEPTED' ? 'bg-success-subtle text-success' : (item.status.name() == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
                         </div>
                         <p class="text-muted small mb-2" th:text="${item.receiver.profile != null ? item.receiver.profile.occupation + ' • ' + item.receiver.profile.city : 'Member'}">Profession • City</p>
                         <span class="small text-muted"><i class="bi bi-send me-1"></i> Interest sent on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
