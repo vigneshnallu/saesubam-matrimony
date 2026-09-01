@@ -228,26 +228,39 @@ public class VerificationServiceImpl implements VerificationService {
         String otpStr = String.valueOf(otp);
 
         System.out.println("=================================================");
-        System.out.println("📧 [FREE EMAIL OTP GENERATED] To " + email + " (" + name + "): " + otpStr);
+        System.out.println("📧 [REGISTRATION EMAIL OTP GENERATED] To " + email + " (" + name + "): " + otpStr);
         System.out.println("=================================================");
 
         if (email != null && !email.trim().isEmpty()) {
-            System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating background registration OTP email dispatch to: " + email);
+            final String targetEmail = email.trim();
+            final String targetName = (name != null && !name.trim().isEmpty()) ? name.trim() : "Member";
+
+            System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating HTML registration OTP email dispatch to: " + targetEmail);
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
                     JavaMailSender sender = getActiveMailSender();
-                    SimpleMailMessage message = new SimpleMailMessage();
-                    message.setFrom("vigneshn051995@gmail.com");
-                    message.setTo(email.trim());
-                    message.setSubject("SaeSubam Matrimony - Your Registration OTP Code: " + otpStr);
-                    message.setText("Dear " + (name != null ? name : "Member") + ",\n\n"
-                            + "Your 6-digit OTP code for SaeSubam Matrimony account registration & verification is: " + otpStr + "\n\n"
-                            + "This code is valid for 15 minutes. Please do not share it with anyone.\n\n"
-                            + "Regards,\nSaeSubam Matrimony Team");
-                    sender.send(message);
-                    System.out.println("✅ REGISTRATION OTP EMAIL SENT SUCCESSFULLY via Gmail SMTP to " + email);
+                    jakarta.mail.internet.MimeMessage mimeMessage = sender.createMimeMessage();
+                    org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+                    helper.setFrom("vigneshn051995@gmail.com");
+                    helper.setTo(targetEmail);
+                    helper.setSubject("SaeSubam Matrimony - Your Registration OTP Code: " + otpStr);
+
+                    String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;'>"
+                            + "<h2 style='color: #e11d48; text-align: center;'>SaeSubam Matrimony</h2>"
+                            + "<p style='font-size: 16px; color: #334155;'>Dear <strong>" + targetName + "</strong>,</p>"
+                            + "<p style='font-size: 15px; color: #475569;'>Your 6-digit OTP verification code for SaeSubam Matrimony registration is:</p>"
+                            + "<div style='text-align: center; margin: 24px 0;'><span style='font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #e11d48; background: #fff1f2; padding: 12px 24px; border-radius: 12px; border: 1px dashed #e11d48; display: inline-block;'>" + otpStr + "</span></div>"
+                            + "<p style='font-size: 14px; color: #64748b;'>This verification code is valid for 15 minutes. Please do not share this code with anyone.</p>"
+                            + "<hr style='border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;'>"
+                            + "<p style='font-size: 12px; color: #94a3b8; text-align: center;'>Regards,<br><strong>SaeSubam Matrimony Verification Team</strong></p>"
+                            + "</div>";
+
+                    helper.setText(htmlContent, true);
+                    sender.send(mimeMessage);
+                    System.out.println("✅ REGISTRATION OTP HTML EMAIL SENT SUCCESSFULLY via Gmail SMTP to " + targetEmail);
                 } catch (Throwable t) {
-                    System.err.println("❌ [SMTP ERROR FAILED] Could not send registration OTP email to " + email + ": " + t.getMessage());
+                    System.err.println("❌ [SMTP ERROR FAILED] Could not send registration OTP email to " + targetEmail + ": " + t.getMessage());
                     t.printStackTrace();
                 }
             });
