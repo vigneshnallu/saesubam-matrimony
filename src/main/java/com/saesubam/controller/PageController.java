@@ -956,17 +956,17 @@ public class PageController {
             : ("UTR_" + (100000000000L + (long) (new java.util.Random().nextDouble() * 899999999999L)));
 
         try {
-            // Encode uploaded payment screenshot image as permanent Base64 Data URL for persistent cloud storage
+            // Prefer clean relative file path for database storage to ensure ultra-fast 100% reliable PostgreSQL inserts
             String screenshotDataUrl = "";
-            if (screenshotFile != null && !screenshotFile.isEmpty()) {
+            if (filename != null && !filename.isEmpty()) {
+                screenshotDataUrl = "/uploads/payments/" + filename;
+            } else if (screenshotFile != null && !screenshotFile.isEmpty()) {
                 byte[] bytes = screenshotFile.getBytes();
                 String mimeType = screenshotFile.getContentType();
                 if (mimeType == null || mimeType.trim().isEmpty()) {
                     mimeType = "image/png";
                 }
                 screenshotDataUrl = "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
-            } else if (filename != null && !filename.isEmpty()) {
-                screenshotDataUrl = "/uploads/payments/" + filename;
             }
 
             PaymentTransaction paymentTransaction = new PaymentTransaction(
@@ -977,13 +977,14 @@ public class PageController {
                 screenshotDataUrl
             );
             paymentTransaction.setPaymentStatus("PENDING_APPROVAL");
-            paymentTransactionRepository.save(paymentTransaction);
-            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL + Base64 Image) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
+            paymentTransactionRepository.saveAndFlush(paymentTransaction);
+            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
-            System.out.println("Payment transaction save error: " + e.getMessage());
+            System.err.println("❌ Payment transaction save error: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        // Dispatch Automated Email Notification to Admin vigneshn051995@gmail.com with screenshot attachment
+        // Dispatch Automated Dual Email Notifications to Admin & Candidate with screenshot attachment
         final String finalFilename = filename;
         final Path finalDestination = destination;
         final String finalTxnId = txnId;
@@ -1013,46 +1014,69 @@ public class PageController {
                     activeSender = impl;
                 }
 
-                MimeMessage mimeMessage = activeSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                // 1. Email Alert to Administrator (vigneshn051995@gmail.com)
+                MimeMessage adminMimeMessage = activeSender.createMimeMessage();
+                MimeMessageHelper adminHelper = new MimeMessageHelper(adminMimeMessage, true, "UTF-8");
 
-                helper.setFrom("vigneshn051995@gmail.com");
-                helper.setTo("vigneshn051995@gmail.com");
-                helper.setSubject("💳 [SaeSubam Matrimony] Payment Screenshot & Details from " + finalUser.getName()
-                    + " (UTR: " + finalTxnId + ")");
+                adminHelper.setFrom("vigneshn051995@gmail.com");
+                adminHelper.setTo("vigneshn051995@gmail.com");
+                adminHelper.setSubject("💳 [SaeSubam Matrimony] New Payment Screenshot & Details from " + finalUser.getName() + " (UTR: " + finalTxnId + ")");
 
-                String emailBody = "Dear Admin,\n\n"
+                String adminEmailBody = "Dear Admin,\n\n"
                     + "A candidate has uploaded a payment proof screenshot and submitted transaction details on SaeSubam Matrimony.\n\n"
                     + "=================================================\n"
                     + "CANDIDATE & PAYMENT TRANSACTION DETAILS:\n"
                     + "=================================================\n"
                     + "Candidate Name: " + finalUser.getName() + "\n"
-                    + "Matrimony User ID: " + (100000 + finalUser.getId()) + "\n"
+                    + "Matrimony User ID: #" + (100000 + finalUser.getId()) + "\n"
                     + "Registered Email: " + finalUser.getEmail() + "\n"
                     + "Registered Mobile: " + finalUser.getMobile() + "\n"
                     + "Selected Plan: " + finalPlanCode + "\n"
                     + "Payment Amount: ₹" + finalAmount + "\n"
                     + "UTR / Reference Number: " + finalTxnId + "\n"
-                    + "Submission Time: " + java.time.LocalDateTime.now()
-                        .format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")) + "\n"
+                    + "Submission Time: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")) + "\n"
                     + "Saved Screenshot Filename: " + finalFilename + "\n"
                     + "Direct Screenshot Link: https://saesubam-matrimony.onrender.com/uploads/payments/" + finalFilename + "\n"
                     + "=================================================\n\n"
                     + "The payment screenshot image file is attached to this email for your verification.\n\n"
                     + "Regards,\nSaeSubam Matrimony Automated Payment Service";
 
-                helper.setText(emailBody);
-
+                adminHelper.setText(adminEmailBody);
                 if (finalDestination != null && Files.exists(finalDestination)) {
-                    helper.addAttachment(finalFilename, finalDestination.toFile());
+                    adminHelper.addAttachment(finalFilename, finalDestination.toFile());
                 }
+                activeSender.send(adminMimeMessage);
+                System.out.println("✅ ADMIN PAYMENT PROOF EMAIL DISPATCHED TO: vigneshn051995@gmail.com");
 
-                activeSender.send(mimeMessage);
-                System.out.println("=================================================");
-                System.out.println("✅ PAYMENT PROOF EMAIL DISPATCHED TO ADMIN: vigneshn051995@gmail.com");
-                System.out.println("=================================================");
+                // 2. Automated Confirmation Email Receipt to Candidate User
+                if (finalUser.getEmail() != null && !finalUser.getEmail().trim().isEmpty()) {
+                    MimeMessage userMimeMessage = activeSender.createMimeMessage();
+                    MimeMessageHelper userHelper = new MimeMessageHelper(userMimeMessage, true, "UTF-8");
+
+                    userHelper.setFrom("vigneshn051995@gmail.com");
+                    userHelper.setTo(finalUser.getEmail().trim());
+                    userHelper.setSubject("🎉 Payment Submission Confirmation - SaeSubam Matrimony (UTR: " + finalTxnId + ")");
+
+                    String userEmailBody = "Dear " + finalUser.getName() + ",\n\n"
+                        + "Thank you for submitting your payment proof screenshot for your SaeSubam Matrimony membership!\n\n"
+                        + "=================================================\n"
+                        + "YOUR PAYMENT TRANSACTION SUMMARY:\n"
+                        + "=================================================\n"
+                        + "Plan Code: " + finalPlanCode + "\n"
+                        + "Amount Paid: ₹" + finalAmount + "\n"
+                        + "UTR / Reference Number: " + finalTxnId + "\n"
+                        + "Status: PENDING ADMIN APPROVAL\n"
+                        + "=================================================\n\n"
+                        + "Our admin team is currently verifying your payment proof screenshot. Your membership plan and profile views quota will be activated automatically once approved.\n\n"
+                        + "You can track your subscription status anytime at: https://saesubam-matrimony.onrender.com/subscription\n\n"
+                        + "Warm regards,\nSaeSubam Matrimony Support Team";
+
+                    userHelper.setText(userEmailBody);
+                    activeSender.send(userMimeMessage);
+                    System.out.println("✅ CANDIDATE PAYMENT CONFIRMATION EMAIL DISPATCHED TO: " + finalUser.getEmail());
+                }
             } catch (Throwable t) {
-                System.err.println("❌ [SMTP ERROR FAILED] Could not send payment email to vigneshn051995@gmail.com: " + t.getMessage());
+                System.err.println("❌ [SMTP ERROR FAILED] Could not send payment email: " + t.getMessage());
                 t.printStackTrace();
             }
         });
