@@ -231,9 +231,22 @@
                         <td class="fw-bold text-dark text-nowrap" th:text="'₹' + ${tx.amount}">₹1499</td>
                         <td><code class="text-primary fw-bold px-2 py-1 bg-light rounded border text-nowrap" th:text="${tx.utrNumber}">UTR_123456</code></td>
                         <td>
-                            <button type="button" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}" th:data-img="${tx.screenshotUrl}" class="btn btn-sm btn-outline-primary rounded-pill fw-bold text-nowrap" onclick="openPaymentProofModal(this)">
-                                <i class="bi bi-image me-1"></i> View Screenshot
-                            </button>
+                            <div class="d-flex align-items-center gap-1 text-nowrap" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}">
+                                <button type="button" 
+                                        th:data-img="${tx.screenshotUrl}" 
+                                        th:data-username="${tx.user != null ? tx.user.name : 'Candidate'}"
+                                        th:data-utr="${tx.utrNumber != null ? tx.utrNumber : ('Tx_' + tx.id)}"
+                                        class="btn btn-sm btn-outline-primary rounded-pill fw-bold text-nowrap" 
+                                        onclick="openPaymentProofModal(this)">
+                                    <i class="bi bi-image me-1"></i> View Screenshot
+                                </button>
+                                <a th:href="${tx.screenshotUrl}" 
+                                   th:download="${(tx.user != null ? #strings.replace(tx.user.name, ' ', '_') : 'Candidate') + '_' + (tx.utrNumber != null ? #strings.replace(tx.utrNumber, ' ', '_') : ('Tx_' + tx.id)) + '_payment_proof.png'}" 
+                                   class="btn btn-sm btn-primary rounded-pill fw-bold" 
+                                   title="Download Payment Proof Screenshot">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
                             <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
                         <td class="small fw-semibold text-dark text-nowrap" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
@@ -288,7 +301,10 @@
             <div class="modal-body p-4 text-center bg-black bg-opacity-75">
                 <img id="paymentProofModalImg" src="" alt="Payment Screenshot Proof" class="img-fluid rounded-3 shadow border border-secondary" style="max-height: 75vh; object-fit: contain;">
             </div>
-            <div class="modal-footer bg-dark border-secondary p-2 justify-content-end">
+            <div class="modal-footer bg-dark border-secondary p-2 justify-content-between">
+                <a id="paymentProofDownloadBtn" href="" download="" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm">
+                    <i class="bi bi-download me-1"></i> Download Proof (<span id="paymentProofFilenameText">screenshot.png</span>)
+                </a>
                 <button type="button" class="btn btn-sm btn-secondary rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -299,8 +315,24 @@
 <script>
 function openPaymentProofModal(btn) {
     var imgSrc = btn.getAttribute('data-img');
+    var username = btn.getAttribute('data-username') || 'Candidate';
+    var utr = btn.getAttribute('data-utr') || 'TxRef';
+
+    var safeUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '_');
+    var safeUtr = utr.trim().replace(/[^a-zA-Z0-9]/g, '_');
+    var customFilename = safeUsername + "_" + safeUtr + "_payment_proof.png";
+
     if (imgSrc) {
         document.getElementById('paymentProofModalImg').src = imgSrc;
+        var downloadBtn = document.getElementById('paymentProofDownloadBtn');
+        var filenameText = document.getElementById('paymentProofFilenameText');
+        if (downloadBtn) {
+            downloadBtn.href = imgSrc;
+            downloadBtn.setAttribute('download', customFilename);
+        }
+        if (filenameText) {
+            filenameText.textContent = customFilename;
+        }
         var modal = new bootstrap.Modal(document.getElementById('paymentProofModal'));
         modal.show();
     }
