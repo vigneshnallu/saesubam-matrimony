@@ -389,7 +389,7 @@
                 
                 <div class="dropdown position-relative" style="min-width: 260px;">
                     <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start d-flex justify-content-between align-items-center rounded-pill bg-white text-dark py-2 px-3 fw-semibold border-danger-subtle" type="button" id="dashboardDistrictMultiSelectBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        <span id="dashboardSelectedDistrictsText" class="text-truncate">📍 All Tamil Districts</span>
+                        <span id="dashboardSelectedDistrictsText" class="text-truncate">All Districts</span>
                     </button>
                     <div class="dropdown-menu p-3 shadow-lg rounded-4 border-0 w-100 mt-1" style="max-height: 280px; overflow-y: auto;" aria-labelledby="dashboardDistrictMultiSelectBtn">
                         <div class="form-check mb-2 pb-2 border-bottom">
@@ -397,20 +397,45 @@
                             <label class="form-check-label fw-bold text-dark" for="dashSelectAllDistricts">Select All Districts</label>
                         </div>
                         <div id="dashboardDistrictCheckboxes">
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Madurai" id="ddst_Madurai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Madurai">📍 Madurai</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Dindigul" id="ddst_Dindigul" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Dindigul">📍 Dindigul</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Theni" id="ddst_Theni" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Theni">📍 Theni</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Virudhunagar" id="ddst_Virudhunagar" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Virudhunagar">📍 Virudhunagar</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Sivagangai" id="ddst_Sivagangai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Sivagangai">📍 Sivagangai / Karaikudi</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Ramanathapuram" id="ddst_Ramanathapuram" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Ramanathapuram">📍 Ramanathapuram</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Chennai" id="ddst_Chennai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Chennai">📍 Chennai</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Coimbatore" id="ddst_Coimbatore" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Coimbatore">📍 Coimbatore</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Trichy" id="ddst_Trichy" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Trichy">📍 Tiruchirappalli (Trichy)</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tirunelveli" id="ddst_Tirunelveli" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tirunelveli">📍 Tirunelveli</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Salem" id="ddst_Salem" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Salem">📍 Salem</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Thanjavur" id="ddst_Thanjavur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Thanjavur">📍 Thanjavur</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Erode" id="ddst_Erode" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Erode">📍 Erode</label></div>
-                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Bengaluru" id="ddst_Bengaluru" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Bengaluru">📍 Bengaluru</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Ariyalur" id="ddst_Ariyalur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Ariyalur">Ariyalur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Chengalpattu" id="ddst_Chengalpattu" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Chengalpattu">Chengalpattu</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Chennai" id="ddst_Chennai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Chennai">Chennai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Coimbatore" id="ddst_Coimbatore" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Coimbatore">Coimbatore</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Cuddalore" id="ddst_Cuddalore" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Cuddalore">Cuddalore</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Dharmapuri" id="ddst_Dharmapuri" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Dharmapuri">Dharmapuri</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Dindigul" id="ddst_Dindigul" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Dindigul">Dindigul</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Erode" id="ddst_Erode" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Erode">Erode</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Kallakurichi" id="ddst_Kallakurichi" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Kallakurichi">Kallakurichi</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Kanchipuram" id="ddst_Kanchipuram" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Kanchipuram">Kanchipuram</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Kanyakumari" id="ddst_Kanyakumari" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Kanyakumari">Kanyakumari / Nagercoil</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Karur" id="ddst_Karur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Karur">Karur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Krishnagiri" id="ddst_Krishnagiri" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Krishnagiri">Krishnagiri</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Madurai" id="ddst_Madurai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Madurai">Madurai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Mayiladuthurai" id="ddst_Mayiladuthurai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Mayiladuthurai">Mayiladuthurai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Nagapattinam" id="ddst_Nagapattinam" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Nagapattinam">Nagapattinam</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Namakkal" id="ddst_Namakkal" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Namakkal">Namakkal</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Nilgiris" id="ddst_Nilgiris" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Nilgiris">Nilgiris (Ooty)</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Perambalur" id="ddst_Perambalur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Perambalur">Perambalur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Pudukkottai" id="ddst_Pudukkottai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Pudukkottai">Pudukkottai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Ramanathapuram" id="ddst_Ramanathapuram" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Ramanathapuram">Ramanathapuram</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Ranipet" id="ddst_Ranipet" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Ranipet">Ranipet</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Salem" id="ddst_Salem" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Salem">Salem</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Sivagangai" id="ddst_Sivagangai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Sivagangai">Sivagangai / Karaikudi</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tenkasi" id="ddst_Tenkasi" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tenkasi">Tenkasi</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Thanjavur" id="ddst_Thanjavur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Thanjavur">Thanjavur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Theni" id="ddst_Theni" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Theni">Theni</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tuticorin" id="ddst_Tuticorin" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tuticorin">Thoothukudi (Tuticorin)</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Trichy" id="ddst_Trichy" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Trichy">Tiruchirappalli (Trichy)</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tirunelveli" id="ddst_Tirunelveli" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tirunelveli">Tirunelveli</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tirupathur" id="ddst_Tirupathur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tirupathur">Tirupathur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tiruppur" id="ddst_Tiruppur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tiruppur">Tiruppur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tiruvallur" id="ddst_Tiruvallur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tiruvallur">Tiruvallur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tiruvannamalai" id="ddst_Tiruvannamalai" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tiruvannamalai">Tiruvannamalai</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Tiruvarur" id="ddst_Tiruvarur" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Tiruvarur">Tiruvarur</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Vellore" id="ddst_Vellore" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Vellore">Vellore</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Viluppuram" id="ddst_Viluppuram" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Viluppuram">Viluppuram</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Virudhunagar" id="ddst_Virudhunagar" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Virudhunagar">Virudhunagar</label></div>
+                            <div class="form-check mb-1"><input class="form-check-input dash-dst-chk" type="checkbox" value="Puducherry" id="ddst_Puducherry" onchange="updateDashboardDistrictFilter()"><label class="form-check-label" for="ddst_Puducherry">Puducherry / Karaikal</label></div>
                         </div>
                     </div>
                 </div>
@@ -476,17 +501,22 @@
 <script src="/js/lang.js"></script>
 <script>
     function updateDashboardDistrictFilter() {
+        var allCheckboxes = document.querySelectorAll('.dash-dst-chk');
         var checked = Array.from(document.querySelectorAll('.dash-dst-chk:checked')).map(cb => cb.value);
         var btnText = document.getElementById('dashboardSelectedDistrictsText');
+        var selectAllCb = document.getElementById('dashSelectAllDistricts');
         
         if (!btnText) return;
 
-        if (checked.length === 0) {
-            btnText.textContent = '📍 All Tamil Districts';
+        if (checked.length === 0 || checked.length === allCheckboxes.length) {
+            btnText.textContent = 'All Districts';
+            if (selectAllCb) selectAllCb.checked = (checked.length === allCheckboxes.length);
         } else if (checked.length === 1) {
-            btnText.textContent = '📍 ' + checked[0];
+            btnText.textContent = checked[0];
+            if (selectAllCb) selectAllCb.checked = false;
         } else {
-            btnText.textContent = '📍 ' + checked.length + ' Districts Selected';
+            btnText.textContent = checked.length + ' Districts Selected';
+            if (selectAllCb) selectAllCb.checked = false;
         }
 
         var cards = document.querySelectorAll('.match-card-wrapper');
