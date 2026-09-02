@@ -231,23 +231,23 @@
                         <td class="fw-bold text-dark text-nowrap" th:text="'₹' + ${tx.amount}">₹1499</td>
                         <td><code class="text-primary fw-bold px-2 py-1 bg-light rounded border text-nowrap" th:text="${tx.utrNumber}">UTR_123456</code></td>
                         <td>
-                            <div class="d-flex align-items-center gap-1 text-nowrap" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}">
+                            <div class="d-flex align-items-center gap-1 text-nowrap" th:if="${tx.displayImage != null and !tx.displayImage.isEmpty()}">
                                 <button type="button" 
-                                        th:data-img="${tx.screenshotUrl}" 
+                                        th:data-img="${tx.displayImage}" 
                                         th:data-username="${tx.user != null ? tx.user.name : 'Candidate'}"
                                         th:data-utr="${tx.utrNumber != null ? tx.utrNumber : ('Tx_' + tx.id)}"
                                         class="btn btn-sm btn-outline-primary rounded-pill fw-bold text-nowrap" 
                                         onclick="openPaymentProofModal(this)">
                                     <i class="bi bi-image me-1"></i> View Screenshot
                                 </button>
-                                <a th:href="${tx.screenshotUrl}" 
+                                <a th:href="${tx.displayImage}" 
                                    th:download="${(tx.user != null ? #strings.replace(tx.user.name, ' ', '_') : 'Candidate') + '_' + (tx.utrNumber != null ? #strings.replace(tx.utrNumber, ' ', '_') : ('Tx_' + tx.id)) + '_payment_proof.png'}" 
                                    class="btn btn-sm btn-primary rounded-pill fw-bold" 
                                    title="Download Payment Proof Screenshot">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </div>
-                            <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
+                            <span th:if="${tx.displayImage == null or tx.displayImage.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
                         <td class="small fw-semibold text-dark text-nowrap" th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy, hh:mm a')}">17 Aug 2026</td>
                         <td>

@@ -34,6 +34,9 @@ public class PaymentTransaction {
     @jakarta.persistence.Column(columnDefinition = "TEXT")
     private String screenshotUrl;
 
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String base64Image;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public PaymentTransaction() {
@@ -45,6 +48,15 @@ public class PaymentTransaction {
         this.amount = amount;
         this.utrNumber = utrNumber;
         this.screenshotUrl = screenshotUrl;
+    }
+
+    public PaymentTransaction(Users user, String planCode, Integer amount, String utrNumber, String screenshotUrl, String base64Image) {
+        this.user = user;
+        this.planCode = planCode;
+        this.amount = amount;
+        this.utrNumber = utrNumber;
+        this.screenshotUrl = screenshotUrl;
+        this.base64Image = base64Image;
     }
 
     public Long getId() {
@@ -109,6 +121,21 @@ public class PaymentTransaction {
 
     public void setScreenshotUrl(String screenshotUrl) {
         this.screenshotUrl = screenshotUrl;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
+    }
+
+    public String getDisplayImage() {
+        if (base64Image != null && !base64Image.trim().isEmpty()) {
+            return base64Image;
+        }
+        return screenshotUrl;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -348,23 +348,23 @@
                         <td class="fw-bold text-dark" th:text="'₹' + ${tx.amount}">₹1499</td>
                         <td><code class="text-primary fw-bold" th:text="${tx.utrNumber}">UTR_123456</code></td>
                         <td>
-                            <div class="d-flex align-items-center gap-1 text-nowrap" th:if="${tx.screenshotUrl != null and !tx.screenshotUrl.isEmpty()}">
+                            <div class="d-flex align-items-center gap-1 text-nowrap" th:if="${tx.displayImage != null and !tx.displayImage.isEmpty()}">
                                 <button type="button" 
-                                        th:data-img="${tx.screenshotUrl}" 
+                                        th:data-img="${tx.displayImage}" 
                                         th:data-username="${user != null ? user.name : 'Candidate'}"
                                         th:data-utr="${tx.utrNumber != null ? tx.utrNumber : ('Tx_' + tx.id)}"
                                         class="btn btn-sm btn-outline-danger rounded-pill fw-bold text-nowrap" 
                                         onclick="openPaymentProofModal(this)">
                                     <i class="bi bi-image me-1"></i> View Screenshot
                                 </button>
-                                <a th:href="${tx.screenshotUrl}" 
+                                <a th:href="${tx.displayImage}" 
                                    th:download="${(user != null ? #strings.replace(user.name, ' ', '_') : 'Candidate') + '_' + (tx.utrNumber != null ? #strings.replace(tx.utrNumber, ' ', '_') : ('Tx_' + tx.id)) + '_payment_proof.png'}" 
                                    class="btn btn-sm btn-danger rounded-pill fw-bold" 
                                    title="Download Payment Proof Screenshot">
                                     <i class="bi bi-download"></i>
                                 </a>
                             </div>
-                            <span th:if="${tx.screenshotUrl == null or tx.screenshotUrl.isEmpty()}" class="small text-muted">N/A</span>
+                            <span th:if="${tx.displayImage == null or tx.displayImage.isEmpty()}" class="small text-muted">N/A</span>
                         </td>
                         <td>
                             <span th:if="${tx.paymentStatus == 'ACTIVE_VERIFIED' or tx.paymentStatus == 'VERIFIED' or tx.paymentStatus == 'APPROVED'}" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-bold fs-7">

@@ -955,12 +955,12 @@ public class PageController {
         String txnId = (utrNumber != null && !utrNumber.trim().isEmpty()) ? utrNumber.trim()
             : ("UTR_" + (100000000000L + (long) (new java.util.Random().nextDouble() * 899999999999L)));
 
-        String screenshotDataUrl = "";
+        String screenshotFileUrl = "";
         if (filename != null && !filename.isEmpty()) {
-            screenshotDataUrl = "/uploads/payments/" + filename;
+            screenshotFileUrl = "/uploads/payments/" + filename;
         }
 
-        // Generate Base64 Data URL if file size is under 2MB for permanent cloud database storage
+        String base64DataStr = "";
         if (screenshotFile != null && !screenshotFile.isEmpty() && screenshotFile.getSize() < 2 * 1024 * 1024) {
             try {
                 byte[] bytes = screenshotFile.getBytes();
@@ -968,7 +968,7 @@ public class PageController {
                 if (mimeType == null || mimeType.trim().isEmpty()) {
                     mimeType = "image/png";
                 }
-                screenshotDataUrl = "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
+                base64DataStr = "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
             } catch (Exception ex) {
                 System.out.println("Notice generating Base64 Data URL: " + ex.getMessage());
             }
@@ -980,26 +980,26 @@ public class PageController {
                 planCode,
                 amount,
                 txnId,
-                screenshotDataUrl
+                screenshotFileUrl,
+                base64DataStr
             );
             paymentTransaction.setPaymentStatus("PENDING_APPROVAL");
             paymentTransactionRepository.saveAndFlush(paymentTransaction);
-            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
+            System.out.println("✅ Saved PaymentTransaction record with both screenshot_url & base64_image columns for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
-            System.err.println("⚠️ Notice saving primary screenshotDataUrl: " + e.getMessage() + ". Executing bulletproof fallback save...");
+            System.err.println("⚠️ Notice saving Base64 image payload: " + e.getMessage() + ". Retrying with lightweight file URL...");
             try {
-                // Fallback to lightweight relative URL if Base64 string was too large for single SQL insert
-                String fallbackUrl = (filename != null && !filename.isEmpty()) ? ("/uploads/payments/" + filename) : "";
                 PaymentTransaction fallbackTx = new PaymentTransaction(
                     currentUser,
                     planCode,
                     amount,
                     txnId,
-                    fallbackUrl
+                    screenshotFileUrl,
+                    ""
                 );
                 fallbackTx.setPaymentStatus("PENDING_APPROVAL");
                 paymentTransactionRepository.saveAndFlush(fallbackTx);
-                System.out.println("✅ Saved PaymentTransaction fallback record with relative URL for UTR: " + txnId);
+                System.out.println("✅ Saved PaymentTransaction fallback record with screenshot_url for UTR: " + txnId);
             } catch (Exception ex) {
                 System.err.println("❌ Critical payment transaction save error: " + ex.getMessage());
                 ex.printStackTrace();
