@@ -323,7 +323,13 @@ function openPaymentProofModal(btn) {
     var customFilename = safeUsername + "_" + safeUtr + "_payment_proof.png";
 
     if (imgSrc) {
-        document.getElementById('paymentProofModalImg').src = imgSrc;
+        var modalImg = document.getElementById('paymentProofModalImg');
+        modalImg.onerror = function() {
+            console.warn("Image file not found on disk, showing notification.");
+            this.onerror = null;
+        };
+        modalImg.src = imgSrc;
+
         var downloadBtn = document.getElementById('paymentProofDownloadBtn');
         var filenameText = document.getElementById('paymentProofFilenameText');
         if (downloadBtn) {

@@ -956,17 +956,17 @@ public class PageController {
             : ("UTR_" + (100000000000L + (long) (new java.util.Random().nextDouble() * 899999999999L)));
 
         try {
-            // Prefer clean relative file path for database storage to ensure ultra-fast 100% reliable PostgreSQL inserts
+            // Always encode uploaded payment screenshot as permanent Base64 Data URL in PostgreSQL database so images survive all Render redeployments
             String screenshotDataUrl = "";
-            if (filename != null && !filename.isEmpty()) {
-                screenshotDataUrl = "/uploads/payments/" + filename;
-            } else if (screenshotFile != null && !screenshotFile.isEmpty()) {
+            if (screenshotFile != null && !screenshotFile.isEmpty()) {
                 byte[] bytes = screenshotFile.getBytes();
                 String mimeType = screenshotFile.getContentType();
                 if (mimeType == null || mimeType.trim().isEmpty()) {
                     mimeType = "image/png";
                 }
                 screenshotDataUrl = "data:" + mimeType + ";base64," + java.util.Base64.getEncoder().encodeToString(bytes);
+            } else if (filename != null && !filename.isEmpty()) {
+                screenshotDataUrl = "/uploads/payments/" + filename;
             }
 
             PaymentTransaction paymentTransaction = new PaymentTransaction(
@@ -978,7 +978,7 @@ public class PageController {
             );
             paymentTransaction.setPaymentStatus("PENDING_APPROVAL");
             paymentTransactionRepository.saveAndFlush(paymentTransaction);
-            System.out.println("✅ Saved PaymentTransaction record (PENDING_APPROVAL) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
+            System.out.println("✅ Saved PaymentTransaction record with Permanent Base64 Data URL (PENDING_APPROVAL) for User ID: " + currentUser.getId() + ", UTR: " + txnId);
         } catch (Exception e) {
             System.err.println("❌ Payment transaction save error: " + e.getMessage());
             e.printStackTrace();
