@@ -112,6 +112,21 @@ public class PageController {
         return "login";
     }
 
+    @GetMapping("/privacy-policy")
+    public String privacyPolicy() {
+        return "privacy-policy";
+    }
+
+    @GetMapping("/terms")
+    public String terms() {
+        return "terms";
+    }
+
+    @GetMapping("/grievance")
+    public String grievance() {
+        return "grievance";
+    }
+
     /**
      * Register.
      *

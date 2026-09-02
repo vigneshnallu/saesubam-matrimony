@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .cacheControl(cache -> cache.disable())    // Handled by CacheControlInterceptor
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/register", "/userregister", "/registerUser", "/verify-otp", "/verify-email", "/api/auth/**", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
+                .requestMatchers("/", "/login", "/register", "/userregister", "/registerUser", "/verify-otp", "/verify-email", "/privacy-policy", "/terms", "/grievance", "/api/auth/**", "/h2-console/**", "/css/**", "/js/**", "/images/**", "/uploads/**").permitAll()
                 .anyRequest().permitAll()
             )
             .logout(logout -> logout
