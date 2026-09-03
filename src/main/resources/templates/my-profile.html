@@ -253,18 +253,18 @@
 <!-- Main Content -->
 <div class="main-content">
     <!-- Mobile Header -->
-    <div class="mobile-header justify-content-between align-items-center bg-white p-3 border-bottom mb-3 rounded-3 shadow-sm">
-        <div class="d-flex align-items-center gap-2 fw-bold text-danger fs-4">
-            <i class="bi bi-heart-fill"></i> SaeSubam
+    <div class="mobile-header justify-content-between align-items-center bg-white p-2 px-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-1.5 fw-bold text-danger fs-5 text-nowrap">
+            <i class="bi bi-heart-fill me-1"></i> SaeSubam
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
             <!-- Language Switcher Pill Mobile -->
-            <div class="btn-group btn-group-sm rounded-pill border bg-white p-1 shadow-sm" role="group">
-                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-en border-0 text-dark">🇬🇧 EN</button>
-                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-2 fw-bold lang-btn-ta border-0 text-danger">🇮🇳 தமிழ்</button>
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-0.5 shadow-xs" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-2 py-0.5 fw-bold lang-btn-en border-0 text-dark" style="font-size:0.72rem;">🇬🇧 EN</button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-2 py-0.5 fw-bold lang-btn-ta border-0 text-danger" style="font-size:0.72rem;">🇮🇳 தமிழ்</button>
             </div>
-            <button class="btn btn-outline-danger btn-sm px-3 py-2 fw-bold rounded-3" onclick="toggleMobileSidebar()">
-                <i class="bi bi-list fs-5 me-1"></i> Menu
+            <button class="btn btn-outline-danger btn-sm px-2.5 py-1 fw-bold rounded-3 text-nowrap" onclick="toggleMobileSidebar()">
+                <i class="bi bi-list fs-6 me-1"></i> Menu
             </button>
         </div>
     </div>
@@ -275,8 +275,8 @@
             <p class="text-muted small mb-0">View and update your personal, religious, career, and family details.</p>
         </div>
         <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
-            <!-- Language Switcher Pill Desktop -->
-            <div class="btn-group btn-group-sm rounded-pill border bg-light p-1 me-2" role="group">
+            <!-- Language Switcher Pill Desktop Only -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-1 me-2 d-none d-md-inline-flex" role="group">
                 <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
                     🇬🇧 EN
                 </button>
