@@ -109,6 +109,47 @@ public class PaymentFileRestorerService {
             int profileRestoredCount = 0;
 
             for (Profiles p : allProfiles) {
+                // Auto-heal broken/missing Primary Photo file paths
+                if (p.getPhotoUrl() != null && !p.getPhotoUrl().startsWith("data:") && !p.getPhotoUrl().startsWith("http")) {
+                    try {
+                        Path localPath = Paths.get("." + p.getPhotoUrl());
+                        if (Files.exists(localPath)) {
+                            byte[] fileBytes = Files.readAllBytes(localPath);
+                            String base64Str = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileBytes);
+                            p.setPhotoUrl(base64Str);
+                            profileRepository.save(p);
+                            System.out.println("✅ Auto-healed and encoded disk profile photo to DB for profile #" + p.getId());
+                        } else {
+                            String defaultUrl = (p.getGender() != null && p.getGender().equalsIgnoreCase("Female"))
+                                ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop"
+                                : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop";
+                            p.setPhotoUrl(defaultUrl);
+                            profileRepository.save(p);
+                            System.out.println("✅ Restored missing profile photo with default avatar for profile #" + p.getId());
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Notice healing primary photo: " + ex.getMessage());
+                    }
+                }
+
+                // Auto-heal broken/missing Secondary Photo file paths
+                if (p.getSecondaryPhotoUrl() != null && !p.getSecondaryPhotoUrl().startsWith("data:") && !p.getSecondaryPhotoUrl().startsWith("http")) {
+                    try {
+                        Path localPath = Paths.get("." + p.getSecondaryPhotoUrl());
+                        if (Files.exists(localPath)) {
+                            byte[] fileBytes = Files.readAllBytes(localPath);
+                            String base64Str = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(fileBytes);
+                            p.setSecondaryPhotoUrl(base64Str);
+                            profileRepository.save(p);
+                        } else {
+                            p.setSecondaryPhotoUrl(null);
+                            profileRepository.save(p);
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Notice healing secondary photo: " + ex.getMessage());
+                    }
+                }
+
                 // Restore Primary Photo
                 if (p.getPhotoUrl() != null && p.getPhotoUrl().contains("base64,")) {
                     try {
