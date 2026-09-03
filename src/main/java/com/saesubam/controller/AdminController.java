@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.saesubam.model.ContactQuery;
 import com.saesubam.model.MembershipType;
 import com.saesubam.model.PaymentTransaction;
 import com.saesubam.model.Users;
+import com.saesubam.repositories.ContactQueryRepository;
 import com.saesubam.repositories.PaymentTransactionRepository;
 import com.saesubam.repositories.UserRepository;
 import com.saesubam.service.UserService;
@@ -43,6 +45,9 @@ public class AdminController {
     /** The payment transaction repository. */
     @Autowired
     private PaymentTransactionRepository paymentTransactionRepository;
+
+    @Autowired
+    private ContactQueryRepository contactQueryRepository;
 
     /**
      * Gets the admin user.
@@ -115,12 +120,46 @@ public class AdminController {
 
         List<Users> usersList = userService.getAllUsers();
         List<PaymentTransaction> transactions = paymentTransactionRepository.findAllByOrderByCreatedAtDesc();
+        List<ContactQuery> queriesList = contactQueryRepository.findAllByOrderByCreatedAtDesc();
+        long pendingQueriesCount = contactQueryRepository.countByStatus("PENDING");
 
         model.addAttribute("adminUser", adminUser);
         model.addAttribute("usersList", usersList);
         model.addAttribute("transactions", transactions);
+        model.addAttribute("queriesList", queriesList);
+        model.addAttribute("pendingQueriesCount", pendingQueriesCount);
 
         return "admin-dashboard";
+    }
+
+    @PostMapping("/queries/update-status")
+    public String updateQueryStatus(@RequestParam Long queryId, @RequestParam String status,
+            @RequestParam(required = false) String adminNotes, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            ContactQuery query = contactQueryRepository.findById(queryId).orElse(null);
+            if (query != null) {
+                query.setStatus(status);
+                if (adminNotes != null && !adminNotes.trim().isEmpty()) {
+                    query.setAdminNotes(adminNotes.trim());
+                }
+                if ("RESOLVED".equalsIgnoreCase(status)) {
+                    query.setResolvedAt(LocalDateTime.now());
+                }
+                contactQueryRepository.save(query);
+                redirectAttributes.addFlashAttribute("successMessage", "Contact Query #" + queryId + " status updated to " + status + " successfully!");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Query #" + queryId + " not found.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating query: " + e.getMessage());
+        }
+        return "redirect:/admin/dashboard";
     }
 
     /**

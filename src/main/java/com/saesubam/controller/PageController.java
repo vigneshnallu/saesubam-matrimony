@@ -30,12 +30,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import jakarta.servlet.http.HttpServletRequest;
 
+import com.saesubam.model.ContactQuery;
 import com.saesubam.model.MembershipType;
 import com.saesubam.model.PaymentTransaction;
 import com.saesubam.model.Profiles;
 import com.saesubam.model.UserBookmark;
 import com.saesubam.model.UserInterest;
 import com.saesubam.model.Users;
+import com.saesubam.repositories.ContactQueryRepository;
 import com.saesubam.repositories.PaymentTransactionRepository;
 import com.saesubam.service.ProfileService;
 import com.saesubam.service.UserBookmarkService;
@@ -74,6 +76,9 @@ public class PageController {
 
     @Autowired
     private PaymentTransactionRepository paymentTransactionRepository;
+
+    @Autowired
+    private ContactQueryRepository contactQueryRepository;
 
     /** The mail sender. */
     @Autowired(required = false)
@@ -866,10 +871,19 @@ public class PageController {
     public String submitContactQuery(@RequestParam String name, @RequestParam String email, @RequestParam String mobile,
             @RequestParam String subject, @RequestParam String message, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
-            System.out.println("📩 NEW CONTACT QUERY RECEIVED:");
+            ContactQuery query = new ContactQuery();
+            query.setName(name);
+            query.setEmail(email);
+            query.setMobile(mobile);
+            query.setSubject(subject);
+            query.setMessage(message);
+            query.setStatus("PENDING");
+
+            contactQueryRepository.save(query);
+
+            System.out.println("📩 NEW CONTACT QUERY SAVED TO DB [ID: " + query.getId() + "]");
             System.out.println("Name: " + name + " | Email: " + email + " | Mobile: " + mobile);
             System.out.println("Subject: " + subject);
-            System.out.println("Message: " + message);
 
             redirectAttributes.addFlashAttribute("successMessage", "Thank you for contacting SaeSubam Support! Your query has been received successfully. Our team will reach out to you within 24 hours.");
         } catch (Exception e) {
