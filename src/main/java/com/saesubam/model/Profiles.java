@@ -81,10 +81,16 @@ public class Profiles {
 
     private String contactPerson = "Self";
 
+    @jakarta.persistence.Lob
+    @Column(columnDefinition = "TEXT", length = 10000000)
     private String photoUrl;
 
+    @jakarta.persistence.Lob
+    @Column(columnDefinition = "TEXT", length = 10000000)
     private String secondaryPhotoUrl;
 
+    @jakarta.persistence.Lob
+    @Column(columnDefinition = "TEXT", length = 10000000)
     private String jathagamUrl;
 
     private boolean verified = true;

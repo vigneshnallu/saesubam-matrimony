@@ -3,11 +3,16 @@
  */
 package com.saesubam.controller;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -514,6 +519,56 @@ public class PageController {
         return "edit-profile";
     }
 
+    private String compressAndEncodeBase64(MultipartFile file, int maxDimension) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+        try {
+            String contentType = file.getContentType();
+            if (contentType != null && contentType.toLowerCase().contains("pdf")) {
+                byte[] pdfBytes = file.getBytes();
+                return "data:application/pdf;base64," + Base64.getEncoder().encodeToString(pdfBytes);
+            }
+
+            BufferedImage originalImage = ImageIO.read(file.getInputStream());
+            if (originalImage == null) {
+                byte[] rawBytes = file.getBytes();
+                return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(rawBytes);
+            }
+
+            int width = originalImage.getWidth();
+            int height = originalImage.getHeight();
+
+            if (width > maxDimension || height > maxDimension) {
+                if (width > height) {
+                    height = (int) (((double) maxDimension / width) * height);
+                    width = maxDimension;
+                } else {
+                    width = (int) (((double) maxDimension / height) * width);
+                    height = maxDimension;
+                }
+            }
+
+            BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = resizedImage.createGraphics();
+            g.drawImage(originalImage, 0, 0, width, height, null);
+            g.dispose();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, "jpg", baos);
+            byte[] imageBytes = baos.toByteArray();
+
+            return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+        } catch (Exception e) {
+            System.err.println("Error compressing image to base64: " + e.getMessage());
+            try {
+                return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(file.getBytes());
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+    }
+
     /**
      * Save my profile.
      *
@@ -570,67 +625,63 @@ public class PageController {
         existingProfile.setContactMobile(profileForm.getContactMobile());
         existingProfile.setContactPerson(profileForm.getContactPerson());
 
-        // Save Primary Photo
+        // Save Primary Photo (Disk + Permanent Base64)
         if (photoFile != null && !photoFile.isEmpty()) {
             try {
-                String originalFilename = photoFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-                String filename = "profile_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+                String base64Str = compressAndEncodeBase64(photoFile, 800);
+                if (base64Str != null) {
+                    existingProfile.setPhotoUrl(base64Str);
+                }
 
                 Path uploadDir = Paths.get("./uploads/profiles");
                 if (!Files.exists(uploadDir)) {
                     Files.createDirectories(uploadDir);
                 }
-
+                String filename = "profile_" + currentUser.getId() + ".jpg";
                 Path destination = uploadDir.resolve(filename);
                 Files.copy(photoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
-                existingProfile.setPhotoUrl("/uploads/profiles/" + filename);
             } catch (Exception e) {
                 System.out.println("Error saving primary photo: " + e.getMessage());
             }
         }
 
-        // Save Secondary Photo
+        // Save Secondary Photo (Disk + Permanent Base64)
         if (secondaryPhotoFile != null && !secondaryPhotoFile.isEmpty()) {
             try {
-                String originalFilename = secondaryPhotoFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-                String filename = "secondary_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+                String base64Str = compressAndEncodeBase64(secondaryPhotoFile, 800);
+                if (base64Str != null) {
+                    existingProfile.setSecondaryPhotoUrl(base64Str);
+                }
 
                 Path uploadDir = Paths.get("./uploads/profiles");
                 if (!Files.exists(uploadDir)) {
                     Files.createDirectories(uploadDir);
                 }
-
+                String filename = "secondary_" + currentUser.getId() + ".jpg";
                 Path destination = uploadDir.resolve(filename);
                 Files.copy(secondaryPhotoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
-                existingProfile.setSecondaryPhotoUrl("/uploads/profiles/" + filename);
             } catch (Exception e) {
                 System.out.println("Error saving secondary photo: " + e.getMessage());
             }
         }
 
-        // Save Jathagam / Horoscope PDF
+        // Save Jathagam / Horoscope PDF (Disk + Permanent Base64)
         if (jathagamFile != null && !jathagamFile.isEmpty()) {
             try {
-                String originalFilename = jathagamFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".pdf";
-                String filename = "jathagam_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
+                String base64Str = compressAndEncodeBase64(jathagamFile, 1200);
+                if (base64Str != null) {
+                    existingProfile.setJathagamUrl(base64Str);
+                }
 
                 Path uploadDir = Paths.get("./uploads/jathagam");
                 if (!Files.exists(uploadDir)) {
                     Files.createDirectories(uploadDir);
                 }
-
+                String ext = (jathagamFile.getOriginalFilename() != null && jathagamFile.getOriginalFilename().contains("."))
+                    ? jathagamFile.getOriginalFilename().substring(jathagamFile.getOriginalFilename().lastIndexOf(".")) : ".pdf";
+                String filename = "jathagam_" + currentUser.getId() + ext;
                 Path destination = uploadDir.resolve(filename);
                 Files.copy(jathagamFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
-                existingProfile.setJathagamUrl("/uploads/jathagam/" + filename);
             } catch (Exception e) {
                 System.out.println("Error saving Jathagam file: " + e.getMessage());
             }
@@ -659,26 +710,25 @@ public class PageController {
 
         if (photoFile != null && !photoFile.isEmpty()) {
             try {
-                String originalFilename = photoFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-                String filename = "profile_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
-
-                Path uploadDir = Paths.get("./uploads/profiles");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
-
-                Path destination = uploadDir.resolve(filename);
-                Files.copy(photoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
                 Profiles profile = profileService.getProfileByUserId(currentUser.getId());
                 if (profile == null) {
                     profile = new Profiles();
                     profile.setUser(currentUser);
                 }
 
-                profile.setPhotoUrl("/uploads/profiles/" + filename);
+                String base64Str = compressAndEncodeBase64(photoFile, 800);
+                if (base64Str != null) {
+                    profile.setPhotoUrl(base64Str);
+                }
+
+                Path uploadDir = Paths.get("./uploads/profiles");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                String filename = "profile_" + currentUser.getId() + ".jpg";
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(photoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
                 profileService.updateProfile(profile);
 
                 redirectAttributes.addFlashAttribute("successMessage", "Primary photo uploaded successfully!");
@@ -708,26 +758,25 @@ public class PageController {
 
         if (secondaryPhotoFile != null && !secondaryPhotoFile.isEmpty()) {
             try {
-                String originalFilename = secondaryPhotoFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".jpg";
-                String filename = "secondary_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
-
-                Path uploadDir = Paths.get("./uploads/profiles");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
-
-                Path destination = uploadDir.resolve(filename);
-                Files.copy(secondaryPhotoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
                 Profiles profile = profileService.getProfileByUserId(currentUser.getId());
                 if (profile == null) {
                     profile = new Profiles();
                     profile.setUser(currentUser);
                 }
 
-                profile.setSecondaryPhotoUrl("/uploads/profiles/" + filename);
+                String base64Str = compressAndEncodeBase64(secondaryPhotoFile, 800);
+                if (base64Str != null) {
+                    profile.setSecondaryPhotoUrl(base64Str);
+                }
+
+                Path uploadDir = Paths.get("./uploads/profiles");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                String filename = "secondary_" + currentUser.getId() + ".jpg";
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(secondaryPhotoFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
                 profileService.updateProfile(profile);
 
                 redirectAttributes.addFlashAttribute("successMessage", "Additional self photo uploaded successfully!");
@@ -758,26 +807,27 @@ public class PageController {
 
         if (jathagamFile != null && !jathagamFile.isEmpty()) {
             try {
-                String originalFilename = jathagamFile.getOriginalFilename();
-                String ext = (originalFilename != null && originalFilename.contains("."))
-                    ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".pdf";
-                String filename = "jathagam_" + currentUser.getId() + "_" + System.currentTimeMillis() + ext;
-
-                Path uploadDir = Paths.get("./uploads/jathagam");
-                if (!Files.exists(uploadDir)) {
-                    Files.createDirectories(uploadDir);
-                }
-
-                Path destination = uploadDir.resolve(filename);
-                Files.copy(jathagamFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-
                 Profiles profile = profileService.getProfileByUserId(currentUser.getId());
                 if (profile == null) {
                     profile = new Profiles();
                     profile.setUser(currentUser);
                 }
 
-                profile.setJathagamUrl("/uploads/jathagam/" + filename);
+                String base64Str = compressAndEncodeBase64(jathagamFile, 1200);
+                if (base64Str != null) {
+                    profile.setJathagamUrl(base64Str);
+                }
+
+                Path uploadDir = Paths.get("./uploads/jathagam");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+                String ext = (jathagamFile.getOriginalFilename() != null && jathagamFile.getOriginalFilename().contains("."))
+                    ? jathagamFile.getOriginalFilename().substring(jathagamFile.getOriginalFilename().lastIndexOf(".")) : ".pdf";
+                String filename = "jathagam_" + currentUser.getId() + ext;
+                Path destination = uploadDir.resolve(filename);
+                Files.copy(jathagamFile.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
+
                 profileService.updateProfile(profile);
 
                 redirectAttributes.addFlashAttribute("successMessage",
