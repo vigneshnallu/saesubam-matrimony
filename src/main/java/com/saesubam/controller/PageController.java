@@ -852,6 +852,32 @@ public class PageController {
         return "subscription";
     }
 
+    @GetMapping("/contact")
+    public String contactUsPage(HttpSession session, Model model) {
+        Users currentUser = getLoggedInUser(session);
+        model.addAttribute("user", currentUser);
+        if (currentUser != null && currentUser.getProfile() != null) {
+            model.addAttribute("profile", currentUser.getProfile());
+        }
+        return "contact";
+    }
+
+    @PostMapping("/contact/submit")
+    public String submitContactQuery(@RequestParam String name, @RequestParam String email, @RequestParam String mobile,
+            @RequestParam String subject, @RequestParam String message, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            System.out.println("📩 NEW CONTACT QUERY RECEIVED:");
+            System.out.println("Name: " + name + " | Email: " + email + " | Mobile: " + mobile);
+            System.out.println("Subject: " + subject);
+            System.out.println("Message: " + message);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Thank you for contacting SaeSubam Support! Your query has been received successfully. Our team will reach out to you within 24 hours.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error submitting query: " + e.getMessage());
+        }
+        return "redirect:/contact";
+    }
+
     @GetMapping({"/admin/external-editor", "/external-editor", "/admin-editor"})
     public String directExternalEditor(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Users currentUser = getLoggedInUser(session);

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Support & Clarifications | SaeSubam Matrimony</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-dark: #be123c;
+            --primary-light: #fff1f2;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #ffffff;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-right: 1px solid #e2e8f0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-brand {
+            padding: 24px 32px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 16px;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .sidebar-user {
+            padding: 20px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 32px 40px;
+        }
+
+        .mobile-header {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                left: -280px;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 16px 14px;
+            }
+            .mobile-header {
+                display: flex !important;
+            }
+        }
+
+        .contact-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .info-box:hover {
+            border-color: var(--primary);
+            background: #fff1f2;
+        }
+
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="sidebar-brand">
+            <i class="bi bi-heart-fill"></i> SaeSubam
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard"><i class="bi bi-grid-1x2-fill"></i> <span data-i18n="dashboard">Dashboard</span></a></li>
+            <li><a href="/profiles"><i class="bi bi-people-fill"></i> <span data-i18n="browse_profiles">Browse Profiles</span></a></li>
+            <li><a href="/interests"><i class="bi bi-envelope-heart-fill"></i> <span data-i18n="match_interests">Match Interests</span></a></li>
+            <li><a href="/shortlist"><i class="bi bi-star-fill"></i> <span data-i18n="shortlisted_profiles">Shortlisted Profiles</span></a></li>
+            <li><a href="/my-profile"><i class="bi bi-person-bounding-box"></i> <span data-i18n="my_profile">My Profile</span></a></li>
+            <li><a href="/subscription"><i class="bi bi-gem"></i> <span data-i18n="membership_plan">Membership Plan</span></a></li>
+            <li><a href="/contact" class="active"><i class="bi bi-headset"></i> <span data-i18n="contact_us">Contact Us</span></a></li>
+        </ul>
+    </div>
+
+    <div class="sidebar-user" th:if="${user != null}">
+        <img th:if="${profile != null and profile.photoUrl != null}" th:src="${profile.photoUrl}" alt="user" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
+        <div th:if="${profile == null or profile.photoUrl == null}" class="rounded-circle bg-light border text-secondary d-flex align-items-center justify-content-center" style="width:44px; height:44px; flex-shrink:0;">
+            <i class="bi bi-person-fill fs-5"></i>
+        </div>
+        <div class="overflow-hidden">
+            <h6 class="mb-0 text-truncate font-weight-bold" th:text="${user.name}">User Name</h6>
+            <span class="badge bg-danger-subtle text-danger small" th:text="${user.membershipType}">GOLD</span>
+        </div>
+        <a href="/logout" class="ms-auto text-muted fs-5"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Mobile Header -->
+    <div class="mobile-header justify-content-between align-items-center bg-white p-2 px-3 border-bottom mb-3 rounded-3 shadow-sm">
+        <div class="d-flex align-items-center gap-1.5 fw-bold text-danger fs-5 text-nowrap">
+            <i class="bi bi-heart-fill me-1"></i> SaeSubam
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <!-- Language Switcher Pill Mobile -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-0.5 shadow-xs" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-2 py-0.5 fw-bold lang-btn-en border-0 text-dark" style="font-size:0.72rem;">🇬🇧 EN</button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-2 py-0.5 fw-bold lang-btn-ta border-0 text-danger" style="font-size:0.72rem;">🇮🇳 தமிழ்</button>
+            </div>
+            <button class="btn btn-outline-danger btn-sm px-2.5 py-1 fw-bold rounded-3 text-nowrap" onclick="toggleMobileSidebar()">
+                <i class="bi bi-list fs-6 me-1"></i> Menu
+            </button>
+        </div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="top-navbar bg-white p-3 px-4 rounded-4 shadow-sm border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold mb-1 text-dark" data-i18n="contact_us">Contact Us & Support</h3>
+            <p class="text-muted small mb-0">We are here to help you with your queries, clarifications, and matrimony assistance.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+            <!-- Language Switcher Pill Desktop Only -->
+            <div class="btn-group btn-group-sm rounded-pill border bg-light p-1 me-2 d-none d-md-inline-flex" role="group">
+                <button type="button" onclick="setLanguagePreference('en')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-en border-0 text-dark">
+                    🇬🇧 EN
+                </button>
+                <button type="button" onclick="setLanguagePreference('ta')" class="btn btn-sm rounded-pill px-3 fw-bold lang-btn-ta border-0 text-danger">
+                    🇮🇳 தமிழ்
+                </button>
+            </div>
+            <a href="https://wa.me/919876543210" target="_blank" class="btn btn-success btn-sm rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm" th:if="${successMessage}">
+        <i class="bi bi-check-circle-fill me-2"></i> <span th:text="${successMessage}">Submitted successfully</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Contact Info Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="info-box text-center h-100">
+                <div class="icon-circle mx-auto mb-2"><i class="bi bi-telephone-fill"></i></div>
+                <h6 class="fw-bold mb-1">Call Helpline</h6>
+                <p class="text-muted small mb-0">+91 98765 43210<br>+91 94433 22110</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="info-box text-center h-100">
+                <div class="icon-circle mx-auto mb-2"><i class="bi bi-envelope-fill"></i></div>
+                <h6 class="fw-bold mb-1">Email Support</h6>
+                <p class="text-muted small mb-0">support@saesubam.com<br>vigneshn051995@gmail.com</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="info-box text-center h-100">
+                <div class="icon-circle mx-auto mb-2"><i class="bi bi-clock-fill"></i></div>
+                <h6 class="fw-bold mb-1">Working Hours</h6>
+                <p class="text-muted small mb-0">Mon - Sat: 9 AM - 7 PM<br>Sunday: Closed</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="info-box text-center h-100">
+                <div class="icon-circle mx-auto mb-2"><i class="bi bi-geo-alt-fill"></i></div>
+                <h6 class="fw-bold mb-1">Head Office</h6>
+                <p class="text-muted small mb-0">SaeSubam Matrimony,<br>Madurai & Chennai, TN</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Contact Query Form -->
+        <div class="col-lg-7">
+            <div class="contact-card h-100">
+                <h4 class="fw-bold mb-3 text-dark"><i class="bi bi-chat-dots-fill text-danger me-2"></i> Send Us Your Query or Clarification</h4>
+                <p class="text-muted small mb-4">Have questions about registration, membership plans, profile verification, or Jathagam upload? Fill in your details below and our matrimony representative will assist you.</p>
+
+                <form action="/contact/submit" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Your Name</label>
+                            <input type="text" name="name" class="form-control rounded-3" th:value="${user != null ? user.name : ''}" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Email Address</label>
+                            <input type="email" name="email" class="form-control rounded-3" th:value="${user != null ? user.email : ''}" placeholder="Enter email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Mobile Number</label>
+                            <input type="tel" name="mobile" class="form-control rounded-3" th:value="${user != null ? user.mobile : ''}" placeholder="Enter mobile number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-secondary">Query Category</label>
+                            <select name="subject" class="form-select rounded-3" required>
+                                <option value="Membership & Payment">Membership & Plan Upgrade</option>
+                                <option value="Profile Verification">Profile Verification & Photo</option>
+                                <option value="Jathagam Clarification">Jathagam / Horoscope Upload</option>
+                                <option value="Account Login Help">Account & Login Support</option>
+                                <option value="Privacy & Grievance">Privacy & Grievance Query</option>
+                                <option value="Other Assistance">Other General Inquiry</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-secondary">Your Message / Clarification Details</label>
+                            <textarea name="message" rows="4" class="form-control rounded-3" placeholder="Describe your query or clarification request in detail..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-danger rounded-pill px-4 py-2.5 fw-bold shadow-sm w-100">
+                                <i class="bi bi-send-fill me-1"></i> Submit Query / Clarification
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- FAQ & Help Accordion -->
+        <div class="col-lg-5">
+            <div class="contact-card h-100">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-question-circle-fill text-danger me-2"></i> Frequently Asked Questions</h5>
+                
+                <div class="accordion accordion-flush" id="faqAccordion">
+                    <div class="accordion-item border rounded-3 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I upgrade my Gold or Premium plan?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small">
+                                Go to the <strong>Membership Plan</strong> tab, select your preferred plan (Gold or Platinum), and scan the UPI QR code or pay via GPay/PhonePe/Paytm. Upload your payment screenshot to activate your account!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border rounded-3 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How long does profile verification take?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small">
+                                Profiles and uploaded photos/Jathagam documents are verified by our team within 2 to 4 hours. You will receive a verified badge on your profile.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border rounded-3 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How to upload or change Jathagam PDF?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small">
+                                Go to <strong>My Profile -> Edit Profile</strong>, scroll to the Jathagam upload field, and select your PDF file or horoscope image. It is saved directly to your profile.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item border rounded-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Who can view my contact phone number?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted small">
+                                Only paid active subscribers (Gold / Platinum members) can request and view verified contact numbers for genuine matrimony proposals.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleMobileSidebar() {
+        document.querySelector('.sidebar').classList.toggle('show');
+        document.querySelector('.sidebar-overlay').classList.toggle('show');
+    }
+</script>
+</body>
+</html>
