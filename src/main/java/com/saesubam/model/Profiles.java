@@ -90,7 +90,7 @@ public class Profiles {
     @Column(columnDefinition = "TEXT", length = 10000000)
     private String jathagamUrl;
 
-    private boolean verified = true;
+    private boolean verified = false;
 
     private int profileCompleteness = 85;
 

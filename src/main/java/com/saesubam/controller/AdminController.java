@@ -19,9 +19,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.saesubam.model.ContactQuery;
 import com.saesubam.model.MembershipType;
 import com.saesubam.model.PaymentTransaction;
+import com.saesubam.model.Profiles;
 import com.saesubam.model.Users;
 import com.saesubam.repositories.ContactQueryRepository;
 import com.saesubam.repositories.PaymentTransactionRepository;
+import com.saesubam.repositories.ProfileRepository;
 import com.saesubam.repositories.UserRepository;
 import com.saesubam.service.UserService;
 
@@ -41,6 +43,9 @@ public class AdminController {
     /** The user repository. */
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProfileRepository profileRepository;
 
     /** The payment transaction repository. */
     @Autowired
@@ -460,6 +465,42 @@ public class AdminController {
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update user status: " + e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
+    }
+
+    @PostMapping("/profile/toggle-verify/{id}")
+    public String toggleProfileVerification(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        Users adminUser = getAdminUser(session);
+        if (adminUser == null) {
+            redirectAttributes.addFlashAttribute("error", "Access Denied: Administrator credentials required.");
+            return "redirect:/admin/login";
+        }
+
+        try {
+            Users user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                Profiles profile = profileRepository.findByUserId(user.getId()).orElse(null);
+                if (profile == null) {
+                    profile = new Profiles();
+                    profile.setUser(user);
+                    profile.setFullName(user.getName());
+                    profile.setGender(user.getGender());
+                    profile.setCaste(user.getCaste());
+                    profile.setCity(user.getCity());
+                }
+                boolean newStatus = !profile.isVerified();
+                profile.setVerified(newStatus);
+                profileRepository.save(profile);
+
+                String msg = newStatus ? "✅ Profile for candidate " + user.getName() + " is now VERIFIED!" : "⚠️ Profile for candidate " + user.getName() + " is now UNVERIFIED.";
+                redirectAttributes.addFlashAttribute("successMessage", msg);
+                System.out.println(msg);
+            }
+        } catch (Exception e) {
+            System.err.println("Error toggling profile verification: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to change profile verification status: " + e.getMessage());
         }
 
         return "redirect:/admin/dashboard";

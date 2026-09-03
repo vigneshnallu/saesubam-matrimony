@@ -312,7 +312,8 @@
         <div class="flex-grow-1">
             <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
                 <h2 class="fw-bold text-dark mb-0" th:text="${profile.fullName}">Priya Sundaram</h2>
-                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"><i class="bi bi-patch-check-fill me-1"></i> Verified Profile</span>
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${profile.verified}"><i class="bi bi-patch-check-fill me-1"></i> Verified Profile</span>
+                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!profile.verified}"><i class="bi bi-clock-history me-1"></i> Verification Pending</span>
                 <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill" th:if="${profile.secondaryPhotoUrl != null}"><i class="bi bi-images me-1"></i> 2 Self Photos</span>
                 <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" th:if="${profile.jathagamUrl != null}"><i class="bi bi-file-pdf-fill me-1"></i> Jathagam Verified</span>
             </div>
