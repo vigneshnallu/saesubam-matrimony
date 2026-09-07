@@ -913,13 +913,22 @@ public class PageController {
                 for (UserProfileView v : visitorViews) {
                     if (v.getViewerUserId() != null && !processedViewerIds.contains(v.getViewerUserId())) {
                         processedViewerIds.add(v.getViewerUserId());
-                        Users viewerUser = userService.getUserById(v.getViewerUserId());
+                        Users viewerUser = null;
+                        try {
+                            viewerUser = userService.getUserById(v.getViewerUserId());
+                        } catch (Exception e) {
+                            System.err.println("Notice finding viewer user: " + e.getMessage());
+                        }
                         if (viewerUser != null) {
-                            Profiles viewerProfile = profileService.getProfileByUserId(viewerUser.getId());
-                            java.util.Map<String, Object> map = new java.util.HashMap<>();
-                            map.put("user", viewerUser);
-                            map.put("profile", viewerProfile != null ? viewerProfile : new Profiles());
-                            map.put("viewedDate", v.getViewedDate());
+                            Profiles viewerProfile = viewerUser.getProfile();
+                            if (viewerProfile == null) {
+                                viewerProfile = profileService.getProfileByUserId(viewerUser.getId());
+                            }
+                            if (viewerProfile != null && viewerProfile.getId() != null) {
+                                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                                map.put("user", viewerUser);
+                                map.put("profile", viewerProfile);
+                                map.put("viewedDate", v.getViewedDate());
 
                             String timeAgo = "Recently";
                             if (v.getViewedDate() != null) {
@@ -934,6 +943,7 @@ public class PageController {
                             }
                             map.put("timeAgo", timeAgo);
                             whoViewedMyProfile.add(map);
+                            }
                         }
                     }
                 }
