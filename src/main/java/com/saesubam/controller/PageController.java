@@ -502,16 +502,28 @@ public class PageController {
             }
 
             // 1. Check & Handle Plan Expiry
-            if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
-                && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
-                userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
-                currentUser = userService.getUserById(currentUser.getId());
-                session.setAttribute("loggedInUser", currentUser);
+            try {
+                if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
+                    && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
+                    userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
+                    currentUser = userService.getUserById(currentUser.getId());
+                    session.setAttribute("loggedInUser", currentUser);
+                }
+            } catch (Exception ex) {
+                System.err.println("Notice checking plan expiry for user " + currentUser.getId() + ": " + ex.getMessage());
             }
 
             // 2. Track & Increment Profile View Quotas for Active Subscriptions via Persistent DB Records
             boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
-            boolean isAlreadyViewed = isOwnProfile || userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
+            boolean isAlreadyViewed = isOwnProfile;
+            try {
+                if (!isOwnProfile) {
+                    isAlreadyViewed = userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
+                }
+            } catch (Exception ex) {
+                System.err.println("Notice checking existing profile view record: " + ex.getMessage());
+            }
+
             boolean canViewFullProfile = isAlreadyViewed;
 
             if (!isOwnProfile) {
@@ -521,17 +533,26 @@ public class PageController {
                 } else {
                     // New profile: check if remaining limit count is greater than 0
                     if (currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
-                        // Decrement limit by 1 (increment profileViewsCount by 1)
-                        currentUser.setProfileViewsCount((currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1);
-                        userService.updateUser(currentUser);
+                        int newCount = (currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1;
+                        currentUser.setProfileViewsCount(newCount);
                         session.setAttribute("loggedInUser", currentUser);
 
-                        // Persist permanent view record in DB
-                        UserProfileView viewRecord = new UserProfileView();
-                        viewRecord.setViewerUserId(currentUser.getId());
-                        viewRecord.setViewedProfileId(targetProfile.getId());
-                        viewRecord.setViewedDate(java.time.LocalDateTime.now());
-                        userProfileViewRepository.save(viewRecord);
+                        try {
+                            userRepository.updateProfileViewsCount(currentUser.getId(), newCount);
+                        } catch (Exception ex) {
+                            System.err.println("Notice updating profileViewsCount query: " + ex.getMessage());
+                        }
+
+                        try {
+                            // Persist permanent view record in DB
+                            UserProfileView viewRecord = new UserProfileView();
+                            viewRecord.setViewerUserId(currentUser.getId());
+                            viewRecord.setViewedProfileId(targetProfile.getId());
+                            viewRecord.setViewedDate(java.time.LocalDateTime.now());
+                            userProfileViewRepository.save(viewRecord);
+                        } catch (Exception ex) {
+                            System.err.println("Notice saving UserProfileView record: " + ex.getMessage());
+                        }
 
                         isAlreadyViewed = true;
                         canViewFullProfile = true;
@@ -541,11 +562,16 @@ public class PageController {
                 }
             }
 
-            boolean interestSent = currentUser != null && targetProfile.getUser() != null
-                && interestService.hasSentInterest(currentUser, targetProfile.getUser());
-            boolean isInterestAccepted = currentUser != null && targetProfile.getUser() != null
-                && interestService.isInterestAccepted(currentUser, targetProfile.getUser());
-            boolean isBookmarked = currentUser != null && bookmarkService.isBookmarked(currentUser, targetProfile);
+            boolean interestSent = false;
+            boolean isInterestAccepted = false;
+            boolean isBookmarked = false;
+            try {
+                interestSent = targetProfile.getUser() != null && interestService.hasSentInterest(currentUser, targetProfile.getUser());
+                isInterestAccepted = targetProfile.getUser() != null && interestService.isInterestAccepted(currentUser, targetProfile.getUser());
+                isBookmarked = bookmarkService.isBookmarked(currentUser, targetProfile);
+            } catch (Exception ex) {
+                System.err.println("Notice checking interest/bookmark status: " + ex.getMessage());
+            }
 
             model.addAttribute("user", currentUser);
             model.addAttribute("profile", targetProfile);
@@ -564,6 +590,7 @@ public class PageController {
             return "profile-detail";
         } catch (Exception ex) {
             System.err.println("Notice loading profile detail for ID " + id + ": " + ex.getMessage());
+            ex.printStackTrace();
             return "redirect:/profiles";
         }
     }
