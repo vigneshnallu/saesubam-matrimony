@@ -9,6 +9,8 @@ public interface UserProfileViewRepository extends JpaRepository<UserProfileView
     boolean existsByViewerUserIdAndViewedProfileId(Long viewerUserId, Long viewedProfileId);
 
     List<UserProfileView> findByViewerUserId(Long viewerUserId);
-    
+
+    List<UserProfileView> findByViewedProfileIdOrderByViewedDateDesc(Long viewedProfileId);
+
     long countByViewerUserId(Long viewerUserId);
 }

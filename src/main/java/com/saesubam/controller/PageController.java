@@ -946,10 +946,52 @@ public class PageController {
         List<UserInterest> sent = interestService.getSentInterests(currentUser);
         List<UserInterest> accepted = interestService.getAcceptedMatches(currentUser);
 
+        // Fetch candidates who viewed current candidate's profile
+        Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
+        List<java.util.Map<String, Object>> whoViewedMyProfile = new java.util.ArrayList<>();
+
+        if (currentProfile != null) {
+            try {
+                List<UserProfileView> visitorViews = userProfileViewRepository.findByViewedProfileIdOrderByViewedDateDesc(currentProfile.getId());
+                java.util.Set<Long> processedViewerIds = new java.util.HashSet<>();
+
+                for (UserProfileView v : visitorViews) {
+                    if (v.getViewerUserId() != null && !processedViewerIds.contains(v.getViewerUserId())) {
+                        processedViewerIds.add(v.getViewerUserId());
+                        Users viewerUser = userService.getUserById(v.getViewerUserId());
+                        if (viewerUser != null) {
+                            Profiles viewerProfile = profileService.getProfileByUserId(viewerUser.getId());
+                            java.util.Map<String, Object> map = new java.util.HashMap<>();
+                            map.put("user", viewerUser);
+                            map.put("profile", viewerProfile != null ? viewerProfile : new Profiles());
+                            map.put("viewedDate", v.getViewedDate());
+
+                            String timeAgo = "Recently";
+                            if (v.getViewedDate() != null) {
+                                java.time.Duration diff = java.time.Duration.between(v.getViewedDate(), java.time.LocalDateTime.now());
+                                if (diff.toMinutes() < 60) {
+                                    timeAgo = Math.max(1, diff.toMinutes()) + " mins ago";
+                                } else if (diff.toHours() < 24) {
+                                    timeAgo = diff.toHours() + " hours ago";
+                                } else {
+                                    timeAgo = diff.toDays() + " days ago";
+                                }
+                            }
+                            map.put("timeAgo", timeAgo);
+                            whoViewedMyProfile.add(map);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                System.err.println("Notice querying who viewed my profile: " + ex.getMessage());
+            }
+        }
+
         model.addAttribute("user", currentUser);
         model.addAttribute("receivedInterests", received);
         model.addAttribute("sentInterests", sent);
         model.addAttribute("acceptedMatches", accepted);
+        model.addAttribute("whoViewedMyProfile", whoViewedMyProfile);
 
         return "interests";
     }

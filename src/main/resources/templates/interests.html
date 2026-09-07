@@ -330,6 +330,11 @@
                 Connected Matches <span class="badge bg-light text-success ms-1" th:text="${acceptedMatches != null ? acceptedMatches.size() : 0}">0</span>
             </button>
         </li>
+        <li class="nav-item">
+            <button class="nav-link" id="viewers-tab" data-bs-toggle="pill" data-bs-target="#viewers" type="button">
+                Who Viewed My Profile <span class="badge bg-light text-primary ms-1" th:text="${whoViewedMyProfile != null ? whoViewedMyProfile.size() : 0}">0</span>
+            </button>
+        </li>
     </ul>
 
     <!-- Tab Contents -->
@@ -459,6 +464,60 @@
                 <i class="bi bi-heartbreak text-muted display-4 d-block mb-3"></i>
                 <h5 class="fw-bold">No Mutual Connections Yet</h5>
                 <p class="text-muted">When an interest proposal is accepted, connected partner profiles with Live Chat will unlock here.</p>
+            </div>
+        </div>
+
+        <!-- Who Viewed My Profile Tab -->
+        <div class="tab-pane fade" id="viewers" role="tabpanel">
+            <div th:if="${whoViewedMyProfile != null and not #lists.isEmpty(whoViewedMyProfile)}">
+                <div class="interest-card border-primary border-1 shadow-sm" th:each="item : ${whoViewedMyProfile}">
+                    <a th:href="@{/profile/{id}(id=${item.profile != null ? item.profile.id : 1})}">
+                        <img th:if="${item.profile != null and item.profile.photoUrl != null}" th:src="${item.profile.photoUrl}" alt="visitor" class="interest-user-img border border-primary">
+                        <div th:if="${item.profile == null or item.profile.photoUrl == null}" class="interest-user-img border border-primary d-flex align-items-center justify-content-center bg-light text-muted">
+                            <i class="bi bi-person-fill fs-2 text-secondary"></i>
+                        </div>
+                    </a>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1 flex-wrap gap-2">
+                            <div>
+                                <a th:href="@{/profile/{id}(id=${item.profile != null ? item.profile.id : 1})}" class="text-decoration-none text-dark">
+                                    <h5 class="fw-bold mb-0 text-dark">
+                                        <span th:text="${item.user != null ? item.user.name : 'Candidate'}">Visitor Name</span>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-2 fs-6 rounded-pill"><i class="bi bi-eye-fill me-1"></i> Profile Visitor</span>
+                                    </h5>
+                                </a>
+                                <p class="text-muted small mb-1 mt-1" th:text="${item.profile != null ? item.profile.occupation + ' • ' + item.profile.city + ' • ' + item.profile.education : 'Member'}">Profession • City</p>
+                            </div>
+                            <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill small fw-semibold"><i class="bi bi-clock-history me-1 text-primary"></i> <span th:text="${item.timeAgo}">Viewed 15 mins ago</span></span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 mt-3 flex-wrap align-items-center">
+                            <a th:href="@{/profile/{id}(id=${item.profile != null ? item.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 py-1.5">
+                                <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                            </a>
+                            <form th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE' and item.profile != null}" th:action="@{/api/interests/send/{id}(id=${item.profile.id})}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm rounded-3 fw-bold px-3 py-1.5">
+                                    <i class="bi bi-heart-fill me-1"></i> Send Express Interest
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3 rounded-3 py-1.5"
+                                    th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE' and item.user != null}"
+                                    th:data-partner-id="${item.user.id}"
+                                    th:data-partner-name="${item.user.name}"
+                                    th:data-partner-photo="${item.profile != null and item.profile.photoUrl != null ? item.profile.photoUrl : ''}"
+                                    onclick="openChatModalFromBtn(this)">
+                                <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Candidate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center py-5" th:if="${whoViewedMyProfile == null or #lists.isEmpty(whoViewedMyProfile)}">
+                <i class="bi bi-eye-slash text-muted display-4 d-block mb-3"></i>
+                <h5 class="fw-bold">No Profile Visitors Yet</h5>
+                <p class="text-muted">When candidates view your matrimony profile, they will appear here automatically.</p>
             </div>
         </div>
     </div>
