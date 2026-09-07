@@ -180,7 +180,7 @@
             <p>Fill in your basic details to get instant match recommendations</p>
         </div>
 
-        <form th:action="@{/userregister}" th:object="${user}" method="post">
+        <form th:action="@{/userregister}" th:object="${user}" method="post" enctype="multipart/form-data">
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Full Name</label>
@@ -208,6 +208,18 @@
                         <option value="Male">Male</option>
                     </select>
                     <div class="error-text" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Age <span class="text-danger">*</span></label>
+                    <input type="number" th:field="*{age}" class="form-control" placeholder="e.g. 25" min="18" max="99" required>
+                    <div class="error-text" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Profile Image <span class="text-danger">*</span></label>
+                    <input type="file" name="photoFile" class="form-control" accept="image/*" required>
+                    <div class="error-text text-danger small" th:if="${photoError != null}" th:text="${photoError}"></div>
                 </div>
 
                 <div class="col-md-6">

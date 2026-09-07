@@ -7,9 +7,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.saesubam.model.Users;
 import com.saesubam.service.UserService;
 import com.saesubam.service.VerificationService;
+import com.saesubam.util.ImageUtils;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,10 +28,17 @@ public class RegistrationController {
     private VerificationService verificationService;
 
     @PostMapping("/userregister")
-    public String register(@Valid @ModelAttribute("user") Users user, BindingResult result, Model model, HttpSession session) {
+    public String register(@Valid @ModelAttribute("user") Users user, BindingResult result,
+                           @RequestParam(value = "photoFile", required = false) MultipartFile photoFile,
+                           Model model, HttpSession session) {
 
         if (user.getPassword() != null && !user.getPassword().equals(user.getConfirmPassword())) {
             result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
+        }
+
+        if (photoFile == null || photoFile.isEmpty()) {
+            model.addAttribute("photoError", "Profile Image is mandatory");
+            result.rejectValue("gender", "error.user", "Profile Image is mandatory");
         }
 
         try {
@@ -41,6 +52,13 @@ public class RegistrationController {
 
         if (result.hasErrors()) {
             return "register";
+        }
+
+        if (photoFile != null && !photoFile.isEmpty()) {
+            String base64Photo = ImageUtils.compressAndEncodeBase64(photoFile, 800);
+            if (base64Photo != null) {
+                user.setPhotoUrl(base64Photo);
+            }
         }
 
         // Generate 6-digit OTP and store pending user registration in session (Do NOT save to DB yet!)

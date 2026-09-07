@@ -96,11 +96,15 @@ public class UserServiceImpl implements UserService {
             profile.setContactMobile(savedUser.getMobile());
             profile.setCity(
                 savedUser.getCity() != null && !savedUser.getCity().trim().isEmpty() ? savedUser.getCity().trim() : "");
-            profile.setAge(26);
+            profile.setAge(savedUser.getAge() != null ? savedUser.getAge() : 26);
             profile.setUser(savedUser);
-            profile.setPhotoUrl(savedUser.getGender() != null && savedUser.getGender().equalsIgnoreCase("Female")
-                ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop"
-                : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop");
+            if (savedUser.getPhotoUrl() != null && !savedUser.getPhotoUrl().trim().isEmpty()) {
+                profile.setPhotoUrl(savedUser.getPhotoUrl());
+            } else {
+                profile.setPhotoUrl(savedUser.getGender() != null && savedUser.getGender().equalsIgnoreCase("Female")
+                    ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop"
+                    : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop");
+            }
 
             profileRepository.save(profile);
             savedUser.setProfile(profile);

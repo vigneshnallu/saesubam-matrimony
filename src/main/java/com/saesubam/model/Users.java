@@ -43,6 +43,16 @@ public class Users {
     @NotBlank
     private String gender;
 
+    /** The age. */
+    @jakarta.validation.constraints.NotNull(message = "Age is required")
+    @jakarta.validation.constraints.Min(value = 18, message = "Age must be at least 18")
+    @jakarta.validation.constraints.Max(value = 99, message = "Age must be at most 99")
+    private Integer age;
+
+    /** The photo url / base64 string. */
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String photoUrl;
+
     /** The profile for. */
     @NotBlank
     private String profileFor;
@@ -632,6 +642,22 @@ public class Users {
             return false;
         }
         return getRemainingViews() > 0;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     /**
