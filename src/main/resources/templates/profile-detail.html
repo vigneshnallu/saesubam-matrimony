@@ -407,8 +407,8 @@
             <div class="section-card bg-light border-danger-subtle">
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                     <h5 class="text-danger mb-0"><i class="bi bi-brightness-high-fill me-2"></i> Jathagam & Horoscope Details</h5>
-                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${isInterestAccepted}"><i class="bi bi-unlock-fill me-1"></i> Interest Accepted - Jathagam Unlocked</span>
-                    <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!isInterestAccepted}"><i class="bi bi-lock-fill me-1"></i> Mutual Interest Acceptance Required</span>
+                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${canViewFullProfile or isInterestAccepted}"><i class="bi bi-unlock-fill me-1"></i> Jathagam Unlocked</span>
+                    <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!canViewFullProfile and !isInterestAccepted}"><i class="bi bi-lock-fill me-1"></i> Mutual Interest Acceptance Required</span>
                 </div>
 
                 <!-- Religious Astro Details Summary -->
@@ -420,8 +420,8 @@
                     <div class="detail-item"><label>Dosham</label><span th:text="${profile.dosham != null ? profile.dosham : 'No'}">No</span></div>
                 </div>
 
-                <!-- Unlocked Jathagam Grid & Document (ONLY WHEN MUTUAL INTEREST IS ACCEPTED) -->
-                <div th:if="${isInterestAccepted}">
+                <!-- Unlocked Jathagam Grid & Document -->
+                <div th:if="${canViewFullProfile or isInterestAccepted}">
                     <div class="bg-white p-3 rounded-3 border mb-3">
                         <h6 class="fw-bold text-dark text-center mb-2"><i class="bi bi-grid-3x3-gap-fill text-danger me-1"></i> Traditional 12-Rasi Jathagam Chart Grid</h6>
                         
@@ -449,22 +449,6 @@
                             <div style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#1e293b; text-align:center; padding:2px;">Kanni</div>
                         </div>
                     </div>
-
-                    <div th:if="${profile.jathagamUrl != null}" class="text-center pt-2">
-                        <a th:href="${profile.jathagamUrl}" target="_blank" class="btn btn-danger rounded-3 fw-bold px-4 py-2">
-                            <i class="bi bi-download me-2"></i> Download / View Candidate Jathagam Document (PDF)
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Locked Jathagam Alert -->
-                <div th:if="${!isInterestAccepted}" class="alert alert-warning border-0 rounded-3 text-start mb-0">
-                    <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-1">
-                        <i class="bi bi-lock-fill text-warning fs-5"></i> Full Jathagam Chart & Document Locked
-                    </div>
-                    <div class="small text-muted">
-                        Express interest in <span class="fw-bold text-dark" th:text="${profile.fullName}">this candidate</span>. Once your interest proposal is <strong>mutually accepted</strong>, full Jathagam chart details and contact information will unlock automatically!
-                    </div>
                 </div>
             </div>
 
@@ -483,34 +467,41 @@
         <div class="col-md-4">
             <!-- Family Details -->
             <div class="section-card">
-                <h5><i class="bi bi-house-door-fill text-danger"></i> Family Background</h5>
-                <div class="mb-3"><label class="small text-muted">Family Status</label><div class="fw-bold text-dark" th:text="${profile.familyStatus}">Upper Middle Class</div></div>
-                <div class="mb-3"><label class="small text-muted">Family Type</label><div class="fw-bold text-dark" th:text="${profile.familyType}">Nuclear Family</div></div>
-                <div class="mb-3"><label class="small text-muted">Family Values</label><div class="fw-bold text-dark" th:text="${profile.familyValues}">Moderate</div></div>
+                <h5><i class="bi bi-people-fill text-danger"></i> Family Background</h5>
+                <div class="mb-2"><label class="small text-muted">Family Status</label><div class="fw-bold text-dark" th:text="${profile.familyStatus}">Middle Class</div></div>
+                <div class="mb-2"><label class="small text-muted">Family Type</label><div class="fw-bold text-dark" th:text="${profile.familyType}">Nuclear</div></div>
+                <div class="mb-2"><label class="small text-muted">Family Values</label><div class="fw-bold text-dark" th:text="${profile.familyValues}">Traditional</div></div>
                 <div><label class="small text-muted">Native Place</label><div class="fw-bold text-dark" th:text="${profile.nativePlace}">Chennai</div></div>
             </div>
 
             <!-- Contact Details -->
             <div class="section-card bg-light border-danger-subtle">
-                <h5 class="text-danger"><i class="bi bi-telephone-fill"></i> Contact Information</h5>
-                <div th:if="${isInterestAccepted}">
+                <h5 class="text-danger"><i class="bi bi-telephone-fill me-2"></i> Contact Information</h5>
+                <div th:if="${canViewFullProfile or isInterestAccepted}">
                     <div class="mb-3">
-                        <label class="small text-muted">Contact Mobile</label>
-                        <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile}">+91 98765 43210</div>
-                        <a th:href="'tel:' + ${profile.contactMobile}" class="btn btn-sm btn-outline-success rounded-pill mt-1 fw-bold"><i class="bi bi-telephone-out-fill me-1"></i> Call Candidate</a>
+                        <label class="small text-muted fw-semibold">Contact Mobile</label>
+                        <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile != null and !profile.contactMobile.isEmpty() ? profile.contactMobile : (profile.user != null ? profile.user.mobile : 'Not Available')}">+91 98765 43210</div>
+                        <div class="d-flex gap-2 mt-2 flex-wrap">
+                            <a th:if="${profile.contactMobile != null and !profile.contactMobile.isEmpty()}" th:href="'tel:' + ${profile.contactMobile}" class="btn btn-sm btn-outline-success rounded-pill fw-bold px-3"><i class="bi bi-telephone-out-fill me-1"></i> Call Candidate</a>
+                            <a th:if="${profile.contactMobile != null and !profile.contactMobile.isEmpty()}" th:href="'https://wa.me/91' + ${profile.contactMobile}" target="_blank" class="btn btn-sm btn-success rounded-pill fw-bold px-3"><i class="bi bi-whatsapp me-1"></i> WhatsApp</a>
+                        </div>
+                    </div>
+                    <div class="mb-3" th:if="${profile.user != null and profile.user.email != null}">
+                        <label class="small text-muted fw-semibold">Email Address</label>
+                        <div class="fw-bold text-dark" th:text="${profile.user.email}">candidate@gmail.com</div>
                     </div>
                     <div class="mb-3">
-                        <label class="small text-muted">Contact Person</label>
-                        <div class="fw-bold text-dark" th:text="${profile.contactPerson != null ? profile.contactPerson : 'Parent'}">Parent</div>
+                        <label class="small text-muted fw-semibold">Contact Person</label>
+                        <div class="fw-bold text-dark" th:text="${profile.contactPerson != null and !profile.contactPerson.isEmpty() ? profile.contactPerson : 'Parent / Family'}">Parent</div>
                     </div>
-                    <div class="badge bg-success-subtle text-success p-2 w-100 text-wrap">
-                        <i class="bi bi-patch-check-fill me-1"></i> Contact Unlocked (Interest Accepted)
+                    <div class="badge bg-success-subtle text-success p-2 w-100 text-wrap rounded-pill fw-bold">
+                        <i class="bi bi-patch-check-fill me-1"></i> Contact Information Unlocked
                     </div>
                 </div>
-                <div th:if="${!isInterestAccepted}" class="text-center py-3">
+                <div th:if="${!canViewFullProfile and !isInterestAccepted}" class="text-center py-3">
                     <i class="bi bi-lock-fill display-5 text-danger mb-2 d-block"></i>
                     <h6 class="fw-bold text-dark mb-2">Contact Details Locked</h6>
-                    <p class="small text-muted mb-3">Send Express Interest. Contact phone numbers and full Jathagam unlock automatically when mutual interest is accepted.</p>
+                    <p class="small text-muted mb-3">Send Express Interest or upgrade your plan to unlock candidate contact phone numbers and full Jathagam chart details.</p>
                 </div>
             </div>
         </div>
