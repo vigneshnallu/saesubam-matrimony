@@ -487,77 +487,85 @@ public class PageController {
      */
     @GetMapping("/profile/{id}")
     public String profileDetail(@PathVariable Long id, HttpSession session, Model model) {
-        Users currentUser = getLoggedInUser(session);
-        if (currentUser == null) {
-            return "redirect:/?loginRequired=true";
-        }
-        Profiles targetProfile = profileService.getProfileById(id);
+        try {
+            Users currentUser = getLoggedInUser(session);
+            if (currentUser == null) {
+                return "redirect:/?loginRequired=true";
+            }
+            Profiles targetProfile = profileService.getProfileById(id);
+            if (targetProfile == null) {
+                targetProfile = profileService.getProfileByUserId(id);
+            }
 
-        if (targetProfile == null) {
-            return "redirect:/profiles";
-        }
+            if (targetProfile == null) {
+                return "redirect:/profiles";
+            }
 
-        // 1. Check & Handle Plan Expiry
-        if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
-            && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
-            userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
-            currentUser = userService.getUserById(currentUser.getId());
-            session.setAttribute("loggedInUser", currentUser);
-        }
+            // 1. Check & Handle Plan Expiry
+            if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
+                && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
+                userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
+                currentUser = userService.getUserById(currentUser.getId());
+                session.setAttribute("loggedInUser", currentUser);
+            }
 
-        // 2. Track & Increment Profile View Quotas for Active Subscriptions via Persistent DB Records
-        boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
-        boolean isAlreadyViewed = isOwnProfile || userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
-        boolean canViewFullProfile = isAlreadyViewed;
+            // 2. Track & Increment Profile View Quotas for Active Subscriptions via Persistent DB Records
+            boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
+            boolean isAlreadyViewed = isOwnProfile || userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
+            boolean canViewFullProfile = isAlreadyViewed;
 
-        if (!isOwnProfile) {
-            if (isAlreadyViewed) {
-                // Re-viewing unlocked profile: allow viewing WITHOUT changing/decrementing limit count
-                canViewFullProfile = true;
-            } else {
-                // New profile: check if remaining limit count is greater than 0
-                if (currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
-                    // Decrement limit by 1 (increment profileViewsCount by 1)
-                    currentUser.setProfileViewsCount((currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1);
-                    userService.updateUser(currentUser);
-                    session.setAttribute("loggedInUser", currentUser);
-
-                    // Persist permanent view record in DB
-                    UserProfileView viewRecord = new UserProfileView();
-                    viewRecord.setViewerUserId(currentUser.getId());
-                    viewRecord.setViewedProfileId(targetProfile.getId());
-                    viewRecord.setViewedDate(java.time.LocalDateTime.now());
-                    userProfileViewRepository.save(viewRecord);
-
-                    isAlreadyViewed = true;
+            if (!isOwnProfile) {
+                if (isAlreadyViewed) {
+                    // Re-viewing unlocked profile: allow viewing WITHOUT changing/decrementing limit count
                     canViewFullProfile = true;
                 } else {
-                    canViewFullProfile = false;
+                    // New profile: check if remaining limit count is greater than 0
+                    if (currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
+                        // Decrement limit by 1 (increment profileViewsCount by 1)
+                        currentUser.setProfileViewsCount((currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1);
+                        userService.updateUser(currentUser);
+                        session.setAttribute("loggedInUser", currentUser);
+
+                        // Persist permanent view record in DB
+                        UserProfileView viewRecord = new UserProfileView();
+                        viewRecord.setViewerUserId(currentUser.getId());
+                        viewRecord.setViewedProfileId(targetProfile.getId());
+                        viewRecord.setViewedDate(java.time.LocalDateTime.now());
+                        userProfileViewRepository.save(viewRecord);
+
+                        isAlreadyViewed = true;
+                        canViewFullProfile = true;
+                    } else {
+                        canViewFullProfile = false;
+                    }
                 }
             }
+
+            boolean interestSent = currentUser != null && targetProfile.getUser() != null
+                && interestService.hasSentInterest(currentUser, targetProfile.getUser());
+            boolean isInterestAccepted = currentUser != null && targetProfile.getUser() != null
+                && interestService.isInterestAccepted(currentUser, targetProfile.getUser());
+            boolean isBookmarked = currentUser != null && bookmarkService.isBookmarked(currentUser, targetProfile);
+
+            model.addAttribute("user", currentUser);
+            model.addAttribute("profile", targetProfile);
+            model.addAttribute("interestSent", interestSent);
+            model.addAttribute("isInterestAccepted", isInterestAccepted);
+            model.addAttribute("isBookmarked", isBookmarked);
+            model.addAttribute("isMembershipActive", currentUser.isMembershipActive());
+            model.addAttribute("hasRemainingViews", currentUser.hasRemainingProfileViews());
+            model.addAttribute("isAlreadyViewed", isAlreadyViewed);
+            model.addAttribute("canViewFullProfile", canViewFullProfile);
+            model.addAttribute("remainingViews", currentUser.getRemainingViews());
+            model.addAttribute("viewsUsed", currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0);
+            model.addAttribute("maxViews", currentUser.getMaxAllowedViews());
+            model.addAttribute("membershipExpiryDate", currentUser.getMembershipExpiryDate());
+
+            return "profile-detail";
+        } catch (Exception ex) {
+            System.err.println("Notice loading profile detail for ID " + id + ": " + ex.getMessage());
+            return "redirect:/profiles";
         }
-
-        boolean interestSent = currentUser != null && targetProfile.getUser() != null
-            && interestService.hasSentInterest(currentUser, targetProfile.getUser());
-        boolean isInterestAccepted = currentUser != null && targetProfile.getUser() != null
-            && interestService.isInterestAccepted(currentUser, targetProfile.getUser());
-        boolean isBookmarked = currentUser != null && bookmarkService.isBookmarked(currentUser, targetProfile);
-
-        model.addAttribute("user", currentUser);
-        model.addAttribute("profile", targetProfile);
-        model.addAttribute("interestSent", interestSent);
-        model.addAttribute("isInterestAccepted", isInterestAccepted);
-        model.addAttribute("isBookmarked", isBookmarked);
-        model.addAttribute("isMembershipActive", currentUser.isMembershipActive());
-        model.addAttribute("hasRemainingViews", currentUser.hasRemainingProfileViews());
-        model.addAttribute("isAlreadyViewed", isAlreadyViewed);
-        model.addAttribute("canViewFullProfile", canViewFullProfile);
-        model.addAttribute("remainingViews", currentUser.getRemainingViews());
-        model.addAttribute("viewsUsed", currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0);
-        model.addAttribute("maxViews", currentUser.getMaxAllowedViews());
-        model.addAttribute("membershipExpiryDate", currentUser.getMembershipExpiryDate());
-
-        return "profile-detail";
     }
 
     /**
