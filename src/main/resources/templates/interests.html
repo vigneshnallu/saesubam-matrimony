@@ -713,6 +713,16 @@
                 stopChatPolling();
             });
         }
+
+        var hash = (window.location.hash || (new URLSearchParams(window.location.search)).get('tab'));
+        if (hash) {
+            var targetId = hash.replace('#', '') + '-tab';
+            var targetBtn = document.getElementById(targetId);
+            if (targetBtn && typeof bootstrap !== 'undefined') {
+                var bsTab = new bootstrap.Tab(targetBtn);
+                bsTab.show();
+            }
+        }
     });
 
     function toggleMobileSidebar() {

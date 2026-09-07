@@ -905,9 +905,18 @@ public class PageController {
         Profiles currentProfile = profileService.getProfileByUserId(currentUser.getId());
         List<java.util.Map<String, Object>> whoViewedMyProfile = new java.util.ArrayList<>();
 
-        if (currentProfile != null) {
+        if (currentProfile != null || currentUser.getId() != null) {
             try {
-                List<UserProfileView> visitorViews = userProfileViewRepository.findByViewedProfileIdOrderByViewedDateDesc(currentProfile.getId());
+                List<Long> targetIds = new java.util.ArrayList<>();
+                if (currentProfile != null && currentProfile.getId() != null) {
+                    targetIds.add(currentProfile.getId());
+                }
+                if (currentUser.getId() != null && !targetIds.contains(currentUser.getId())) {
+                    targetIds.add(currentUser.getId());
+                }
+
+                List<UserProfileView> visitorViews = targetIds.isEmpty() ? new java.util.ArrayList<>()
+                    : userProfileViewRepository.findByViewedProfileIdInOrderByViewedDateDesc(targetIds);
                 java.util.Set<Long> processedViewerIds = new java.util.HashSet<>();
 
                 for (UserProfileView v : visitorViews) {

@@ -12,5 +12,7 @@ public interface UserProfileViewRepository extends JpaRepository<UserProfileView
 
     List<UserProfileView> findByViewedProfileIdOrderByViewedDateDesc(Long viewedProfileId);
 
+    List<UserProfileView> findByViewedProfileIdInOrderByViewedDateDesc(List<Long> viewedProfileIds);
+
     long countByViewerUserId(Long viewerUserId);
 }
