@@ -82,6 +82,10 @@ public class InterestsController {
         try {
             Users currentUser = getLoggedInUser(session);
             if (currentUser != null) {
+                if (currentUser.getMembershipType() == null || currentUser.getMembershipType() == com.saesubam.model.MembershipType.FREE) {
+                    redirectAttributes.addFlashAttribute("infoMessage", "Accepting proposal requests requires an active Gold, Premium, or Platinum membership plan. Please upgrade your plan to proceed!");
+                    return "redirect:/subscription";
+                }
                 interestService.acceptInterest(interestId, currentUser);
                 redirectAttributes.addFlashAttribute("successMessage", "Interest accepted! Connection created.");
             }
@@ -96,6 +100,10 @@ public class InterestsController {
         try {
             Users currentUser = getLoggedInUser(session);
             if (currentUser != null) {
+                if (currentUser.getMembershipType() == null || currentUser.getMembershipType() == com.saesubam.model.MembershipType.FREE) {
+                    redirectAttributes.addFlashAttribute("infoMessage", "Declining proposal requests requires an active Gold, Premium, or Platinum membership plan. Please upgrade your plan to proceed!");
+                    return "redirect:/subscription";
+                }
                 interestService.declineInterest(interestId, currentUser);
                 redirectAttributes.addFlashAttribute("infoMessage", "Interest request declined.");
             }

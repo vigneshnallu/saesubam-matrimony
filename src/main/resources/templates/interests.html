@@ -365,12 +365,22 @@
                             <i class="bi bi-person-bounding-box me-1"></i> View Profile
                         </a>
                         <div class="d-flex gap-2" th:if="${item.status.name() == 'PENDING'}">
-                            <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
-                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-check-circle me-1"></i> Accept</button>
-                            </form>
-                            <form th:action="@{/api/interests/decline/{id}(id=${item.id})}" method="post">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-x-circle me-1"></i> Decline</button>
-                            </form>
+                            <!-- Paid Members: Accept & Decline Actions -->
+                            <th:block th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE'}">
+                                <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-success btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-check-circle me-1"></i> Accept</button>
+                                </form>
+                                <form th:action="@{/api/interests/decline/{id}(id=${item.id})}" method="post">
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-x-circle me-1"></i> Decline</button>
+                                </form>
+                            </th:block>
+
+                            <!-- FREE Members: Upgrade Plan Button -->
+                            <th:block th:if="${user == null or user.membershipType == null or user.membershipType.name() == 'FREE'}">
+                                <a href="/subscription" class="btn btn-warning btn-sm fw-bold px-3 rounded-3 py-2 text-dark shadow-sm">
+                                    <i class="bi bi-lock-fill me-1"></i> Upgrade Plan to Accept / Decline
+                                </a>
+                            </th:block>
                         </div>
                     </div>
                 </div>
@@ -440,11 +450,7 @@
                             </div>
                         </div>
 
-                        <!-- Contact Badges -->
-                        <div class="d-flex gap-2 mt-2 flex-wrap align-items-center">
-                            <span class="badge bg-light text-dark border px-3 py-2 fs-6"><i class="bi bi-telephone-fill text-success me-1"></i> <span th:text="${partner.mobile}">+91 98765 43210</span></span>
-                            <span class="badge bg-light text-dark border px-3 py-2 fs-6" th:if="${partner.email != null}"><i class="bi bi-envelope-fill text-primary me-1"></i> <span th:text="${partner.email}">partner@email.com</span></span>
-                     <!-- Interactive Actions: Live Chat & View Profile -->
+                        <!-- Interactive Actions: Live Chat & View Profile -->
                     <div class="d-flex flex-column gap-2">
                         <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
                                 th:data-partner-id="${partner.id}"
