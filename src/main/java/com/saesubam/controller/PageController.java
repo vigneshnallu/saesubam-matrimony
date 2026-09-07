@@ -42,8 +42,10 @@ import com.saesubam.model.Profiles;
 import com.saesubam.model.UserBookmark;
 import com.saesubam.model.UserInterest;
 import com.saesubam.model.Users;
+import com.saesubam.model.UserProfileView;
 import com.saesubam.repositories.ContactQueryRepository;
 import com.saesubam.repositories.PaymentTransactionRepository;
+import com.saesubam.repositories.UserProfileViewRepository;
 import com.saesubam.repositories.UserRepository;
 import com.saesubam.service.ProfileService;
 import com.saesubam.service.UserBookmarkService;
@@ -66,6 +68,9 @@ public class PageController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserProfileViewRepository userProfileViewRepository;
 
     /** The profile service. */
     @Autowired
@@ -499,20 +504,35 @@ public class PageController {
             session.setAttribute("loggedInUser", currentUser);
         }
 
-        // 2. Track & Increment Profile View Quotas for Active Subscriptions
+        // 2. Track & Increment Profile View Quotas for Active Subscriptions via Persistent DB Records
         boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
-        if (!isOwnProfile && currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
-            @SuppressWarnings("unchecked")
-            java.util.Set<Long> viewedProfileIds = (java.util.Set<Long>) session.getAttribute("viewedProfileIds");
-            if (viewedProfileIds == null) {
-                viewedProfileIds = new java.util.HashSet<>();
-                session.setAttribute("viewedProfileIds", viewedProfileIds);
-            }
-            if (!viewedProfileIds.contains(id)) {
-                viewedProfileIds.add(id);
-                currentUser.setProfileViewsCount(currentUser.getProfileViewsCount() + 1);
-                userService.updateUser(currentUser);
-                session.setAttribute("loggedInUser", currentUser);
+        boolean isAlreadyViewed = isOwnProfile || userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
+        boolean canViewFullProfile = isAlreadyViewed;
+
+        if (!isOwnProfile) {
+            if (isAlreadyViewed) {
+                // Re-viewing unlocked profile: allow viewing WITHOUT changing/decrementing limit count
+                canViewFullProfile = true;
+            } else {
+                // New profile: check if remaining limit count is greater than 0
+                if (currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
+                    // Decrement limit by 1 (increment profileViewsCount by 1)
+                    currentUser.setProfileViewsCount((currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1);
+                    userService.updateUser(currentUser);
+                    session.setAttribute("loggedInUser", currentUser);
+
+                    // Persist permanent view record in DB
+                    UserProfileView viewRecord = new UserProfileView();
+                    viewRecord.setViewerUserId(currentUser.getId());
+                    viewRecord.setViewedProfileId(targetProfile.getId());
+                    viewRecord.setViewedDate(java.time.LocalDateTime.now());
+                    userProfileViewRepository.save(viewRecord);
+
+                    isAlreadyViewed = true;
+                    canViewFullProfile = true;
+                } else {
+                    canViewFullProfile = false;
+                }
             }
         }
 
@@ -529,8 +549,11 @@ public class PageController {
         model.addAttribute("isBookmarked", isBookmarked);
         model.addAttribute("isMembershipActive", currentUser.isMembershipActive());
         model.addAttribute("hasRemainingViews", currentUser.hasRemainingProfileViews());
-        model.addAttribute("viewsUsed", currentUser.getProfileViewsCount());
-        model.addAttribute("maxViews", currentUser.getMaxProfileViews());
+        model.addAttribute("isAlreadyViewed", isAlreadyViewed);
+        model.addAttribute("canViewFullProfile", canViewFullProfile);
+        model.addAttribute("remainingViews", currentUser.getRemainingViews());
+        model.addAttribute("viewsUsed", currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0);
+        model.addAttribute("maxViews", currentUser.getMaxAllowedViews());
         model.addAttribute("membershipExpiryDate", currentUser.getMembershipExpiryDate());
 
         return "profile-detail";

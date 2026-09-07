@@ -607,17 +607,31 @@ public class Users {
      *
      * @return true, if successful
      */
+    public int getMaxAllowedViews() {
+        if (maxProfileViews != null && maxProfileViews > 0) {
+            return maxProfileViews;
+        }
+        if (membershipType == MembershipType.PLATINUM || membershipType == MembershipType.PREMIUM) {
+            return 250;
+        }
+        if (membershipType == MembershipType.GOLD) {
+            return 100;
+        }
+        return 40;
+    }
+
+    public int getRemainingViews() {
+        int max = getMaxAllowedViews();
+        int used = (profileViewsCount != null ? profileViewsCount : 0);
+        int rem = max - used;
+        return Math.max(rem, 0);
+    }
+
     public boolean hasRemainingProfileViews() {
         if (!isMembershipActive()) {
             return false;
         }
-        if (membershipType == MembershipType.PREMIUM || membershipType == MembershipType.PLATINUM) {
-            return true; // Unlimited profile views
-        }
-        if (membershipType == MembershipType.GOLD) {
-            return getProfileViewsCount() < 100; // Gold limit is 100 profiles
-        }
-        return false;
+        return getRemainingViews() > 0;
     }
 
     /**

@@ -314,6 +314,8 @@
                 <h2 class="fw-bold text-dark mb-0" th:text="${profile.fullName}">Priya Sundaram</h2>
                 <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${profile.verified}"><i class="bi bi-patch-check-fill me-1"></i> Verified Profile</span>
                 <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!profile.verified}"><i class="bi bi-clock-history me-1"></i> Verification Pending</span>
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${isAlreadyViewed}"><i class="bi bi-unlock-fill me-1"></i> Profile Unlocked</span>
+                <span class="badge bg-info-subtle text-primary px-3 py-2 rounded-pill" th:if="${remainingViews != null}"><i class="bi bi-eye-fill me-1"></i> <span th:text="${remainingViews} + ' / ' + ${maxViews}">86 / 100</span> Views Left</span>
                 <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill" th:if="${profile.secondaryPhotoUrl != null}"><i class="bi bi-images me-1"></i> 2 Self Photos</span>
                 <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" th:if="${profile.jathagamUrl != null}"><i class="bi bi-file-pdf-fill me-1"></i> Jathagam Verified</span>
             </div>
@@ -341,12 +343,12 @@
             </div>
 
             <!-- Quota Limit Reached Warning Alert -->
-            <div th:if="${user != null and user.membershipType != null and user.membershipType.name() == 'GOLD' and (!isMembershipActive or !hasRemainingViews)}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
+            <div th:if="${user != null and !canViewFullProfile}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
                 <div class="d-flex align-items-center gap-2 fw-bold text-danger mb-1">
-                    <i class="bi bi-exclamation-octagon-fill fs-5"></i> Gold Quota Limit Reached (100 / 100 Views Used)
+                    <i class="bi bi-exclamation-octagon-fill fs-5"></i> Profile View Quota Limit Reached (0 Views Remaining)
                 </div>
                 <div class="small text-dark">
-                    You have reached your 100 candidate profile views & proposal limit for Gold Plan. <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade to Premium Plan</a> for unlimited profile views and proposal requests!
+                    You have used all available profile view limits for your plan (<span th:text="${viewsUsed} + ' / ' + ${maxViews}">100 / 100</span> views used). <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade your plan</a> to unlock and view more candidate profiles!
                 </div>
             </div>
 
