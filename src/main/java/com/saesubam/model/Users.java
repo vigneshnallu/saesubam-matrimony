@@ -44,13 +44,14 @@ public class Users {
     private String gender;
 
     /** The age. */
+    @Transient
     @jakarta.validation.constraints.NotNull(message = "Age is required")
     @jakarta.validation.constraints.Min(value = 18, message = "Age must be at least 18")
     @jakarta.validation.constraints.Max(value = 99, message = "Age must be at most 99")
     private Integer age;
 
     /** The photo url / base64 string. */
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    @Transient
     private String photoUrl;
 
     /** The profile for. */
@@ -516,6 +517,10 @@ public class Users {
      * @return the created at
      */
     public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getCreatedDate() {
         return createdAt;
     }
 
