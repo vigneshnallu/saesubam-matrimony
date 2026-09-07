@@ -268,4 +268,111 @@ public class VerificationServiceImpl implements VerificationService {
 
         return otpStr;
     }
+
+    @Override
+    public void sendRegistrationCredentialsEmail(Users user) {
+        if (user == null || user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            return;
+        }
+
+        final String targetEmail = user.getEmail().trim();
+        final String targetName = (user.getName() != null && !user.getName().trim().isEmpty()) ? user.getName().trim() : "Member";
+        final String rawPassword = (user.getPassword() != null) ? user.getPassword() : "As configured during registration";
+
+        System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating Welcome & Registration Credentials Email to: " + targetEmail);
+
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                JavaMailSender sender = getActiveMailSender();
+                jakarta.mail.internet.MimeMessage mimeMessage = sender.createMimeMessage();
+                org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+                helper.setFrom("vigneshn051995@gmail.com");
+                helper.setTo(targetEmail);
+                helper.setSubject("🎉 Welcome to SaeSubam Matrimony - Your Registration Credentials");
+
+                String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 28px; border: 1px solid #f1f5f9; border-radius: 20px; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
+                        + "<div style='text-align: center; margin-bottom: 20px;'>"
+                        + "<h2 style='color: #e11d48; margin: 0; font-size: 26px;'>SaeSubam Matrimony</h2>"
+                        + "<p style='color: #64748b; font-size: 14px; margin-top: 4px;'>Premium Matchmaking Platform</p>"
+                        + "</div>"
+                        + "<p style='font-size: 16px; color: #1e293b;'>Dear <strong>" + targetName + "</strong>,</p>"
+                        + "<p style='font-size: 15px; color: #475569; line-height: 1.6;'>Congratulations! Your registration with SaeSubam Matrimony has been completed successfully. Here are your account login credentials:</p>"
+                        + "<div style='background-color: #fff1f2; border: 1px solid #fecdd3; border-radius: 14px; padding: 20px; margin: 20px 0;'>"
+                        + "<table style='width: 100%; border-collapse: collapse; font-size: 15px;'>"
+                        + "<tr><td style='padding: 6px 0; color: #9f1239; font-weight: bold; width: 140px;'>Username / Email:</td><td style='padding: 6px 0; color: #1e293b; font-weight: bold;'>" + targetEmail + "</td></tr>"
+                        + "<tr><td style='padding: 6px 0; color: #9f1239; font-weight: bold;'>Account Password:</td><td style='padding: 6px 0; color: #e11d48; font-weight: bold; letter-spacing: 1px;'>" + rawPassword + "</td></tr>"
+                        + "</table>"
+                        + "</div>"
+                        + "<div style='text-align: center; margin: 28px 0;'>"
+                        + "<a href='https://saesubam-matrimony.onrender.com/login' style='background-color: #e11d48; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 32px; border-radius: 50px; display: inline-block; box-shadow: 0 4px 12px rgba(225,29,72,0.3);'>Click Here to Sign In</a>"
+                        + "</div>"
+                        + "<p style='font-size: 13px; color: #64748b; line-height: 1.5;'>For security reasons, please keep your password confidential and do not share it with anyone.</p>"
+                        + "<hr style='border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;'>"
+                        + "<p style='font-size: 12px; color: #94a3b8; text-align: center; margin: 0;'>Warm Regards,<br><strong>SaeSubam Matrimony Support Team</strong></p>"
+                        + "</div>";
+
+                helper.setText(htmlContent, true);
+                sender.send(mimeMessage);
+                System.out.println("✅ WELCOME & REGISTRATION CREDENTIALS EMAIL SENT SUCCESSFULLY to " + targetEmail);
+            } catch (Throwable t) {
+                System.err.println("❌ [SMTP ERROR FAILED] Could not send welcome credentials email to " + targetEmail + ": " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void sendAccountRecoveryEmail(Users user) {
+        if (user == null || user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            return;
+        }
+
+        final String targetEmail = user.getEmail().trim();
+        final String targetName = (user.getName() != null && !user.getName().trim().isEmpty()) ? user.getName().trim() : "Member";
+        final String rawPassword = (user.getPassword() != null) ? user.getPassword() : "N/A";
+
+        System.out.println("🔄 [SMTP DIAGNOSTIC] Initiating Forgot Username & Password Account Recovery Email to: " + targetEmail);
+
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                JavaMailSender sender = getActiveMailSender();
+                jakarta.mail.internet.MimeMessage mimeMessage = sender.createMimeMessage();
+                org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+                helper.setFrom("vigneshn051995@gmail.com");
+                helper.setTo(targetEmail);
+                helper.setSubject("🔑 SaeSubam Matrimony - Account Credentials Recovery");
+
+                String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 28px; border: 1px solid #f1f5f9; border-radius: 20px; background-color: #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.05);'>"
+                        + "<div style='text-align: center; margin-bottom: 20px;'>"
+                        + "<h2 style='color: #e11d48; margin: 0; font-size: 26px;'>SaeSubam Matrimony</h2>"
+                        + "<p style='color: #64748b; font-size: 14px; margin-top: 4px;'>Account Security & Credentials Recovery</p>"
+                        + "</div>"
+                        + "<p style='font-size: 16px; color: #1e293b;'>Dear <strong>" + targetName + "</strong>,</p>"
+                        + "<p style='font-size: 15px; color: #475569; line-height: 1.6;'>We received a request to recover your SaeSubam Matrimony account details. Here are your account login credentials:</p>"
+                        + "<div style='background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px; margin: 20px 0;'>"
+                        + "<table style='width: 100%; border-collapse: collapse; font-size: 15px;'>"
+                        + "<tr><td style='padding: 6px 0; color: #475569; font-weight: bold; width: 140px;'>Registered Name:</td><td style='padding: 6px 0; color: #0f172a; font-weight: bold;'>" + targetName + "</td></tr>"
+                        + "<tr><td style='padding: 6px 0; color: #475569; font-weight: bold;'>Username / Email:</td><td style='padding: 6px 0; color: #0f172a; font-weight: bold;'>" + targetEmail + "</td></tr>"
+                        + "<tr><td style='padding: 6px 0; color: #475569; font-weight: bold;'>Account Password:</td><td style='padding: 6px 0; color: #e11d48; font-weight: bold; letter-spacing: 1px;'>" + rawPassword + "</td></tr>"
+                        + "</table>"
+                        + "</div>"
+                        + "<div style='text-align: center; margin: 28px 0;'>"
+                        + "<a href='https://saesubam-matrimony.onrender.com/login' style='background-color: #e11d48; color: #ffffff; font-size: 16px; font-weight: bold; text-decoration: none; padding: 14px 32px; border-radius: 50px; display: inline-block; box-shadow: 0 4px 12px rgba(225,29,72,0.3);'>Click Here to Sign In</a>"
+                        + "</div>"
+                        + "<p style='font-size: 13px; color: #64748b; line-height: 1.5;'>If you did not initiate this request, please contact our support team immediately.</p>"
+                        + "<hr style='border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;'>"
+                        + "<p style='font-size: 12px; color: #94a3b8; text-align: center; margin: 0;'>Warm Regards,<br><strong>SaeSubam Matrimony Security Team</strong></p>"
+                        + "</div>";
+
+                helper.setText(htmlContent, true);
+                sender.send(mimeMessage);
+                System.out.println("✅ ACCOUNT RECOVERY CREDENTIALS EMAIL SENT SUCCESSFULLY to " + targetEmail);
+            } catch (Throwable t) {
+                System.err.println("❌ [SMTP ERROR FAILED] Could not send account recovery email to " + targetEmail + ": " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
 }

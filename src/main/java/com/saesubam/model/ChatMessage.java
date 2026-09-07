@@ -34,14 +34,14 @@ public class ChatMessage {
     private boolean isRead = false;
 
     public ChatMessage() {
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata"));
     }
 
     public ChatMessage(Users sender, Users receiver, String content) {
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Kolkata"));
         this.isRead = false;
     }
 

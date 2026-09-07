@@ -44,6 +44,7 @@ import com.saesubam.model.UserInterest;
 import com.saesubam.model.Users;
 import com.saesubam.repositories.ContactQueryRepository;
 import com.saesubam.repositories.PaymentTransactionRepository;
+import com.saesubam.repositories.UserRepository;
 import com.saesubam.service.ProfileService;
 import com.saesubam.service.UserBookmarkService;
 import com.saesubam.service.UserInterestService;
@@ -62,6 +63,9 @@ public class PageController {
     /** The user service. */
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /** The profile service. */
     @Autowired
@@ -120,6 +124,59 @@ public class PageController {
     @GetMapping({"/", "/login"})
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordPage() {
+        return "forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String handleForgotPassword(@RequestParam(value = "accountIdentifier", required = false) String accountIdentifier,
+            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes, Model model) {
+        if (accountIdentifier == null || accountIdentifier.trim().isEmpty()) {
+            model.addAttribute("error", "Please enter your registered Email address or 10-digit Mobile number.");
+            return "forgot-password";
+        }
+
+        String cleanInput = accountIdentifier.trim();
+        Users matchingUser = null;
+
+        try {
+            if (cleanInput.contains("@")) {
+                matchingUser = userService.findByEmail(cleanInput.toLowerCase());
+            } else {
+                matchingUser = userRepository.findByMobile(cleanInput);
+            }
+        } catch (Exception e) {
+            System.err.println("Notice searching user for forgot password: " + e.getMessage());
+        }
+
+        if (matchingUser == null) {
+            // Fallback search
+            for (Users u : userService.getAllUsers()) {
+                if ((u.getEmail() != null && u.getEmail().trim().equalsIgnoreCase(cleanInput))
+                        || (u.getMobile() != null && u.getMobile().trim().equals(cleanInput))) {
+                    matchingUser = u;
+                    break;
+                }
+            }
+        }
+
+        if (matchingUser != null) {
+            try {
+                verificationService.sendAccountRecoveryEmail(matchingUser);
+                redirectAttributes.addFlashAttribute("successMessage",
+                        "✅ Account credentials recovery email dispatched to " + matchingUser.getEmail() + ". Please check your inbox!");
+                return "redirect:/login";
+            } catch (Exception ex) {
+                model.addAttribute("error", "Could not send recovery email: " + ex.getMessage());
+                return "forgot-password";
+            }
+        } else {
+            model.addAttribute("error", "No registered account found matching '" + cleanInput + "'. Please check details or register a new account.");
+            return "forgot-password";
+        }
     }
 
     @GetMapping("/privacy-policy")
@@ -225,6 +282,13 @@ public class PageController {
             pendingUser.setMobileVerified(true);
 
             Users savedUser = userService.createUser(pendingUser);
+
+            // Send registration welcome & credentials email
+            try {
+                verificationService.sendRegistrationCredentialsEmail(savedUser);
+            } catch (Exception ex) {
+                System.err.println("Notice sending welcome credentials email: " + ex.getMessage());
+            }
 
             // Log in verified user
             session.setAttribute("loggedInUser", savedUser);
