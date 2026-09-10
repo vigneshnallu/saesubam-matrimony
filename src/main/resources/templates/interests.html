@@ -455,17 +455,18 @@
                         </div>
 
                         <!-- Interactive Actions: Live Chat & View Profile -->
-                    <div class="d-flex flex-column gap-2 mt-2">
-                        <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
-                                th:data-partner-id="${partner.id}"
-                                th:data-partner-name="${partner.name}"
-                                th:data-partner-photo="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : ''}"
-                                onclick="openChatModalFromBtn(this)">
-                            <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Partner
-                        </button>
-                        <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
-                            <i class="bi bi-person-bounding-box me-1"></i> View Profile
-                        </a>
+                        <div class="d-flex flex-column gap-2 mt-2">
+                            <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
+                                    th:data-partner-id="${partner.id}"
+                                    th:data-partner-name="${partner.name}"
+                                    th:data-partner-photo="${partner.profile != null and partner.profile.photoUrl != null ? partner.profile.photoUrl : ''}"
+                                    onclick="openChatModalFromBtn(this)">
+                                <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Partner
+                            </button>
+                            <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 w-100">
+                                <i class="bi bi-person-bounding-box me-1"></i> View Profile
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
