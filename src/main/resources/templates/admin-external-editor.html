@@ -94,7 +94,7 @@
                             th:value="${u.id}" 
                             th:text="'#' + ${u.id} + ' - ' + ${u.name} + ' (' + ${u.email} + ') [' + ${u.membershipType} + ']'"
                             th:data-email="${u.email}"
-                            th:data-plan="${u.membershipType != null ? u.membershipType.name() : 'FREE'}"
+                            th:data-plan="${u.membershipType != null ? #strings.toString(u.membershipType) : 'FREE'}"
                             th:data-views="${u.profileViewsCount != null ? u.profileViewsCount : 0}"
                             th:data-max="${u.maxProfileViews != null ? u.maxProfileViews : 0}">
                     </option>

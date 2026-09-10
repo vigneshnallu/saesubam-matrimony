@@ -296,16 +296,16 @@
                 <h3 class="fw-bold text-dark mb-1">
                     Current Plan: <span class="text-danger" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
                 </h3>
-                <p class="text-muted small mb-0" th:if="${user.membershipType != null and user.membershipType.name() != 'FREE' and user.membershipExpiryDate != null}">
+                <p class="text-muted small mb-0" th:if="${user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and user.membershipExpiryDate != null}">
                     <i class="bi bi-calendar-check-fill me-1 text-success"></i> Valid Until: <strong class="text-dark" th:text="${#temporals.format(user.membershipExpiryDate, 'dd MMM yyyy')}">15 Nov 2026</strong>
                 </p>
-                <p class="text-muted small mb-0" th:if="${user.membershipType == null or user.membershipType.name() == 'FREE'}">
+                <p class="text-muted small mb-0" th:if="${user.membershipType == null or #strings.toString(user.membershipType) == 'FREE'}">
                     <i class="bi bi-info-circle me-1 text-secondary"></i> Free Account (Upgrade to Gold or Premium to unlock candidate views)
                 </p>
             </div>
 
             <!-- Profile View Quota Progress Bar for Gold -->
-            <div style="min-width: 280px;" th:if="${user.membershipType != null and user.membershipType.name() == 'GOLD'}">
+            <div style="min-width: 280px;" th:if="${user.membershipType != null and #strings.toString(user.membershipType) == 'GOLD'}">
                 <div class="d-flex justify-content-between small fw-bold mb-1">
                     <span>Gold Profile Views Quota</span>
                     <span class="text-danger" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + (${user.maxProfileViews != null and user.maxProfileViews > 0 ? user.maxProfileViews : 100}) + ' Views'">14 / 100 Views</span>
@@ -319,7 +319,7 @@
             </div>
 
             <!-- Unlimited Badge for Premium / Platinum -->
-            <div style="min-width: 240px;" th:if="${user.membershipType != null and (user.membershipType.name() == 'PREMIUM' or user.membershipType.name() == 'PLATINUM')}">
+            <div style="min-width: 240px;" th:if="${user.membershipType != null and (#strings.toString(user.membershipType) == 'PREMIUM' or #strings.toString(user.membershipType) == 'PLATINUM')}">
                 <div class="badge bg-success-subtle text-success px-4 py-3 rounded-pill fw-bold fs-6 w-100 text-center">
                     <i class="bi bi-infinity me-1"></i> Unlimited Profile Views
                 </div>

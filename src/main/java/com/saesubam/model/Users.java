@@ -609,9 +609,13 @@ public class Users {
      */
     public boolean isMembershipActive() {
         if (membershipType == null || membershipType == MembershipType.FREE) {
-            return false;
+            return true;
         }
         return membershipExpiryDate == null || LocalDateTime.now().isBefore(membershipExpiryDate);
+    }
+
+    public boolean isPaidMember() {
+        return membershipType != null && membershipType != MembershipType.FREE && (membershipExpiryDate == null || LocalDateTime.now().isBefore(membershipExpiryDate));
     }
 
     /**
@@ -640,9 +644,6 @@ public class Users {
     }
 
     public boolean hasRemainingProfileViews() {
-        if (!isMembershipActive()) {
-            return false;
-        }
         return getRemainingViews() > 0;
     }
 

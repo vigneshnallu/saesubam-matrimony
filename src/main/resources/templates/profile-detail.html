@@ -489,7 +489,8 @@
             <!-- Contact Details -->
             <div class="section-card bg-light border-danger-subtle">
                 <h5 class="text-danger"><i class="bi bi-telephone-fill me-2"></i> Contact Information</h5>
-                <div th:if="${canViewFullProfile or isInterestAccepted}">
+                <!-- Unlocked for Paid Members (GOLD/PREMIUM/PLATINUM) or Accepted Matches -->
+                <div th:if="${(canViewFullProfile and user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE') or isInterestAccepted}">
                     <div class="mb-3">
                         <label class="small text-muted fw-semibold">Contact Mobile</label>
                         <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile != null and !profile.contactMobile.isEmpty() ? profile.contactMobile : (profile.user != null ? profile.user.mobile : 'Not Available')}">+91 98765 43210</div>
@@ -510,10 +511,15 @@
                         <i class="bi bi-patch-check-fill me-1"></i> Contact Information Unlocked
                     </div>
                 </div>
-                <div th:if="${!canViewFullProfile and !isInterestAccepted}" class="text-center py-3">
+
+                <!-- Locked for FREE Members without accepted interest -->
+                <div th:if="${(user == null or user.membershipType == null or #strings.toString(user.membershipType) == 'FREE') and !isInterestAccepted}" class="text-center py-3">
                     <i class="bi bi-lock-fill display-5 text-danger mb-2 d-block"></i>
                     <h6 class="fw-bold text-dark mb-2">Contact Details Locked</h6>
-                    <p class="small text-muted mb-3">Send Express Interest or upgrade your plan to unlock candidate contact phone numbers and full Jathagam chart details.</p>
+                    <p class="small text-muted mb-3">Upgrade to a Gold or Premium membership plan to unlock candidate contact mobile phone numbers and email address.</p>
+                    <a href="/subscription" class="btn btn-warning text-dark btn-sm rounded-3 fw-bold px-3 py-2 shadow-sm">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Upgrade Plan to Unlock Contact Details
+                    </a>
                 </div>
             </div>
         </div>

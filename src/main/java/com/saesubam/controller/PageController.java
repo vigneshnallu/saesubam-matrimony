@@ -503,7 +503,8 @@ public class PageController {
 
             // 1. Check & Handle Plan Expiry
             try {
-                if (currentUser.isMembershipActive() && currentUser.getMembershipExpiryDate() != null
+                if (currentUser.getMembershipType() != null && currentUser.getMembershipType() != MembershipType.FREE
+                    && currentUser.getMembershipExpiryDate() != null
                     && java.time.LocalDateTime.now().isAfter(currentUser.getMembershipExpiryDate())) {
                     userService.upgradeMembership(currentUser.getId(), MembershipType.FREE);
                     currentUser = userService.getUserById(currentUser.getId());
@@ -532,7 +533,7 @@ public class PageController {
                     canViewFullProfile = true;
                 } else {
                     // New profile: check if remaining limit count is greater than 0
-                    if (currentUser.isMembershipActive() && currentUser.hasRemainingProfileViews()) {
+                    if (currentUser.hasRemainingProfileViews()) {
                         int newCount = (currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1;
                         currentUser.setProfileViewsCount(newCount);
                         session.setAttribute("loggedInUser", currentUser);

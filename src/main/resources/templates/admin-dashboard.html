@@ -161,7 +161,7 @@
                             <span class="badge rounded-pill px-3 py-1" th:classappend="${user.role == 'ADMIN' ? 'bg-danger' : 'bg-secondary'}" th:text="${user.role}">USER</span>
                         </td>
                         <td>
-                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${user.membershipType != null and user.membershipType.name() == 'GOLD' ? 'bg-warning text-dark' : (user.membershipType != null and (user.membershipType.name() == 'PREMIUM' or user.membershipType.name() == 'PLATINUM') ? 'bg-success' : 'bg-light text-dark border')}" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${user.membershipType != null and #strings.toString(user.membershipType) == 'GOLD' ? 'bg-warning text-dark' : (user.membershipType != null and (#strings.toString(user.membershipType) == 'PREMIUM' or #strings.toString(user.membershipType) == 'PLATINUM') ? 'bg-success' : 'bg-light text-dark border')}" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">GOLD</span>
                         </td>
                         <td class="small">
                             <div class="fw-bold text-nowrap" th:text="${user.profileViewsCount != null ? user.profileViewsCount : 0} + ' / ' + ${user.maxProfileViews != null ? user.maxProfileViews : 0} + ' Views'">35 / 100 Views</div>
