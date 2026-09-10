@@ -104,10 +104,16 @@
             box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         .nav-link {
             font-weight: 600;
+            font-size: 0.92rem;
             color: #475569;
-            padding: 0.6rem 1rem !important;
+            padding: 0.4rem 0.65rem !important;
+            white-space: nowrap;
             transition: color 0.2s ease;
         }
 
@@ -265,12 +271,12 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
                     <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Why Choose Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Why Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">Plans</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#stories">Success Stories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#stories">Stories</a></li>
                     <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                     <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
                 </ul>
@@ -728,9 +734,9 @@
                 <div class="col-6 col-lg-2">
                     <h6 class="fw-bold text-white mb-3">Quick Links</h6>
                     <ul class="list-unstyled small space-y-2">
-                        <li class="mb-2"><a href="/">Home</a></li>
+                        <li class="mb-2"><a href="#home">Home</a></li>
                         <li class="mb-2"><a href="/profiles">Browse Profiles</a></li>
-                        <li class="mb-2"><a href="/subscription">Membership Plans</a></li>
+                        <li class="mb-2"><a href="#pricing">Membership Plans</a></li>
                         <li class="mb-2"><a href="/register">Register Free</a></li>
                     </ul>
                 </div>
