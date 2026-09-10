@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaeSubam Matrimony — Sacred Tamil Matchmaking Platform</title>
+    
+    <!-- Primary SEO Meta Tags -->
+    <meta name="title" content="SaeSubam Matrimony — Sacred Tamil Matchmaking Platform">
+    <meta name="description" content="Register free on SaeSubam Matrimony. Find your perfect match from thousands of verified Tamil brides and grooms. 100% safe and secure using verified profile checks & horoscope compatibility.">
+    <meta name="keywords" content="SaeSubam Matrimony, Tamil Matrimony, Matrimony, Sacred Matchmaking, Tamil Brides, Tamil Grooms, Horoscope Matching, Jathagam, Arakkonam Matrimony, Verified Profiles">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="SaeSubam Matrimony">
+    <link rel="canonical" href="https://saesubam-matrimony.onrender.com/">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://saesubam-matrimony.onrender.com/">
+    <meta property="og:title" content="SaeSubam Matrimony — Sacred Tamil Matchmaking Platform">
+    <meta property="og:description" content="Register free on SaeSubam Matrimony. Find your perfect match from thousands of verified Tamil brides and grooms. 100% safe, secure & horoscope verified.">
+    <meta property="og:site_name" content="SaeSubam Matrimony">
+
+    <!-- Twitter Preview -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://saesubam-matrimony.onrender.com/">
+    <meta property="twitter:title" content="SaeSubam Matrimony — Sacred Tamil Matchmaking Platform">
+    <meta property="twitter:description" content="Register free on SaeSubam Matrimony. Find your perfect match from thousands of verified Tamil brides and grooms.">
+
+    <!-- Google Search Structured Data (Schema.org JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MarriageAgency",
+      "name": "SaeSubam Matrimony",
+      "url": "https://saesubam-matrimony.onrender.com/",
+      "logo": "https://saesubam-matrimony.onrender.com/uploads/profiles/logo.png",
+      "description": "Register free on SaeSubam Matrimony. Find your perfect match from thousands of verified Tamil brides and grooms. 100% safe and secure.",
+      "telephone": "+91-9876543210",
+      "priceRange": "Free to ₹1999",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Chennai",
+        "addressRegion": "Tamil Nadu",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://saesubam-matrimony.onrender.com/"
+      ]
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+            --accent: #4f46e5;
+            --dark: #0f172a;
+            --light-bg: #fff1f2;
+            --card-shadow: 0 20px 40px rgba(225, 29, 72, 0.08);
+            --gold: #d97706;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary) 0%, #be123c 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: #475569;
+            padding: 0.6rem 1rem !important;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #fff1f2 0%, #fff 50%, #eef2ff 100%);
+            padding: 100px 0 80px;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--dark);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Search Card */
+        .search-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(225, 29, 72, 0.15);
+            border: 1px solid rgba(225, 29, 72, 0.1);
+            padding: 32px;
+        }
+
+        /* Feature Card */
+        .feature-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.1);
+            border-color: rgba(225, 29, 72, 0.2);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        /* Stat Counter */
+        .stat-banner {
+            background: linear-gradient(135deg, var(--dark) 0%, #1e293b 100%);
+            color: #ffffff;
+            border-radius: 24px;
+            padding: 40px 20px;
+        }
+
+        /* Subscription Card */
+        .pricing-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 36px 28px;
+            border: 2px solid #f1f5f9;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.15);
+            transform: scale(1.03);
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary) 0%, #be123c 100%);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 1px solid #f1f5f9;
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: #ffffff;
+            border-radius: 30px;
+            padding: 60px 40px;
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+
+        footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top navbar-custom py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <div class="brand-logo-icon">
+                    <i class="bi bi-heart-fill"></i>
+                </div>
+                <div>
+                    <span class="fw-bold fs-4 text-dark font-serif d-block leading-none">SaeSubam</span>
+                    <span class="text-danger fw-semibold small" style="font-size: 0.7rem; letter-spacing: 1px;">MATRIMONY</span>
+                </div>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Why Choose Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Plans</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#stories">Success Stories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <div th:if="${user != null}" class="dropdown">
+                        <button class="btn btn-outline-danger dropdown-toggle rounded-pill px-4 fw-bold" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> <span th:text="${user.fullName}">My Account</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+                            <li><a class="dropdown-item fw-semibold" href="/dashboard"><i class="bi bi-speedometer2 text-danger me-2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item fw-semibold" href="/my-profile"><i class="bi bi-person text-danger me-2"></i> My Profile</a></li>
+                            <li><a class="dropdown-item fw-semibold" href="/interests"><i class="bi bi-heart text-danger me-2"></i> Express Interests</a></li>
+                            <li><a class="dropdown-item fw-semibold" href="/subscription"><i class="bi bi-gem text-danger me-2"></i> Upgrade Plan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-semibold text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+
+                    <div th:if="${user == null}" class="d-flex align-items-center gap-2">
+                        <a href="/login" class="btn btn-link text-dark fw-bold text-decoration-none px-3">Log In</a>
+                        <a href="/register" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border: none;">
+                            <i class="bi bi-person-plus-fill me-1"></i> Register Free
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6">
+                    <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-3 d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-patch-check-fill"></i> #1 Trusted Tamil & Multi-Community Matrimony
+                    </span>
+                    <h1 class="hero-title font-serif mb-4">
+                        Find Your <span class="text-gradient">Sacred Life Partner</span> With Trust & Tradition
+                    </h1>
+                    <p class="fs-5 text-muted mb-4 leading-relaxed">
+                        Discover verified brides & grooms with 100% phone verification, automated horoscope (Jathagam) compatibility matching, and complete photo privacy controls.
+                    </p>
+
+                    <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-success fs-4"></i>
+                            <span class="fw-bold text-dark">100% Verified Profiles</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-stars text-warning fs-4"></i>
+                            <span class="fw-bold text-dark">Star & Rasi Matching</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-lock-fill text-danger fs-4"></i>
+                            <span class="fw-bold text-dark">Privacy Controlled</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="search-card">
+                        <h4 class="fw-bold text-dark mb-1 font-serif"><i class="bi bi-search text-danger me-2"></i> Quick Match Finder</h4>
+                        <p class="small text-muted mb-4">Select preferences to find verified profiles instantly</p>
+                        
+                        <form action="/profiles" method="GET">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-dark">I am looking for</label>
+                                    <select class="form-select form-select-lg rounded-3 fs-6" name="gender">
+                                        <option value="Bride">a Bride (Female)</option>
+                                        <option value="Groom">a Groom (Male)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-dark">Marital Status</label>
+                                    <select class="form-select form-select-lg rounded-3 fs-6" name="maritalStatus">
+                                        <option value="">Never Married</option>
+                                        <option value="Divorced">Divorced</option>
+                                        <option value="Widowed">Widowed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-dark">Age Range</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <select class="form-select rounded-3 fs-6" name="minAge">
+                                            <option value="21">21 Yrs</option>
+                                            <option value="25">25 Yrs</option>
+                                            <option value="28">28 Yrs</option>
+                                        </select>
+                                        <span class="text-muted fw-bold">to</span>
+                                        <select class="form-select rounded-3 fs-6" name="maxAge">
+                                            <option value="35">35 Yrs</option>
+                                            <option value="40">40 Yrs</option>
+                                            <option value="50">50 Yrs</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-dark">Caste / Community</label>
+                                    <select class="form-select form-select-lg rounded-3 fs-6" name="caste">
+                                        <option value="">All Castes / Any Community</option>
+                                        <option value="Tamil Brahmin">Tamil Brahmin</option>
+                                        <option value="Gounder">Gounder</option>
+                                        <option value="Mudaliar">Mudaliar</option>
+                                        <option value="Pillai">Pillai</option>
+                                        <option value="Chettiar">Chettiar</option>
+                                        <option value="Nadar">Nadar</option>
+                                        <option value="Vanniyar">Vanniyar</option>
+                                        <option value="Thevar">Thevar</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-danger btn-lg w-100 rounded-3 fw-bold py-3 shadow" style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border: none;">
+                                        <i class="bi bi-heart-fill me-2"></i> Search Verified Profiles
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Stats Banner -->
+    <section class="py-4">
+        <div class="container">
+            <div class="stat-banner shadow-lg">
+                <div class="row text-center gy-4">
+                    <div class="col-6 col-md-3">
+                        <h2 class="display-5 fw-bold text-danger font-serif mb-1">10,000+</h2>
+                        <p class="text-slate-300 small mb-0 fw-semibold">Active Verified Profiles</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h2 class="display-5 fw-bold text-warning font-serif mb-1">4,500+</h2>
+                        <p class="text-slate-300 small mb-0 fw-semibold">Successful Marriages</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h2 class="display-5 fw-bold text-info font-serif mb-1">98%</h2>
+                        <p class="text-slate-300 small mb-0 fw-semibold">Horoscope Match Accuracy</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h2 class="display-5 fw-bold text-success font-serif mb-1">100%</h2>
+                        <p class="text-slate-300 small mb-0 fw-semibold">Privacy Protection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="features" class="py-5">
+        <div class="container py-4">
+            <div class="text-center max-w-2xl mx-auto mb-5">
+                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-2">Our Standout Advantages</span>
+                <h2 class="display-6 font-serif fw-bold text-dark">Why Thousands Trust SaeSubam Matrimony</h2>
+                <p class="text-muted">Built with maximum security, authentic profile checks, and traditional values.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-danger-subtle text-danger">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">100% Verified Profiles</h5>
+                        <p class="text-muted small mb-0">Every candidate account undergoes government ID & mobile number verification to eliminate fake profiles.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-moon-stars-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Horoscope Matching</h5>
+                        <p class="text-muted small mb-0">Instant Natchathiram (Star) & Rasi compatibility matching with downloadable Jathagam PDFs.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Complete Photo Privacy</h5>
+                        <p class="text-muted small mb-0">Full control over who views your secondary photos, phone number, email address, and family details.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="feature-icon bg-success-subtle text-success">
+                            <i class="bi bi-chat-heart-fill"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Live Chat & Express Interest</h5>
+                        <p class="text-muted small mb-0">Send proposals directly to candidates and initiate instant live messaging upon mutual acceptance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center max-w-2xl mx-auto mb-5">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-2">Simple Process</span>
+                <h2 class="display-6 font-serif fw-bold text-dark">Find Your Partner in 3 Simple Steps</h2>
+            </div>
+
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="p-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 64px; height: 64px; font-size: 1.5rem; font-weight: 800;">1</div>
+                        <h5 class="fw-bold text-dark">Register Free Profile</h5>
+                        <p class="text-muted small">Sign up in 2 minutes with basic information, education, photo, and horoscope details.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 64px; height: 64px; font-size: 1.5rem; font-weight: 800;">2</div>
+                        <h5 class="fw-bold text-dark">Search & Express Interest</h5>
+                        <p class="text-muted small">Filter candidate profiles by caste, age, profession, and star compatibility, then send express interest.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 64px; height: 64px; font-size: 1.5rem; font-weight: 800;">3</div>
+                        <h5 class="fw-bold text-dark">Connect & Start Chatting</h5>
+                        <p class="text-muted small">Once accepted, unlock direct contact numbers, download Jathagams, and chat live.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Subscription Plans -->
+    <section id="pricing" class="py-5">
+        <div class="container py-4">
+            <div class="text-center max-w-2xl mx-auto mb-5">
+                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill fw-bold mb-2">Affordable Membership</span>
+                <h2 class="display-6 font-serif fw-bold text-dark">Choose the Perfect Subscription Plan</h2>
+                <p class="text-muted">Upgrade to unlock contact details, send proposals, and access live chat.</p>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+                <!-- Free Plan -->
+                <div class="col-lg-4">
+                    <div class="pricing-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">Free Tier</h4>
+                            <p class="text-muted small mb-3">Basic Access</p>
+                            <h2 class="display-5 fw-bold text-dark mb-4">₹0 <span class="fs-6 text-muted font-sans fw-normal">/ Forever</span></h2>
+                            <hr class="mb-4">
+                            <ul class="list-unstyled mb-4 space-y-2">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Create Matrimony Profile</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Browse All Profiles</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Receive Express Interests</li>
+                                <li class="mb-2 text-muted text-decoration-line-through"><i class="bi bi-x-circle me-2"></i> Unlock Contact Details</li>
+                                <li class="mb-2 text-muted text-decoration-line-through"><i class="bi bi-x-circle me-2"></i> Send Express Interest Proposals</li>
+                            </ul>
+                        </div>
+                        <a href="/register" class="btn btn-outline-dark rounded-pill w-100 fw-bold py-2">Get Started Free</a>
+                    </div>
+                </div>
+
+                <!-- Gold Plan -->
+                <div class="col-lg-4">
+                    <div class="pricing-card featured h-100 d-flex flex-column justify-content-between">
+                        <span class="popular-tag"><i class="bi bi-star-fill me-1"></i> Most Popular</span>
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">Gold Plan</h4>
+                            <p class="text-muted small mb-3">3 Months Validity</p>
+                            <h2 class="display-5 fw-bold text-danger mb-4">₹999 <span class="fs-6 text-muted font-sans fw-normal">/ 3 Mo</span></h2>
+                            <hr class="mb-4">
+                            <ul class="list-unstyled mb-4 space-y-2">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>100 Profile Views</strong></li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlock Contact Phone & Email</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Download Verified Jathagam PDF</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Send Express Interest Proposals</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Priority Search Placement</li>
+                            </ul>
+                        </div>
+                        <a href="/subscription" class="btn btn-danger rounded-pill w-100 fw-bold py-2 shadow" style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border: none;">Upgrade to Gold</a>
+                    </div>
+                </div>
+
+                <!-- Premium Plan -->
+                <div class="col-lg-4">
+                    <div class="pricing-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h4 class="fw-bold text-dark mb-1">Premium Plan</h4>
+                            <p class="text-muted small mb-3">6 Months Validity</p>
+                            <h2 class="display-5 fw-bold text-dark mb-4">₹1,999 <span class="fs-6 text-muted font-sans fw-normal">/ 6 Mo</span></h2>
+                            <hr class="mb-4">
+                            <ul class="list-unstyled mb-4 space-y-2">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>250 Profile Views</strong></li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Unlimited Live Chatting</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Direct Contact Unlock</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Dedicated Account Manager Support</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Verified Badge Highlight</li>
+                            </ul>
+                        </div>
+                        <a href="/subscription" class="btn btn-outline-danger rounded-pill w-100 fw-bold py-2">Upgrade to Premium</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="stories" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center max-w-2xl mx-auto mb-5">
+                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill fw-bold mb-2">Real Happy Couples</span>
+                <h2 class="display-6 font-serif fw-bold text-dark">Matrimony Success Stories</h2>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                K & A
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Karthik & Ananya</h6>
+                                <span class="small text-muted">Married in June 2025</span>
+                            </div>
+                        </div>
+                        <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                        <p class="text-muted small mb-0">"We found each other through SaeSubam Matrimony! The horoscope star matching gave our families 100% confidence. Truly a sacred experience."</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-accent text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px; font-size: 1.2rem; background: var(--accent);">
+                                S & M
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Santhosh & Meenakshi</h6>
+                                <span class="small text-muted">Married in Jan 2026</span>
+                            </div>
+                        </div>
+                        <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                        <p class="text-muted small mb-0">"The direct live chat feature allowed us to communicate safely. We upgrade to Gold Plan and connected instantly. Highly recommended!"</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                V & P
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">Vijay & Priya</h6>
+                                <span class="small text-muted">Married in Feb 2026</span>
+                            </div>
+                        </div>
+                        <div class="text-warning mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+                        <p class="text-muted small mb-0">"The privacy settings gave my family peace of mind. Only verified members could view contact details. Thank you SaeSubam!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion -->
+    <section id="faq" class="py-5">
+        <div class="container py-4">
+            <div class="text-center max-w-2xl mx-auto mb-5">
+                <span class="badge bg-info-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-2">Got Questions?</span>
+                <h2 class="display-6 font-serif fw-bold text-dark">Frequently Asked Questions</h2>
+            </div>
+
+            <div class="accordion accordion-flush max-w-3xl mx-auto shadow-sm rounded-4 bg-white p-3" id="faqAccordion">
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-bold text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Is registering on SaeSubam Matrimony completely free?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Yes! Creating a candidate profile, uploading photos, adding horoscope details, and searching candidates is 100% free.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-bold text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            How does candidate profile verification work?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Our team verifies every account via SMS OTP and government identity proof checks before assigning a Verified badge.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-bold text-dark collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Can Free accounts unlock contact details or send express interest?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">
+                            Free users can receive proposals, but unlocking phone numbers, email addresses, and sending proposals require upgrading to Gold or Premium plans.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="py-5">
+        <div class="container">
+            <div class="cta-banner text-center shadow-lg">
+                <h2 class="display-5 font-serif fw-bold mb-3">Begin Your Sacred Matchmaking Journey Today</h2>
+                <p class="fs-5 text-white-50 mb-4 max-w-xl mx-auto">Join thousands of verified brides and grooms. Registration takes less than 2 minutes!</p>
+                <a href="/register" class="btn btn-light btn-lg rounded-pill fw-bold text-danger px-5 py-3 shadow">
+                    <i class="bi bi-heart-fill me-2"></i> Register Your Profile Free
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-5 pb-4 mt-5">
+        <div class="container">
+            <div class="row gy-4 mb-4">
+                <div class="col-lg-4">
+                    <a class="d-flex align-items-center gap-2 mb-3 text-white text-decoration-none" href="/">
+                        <div class="brand-logo-icon">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+                        <div>
+                            <span class="fw-bold fs-4 text-white font-serif d-block leading-none">SaeSubam</span>
+                            <span class="text-danger fw-semibold small" style="font-size: 0.7rem; letter-spacing: 1px;">MATRIMONY</span>
+                        </div>
+                    </a>
+                    <p class="small text-slate-400 mb-3">SaeSubam Matrimony is Tamil Nadu's leading trusted sacred matchmaking platform providing 100% verified candidate profiles and horoscope matching.</p>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small space-y-2">
+                        <li class="mb-2"><a href="/">Home</a></li>
+                        <li class="mb-2"><a href="/profiles">Browse Profiles</a></li>
+                        <li class="mb-2"><a href="/subscription">Membership Plans</a></li>
+                        <li class="mb-2"><a href="/register">Register Free</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-white mb-3">Support & Legal</h6>
+                    <ul class="list-unstyled small space-y-2">
+                        <li class="mb-2"><a href="/contact">Contact Support</a></li>
+                        <li class="mb-2"><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="/terms">Terms & Conditions</a></li>
+                        <li class="mb-2"><a href="/grievance">Grievance Redressal</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 class="fw-bold text-white mb-3">Customer Support</h6>
+                    <p class="small text-slate-400 mb-2"><i class="bi bi-telephone-fill text-danger me-2"></i> +91 98765 43210 (Mon-Sat, 9AM - 7PM)</p>
+                    <p class="small text-slate-400 mb-3"><i class="bi bi-envelope-fill text-danger me-2"></i> support@saesubam.com</p>
+                    <div class="d-flex gap-2 fs-5">
+                        <a href="#" class="text-slate-400"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-slate-400"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-slate-400"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-secondary opacity-25">
+            <div class="d-flex flex-wrap justify-content-between align-items-center pt-2 small">
+                <p class="mb-0">© 2026 SaeSubam Matrimony. All Rights Reserved.</p>
+                <p class="mb-0 text-slate-500">Made with ❤️ for Sacred Matchmaking</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

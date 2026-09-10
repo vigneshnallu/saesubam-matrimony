@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /profiles
+Allow: /subscription
+Allow: /contact
+Allow: /privacy-policy
+Allow: /terms
+Allow: /grievance
+
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /my-profile/edit
+
+Sitemap: https://saesubam-matrimony.onrender.com/sitemap.xml

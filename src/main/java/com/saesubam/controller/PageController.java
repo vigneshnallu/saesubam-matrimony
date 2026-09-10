@@ -123,11 +123,23 @@ public class PageController {
     }
 
     /**
+     * Public Landing Website Homepage.
+     */
+    @GetMapping("/")
+    public String index(HttpSession session, Model model) {
+        Users currentUser = getSessionUser(session);
+        if (currentUser != null) {
+            model.addAttribute("user", currentUser);
+        }
+        return "index";
+    }
+
+    /**
      * Login.
      *
      * @return the string
      */
-    @GetMapping({"/", "/login"})
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
