@@ -32,6 +32,10 @@ public class RegistrationController {
                            @RequestParam(value = "photoFile", required = false) MultipartFile photoFile,
                            Model model, HttpSession session) {
 
+        if (user.getAge() == null || user.getAge() < 18 || user.getAge() > 99) {
+            result.rejectValue("age", "error.user", "Age is required and must be between 18 and 99");
+        }
+
         if (user.getPassword() != null && !user.getPassword().equals(user.getConfirmPassword())) {
             result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
         }
