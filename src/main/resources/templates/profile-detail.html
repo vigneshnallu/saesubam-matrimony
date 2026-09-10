@@ -372,20 +372,15 @@
                     </form>
                 </div>
 
-                <!-- Live Chat Candidate Button -->
-                <div th:if="${profile.user != null and (user == null or !profile.user.id.equals(user.id))}">
-                    <button type="button" class="btn btn-outline-danger btn-lg rounded-3 fw-bold px-4"
-                            th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE'}"
+                <!-- Live Chat Button (Only available for Mutually Accepted Connected Matches in Match Interests) -->
+                <div th:if="${isInterestAccepted and profile.user != null and (user == null or !profile.user.id.equals(user.id))}">
+                    <button type="button" class="btn btn-outline-success btn-lg rounded-3 fw-bold px-4"
                             th:data-partner-id="${profile.user.id}"
                             th:data-partner-name="${profile.fullName}"
                             th:data-partner-photo="${profile.photoUrl != null ? profile.photoUrl : ''}"
                             onclick="openChatModalFromBtn(this)">
-                        <i class="bi bi-chat-dots-fill me-2"></i> Live Chat Candidate
+                        <i class="bi bi-chat-dots-fill me-2 text-success"></i> Live Chat Partner
                     </button>
-                    <a th:if="${user == null or user.membershipType == null or #strings.toString(user.membershipType) == 'FREE'}"
-                       href="/subscription" class="btn btn-outline-warning btn-lg rounded-3 fw-bold px-4 text-dark">
-                        <i class="bi bi-lock-fill me-2 text-warning"></i> Upgrade to Chat
-                    </a>
                 </div>
 
                 <form th:action="@{/api/bookmark/toggle/{id}(id=${profile.id})}" method="post">

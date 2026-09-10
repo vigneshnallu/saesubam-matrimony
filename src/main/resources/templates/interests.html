@@ -447,11 +447,15 @@
                                     </h5>
                                 </a>
                                 <p class="text-muted small mb-1 mt-1" th:text="${partner.profile != null ? partner.profile.occupation + ' • ' + partner.profile.city + ' • ' + partner.profile.education : 'Member'}">Profession • City</p>
+                                <div class="d-flex align-items-center gap-3 mt-2 flex-wrap text-dark small fw-semibold">
+                                    <span><i class="bi bi-telephone-fill text-success me-1"></i> <span th:text="${partner.mobile != null ? partner.mobile : 'N/A'}">+91 9876543210</span></span>
+                                    <span><i class="bi bi-envelope-fill text-primary me-1"></i> <span th:text="${partner.email}">partner@example.com</span></span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Interactive Actions: Live Chat & View Profile -->
-                    <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-column gap-2 mt-2">
                         <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-3 shadow-sm"
                                 th:data-partner-id="${partner.id}"
                                 th:data-partner-name="${partner.name}"
@@ -507,14 +511,6 @@
                                     <i class="bi bi-heart-fill me-1"></i> Send Express Interest
                                 </button>
                             </form>
-                            <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3 rounded-3 py-1.5"
-                                    th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and item.user != null}"
-                                    th:data-partner-id="${item.user.id}"
-                                    th:data-partner-name="${item.user.name}"
-                                    th:data-partner-photo="${item.profile != null and item.profile.photoUrl != null ? item.profile.photoUrl : ''}"
-                                    onclick="openChatModalFromBtn(this)">
-                                <i class="bi bi-chat-dots-fill me-1"></i> Live Chat Candidate
-                            </button>
                         </div>
                     </div>
                 </div>
