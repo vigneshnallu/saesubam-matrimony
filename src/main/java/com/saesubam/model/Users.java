@@ -609,13 +609,13 @@ public class Users {
      */
     public boolean isMembershipActive() {
         if (membershipType == null || membershipType == MembershipType.FREE) {
-            return true;
+            return false;
         }
         return membershipExpiryDate == null || LocalDateTime.now().isBefore(membershipExpiryDate);
     }
 
     public boolean isPaidMember() {
-        return membershipType != null && membershipType != MembershipType.FREE && (membershipExpiryDate == null || LocalDateTime.now().isBefore(membershipExpiryDate));
+        return isMembershipActive();
     }
 
     /**
@@ -624,6 +624,9 @@ public class Users {
      * @return true, if successful
      */
     public int getMaxAllowedViews() {
+        if (!isMembershipActive()) {
+            return 0;
+        }
         if (maxProfileViews != null && maxProfileViews > 0) {
             return maxProfileViews;
         }
@@ -633,10 +636,13 @@ public class Users {
         if (membershipType == MembershipType.GOLD) {
             return 100;
         }
-        return 40;
+        return 0;
     }
 
     public int getRemainingViews() {
+        if (!isMembershipActive()) {
+            return 0;
+        }
         int max = getMaxAllowedViews();
         int used = (profileViewsCount != null ? profileViewsCount : 0);
         int rem = max - used;
@@ -644,6 +650,9 @@ public class Users {
     }
 
     public boolean hasRemainingProfileViews() {
+        if (!isMembershipActive()) {
+            return false;
+        }
         return getRemainingViews() > 0;
     }
 

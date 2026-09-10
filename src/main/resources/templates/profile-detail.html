@@ -314,8 +314,8 @@
                 <h2 class="fw-bold text-dark mb-0" th:text="${profile.fullName}">Priya Sundaram</h2>
                 <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${profile.verified}"><i class="bi bi-patch-check-fill me-1"></i> Verified Profile</span>
                 <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill" th:if="${!profile.verified}"><i class="bi bi-clock-history me-1"></i> Verification Pending</span>
-                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${isAlreadyViewed}"><i class="bi bi-unlock-fill me-1"></i> Profile Unlocked</span>
-                <span class="badge bg-info-subtle text-primary px-3 py-2 rounded-pill" th:if="${remainingViews != null}"><i class="bi bi-eye-fill me-1"></i> <span th:text="${remainingViews} + ' / ' + ${maxViews}">86 / 100</span> Views Left</span>
+                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" th:if="${isAlreadyViewed and user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE'}"><i class="bi bi-unlock-fill me-1"></i> Profile Unlocked</span>
+                <span class="badge bg-info-subtle text-primary px-3 py-2 rounded-pill" th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and remainingViews != null}"><i class="bi bi-eye-fill me-1"></i> <span th:text="${remainingViews} + ' / ' + ${maxViews}">86 / 100</span> Views Left</span>
                 <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill" th:if="${profile.secondaryPhotoUrl != null}"><i class="bi bi-images me-1"></i> 2 Self Photos</span>
                 <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill" th:if="${profile.jathagamUrl != null}"><i class="bi bi-file-pdf-fill me-1"></i> Jathagam Verified</span>
             </div>
@@ -335,15 +335,15 @@
             <!-- FREE Plan Lock Alert -->
             <div th:if="${user != null and (user.membershipType == null or #strings.toString(user.membershipType) == 'FREE')}" class="alert alert-warning border-0 rounded-3 shadow-sm mb-3">
                 <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-1">
-                    <i class="bi bi-lock-fill text-warning fs-5"></i> Express Interest Locked for Free Account
+                    <i class="bi bi-lock-fill text-warning fs-5"></i> Profile Details & Express Interest Locked for Free Account
                 </div>
                 <div class="small text-muted">
-                    Sending Express Interest proposals requires an active subscription. <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade to Gold or Premium Plan</a> to send proposals to candidate profiles!
+                    Viewing full candidate profile details, contact information, and sending proposals require an active subscription. <a href="/subscription" class="fw-bold text-danger text-decoration-underline">Upgrade to Gold or Premium Plan</a> to unlock full candidate profiles!
                 </div>
             </div>
 
-            <!-- Quota Limit Reached Warning Alert -->
-            <div th:if="${user != null and !canViewFullProfile}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
+            <!-- Quota Limit Reached Warning Alert for Paid Users -->
+            <div th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and !canViewFullProfile}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-3">
                 <div class="d-flex align-items-center gap-2 fw-bold text-danger mb-1">
                     <i class="bi bi-exclamation-octagon-fill fs-5"></i> Profile View Quota Limit Reached (0 Views Remaining)
                 </div>
@@ -372,8 +372,8 @@
                     </form>
                 </div>
 
-                <!-- Live Chat Button (Only available for Mutually Accepted Connected Matches in Match Interests) -->
-                <div th:if="${isInterestAccepted and profile.user != null and (user == null or !profile.user.id.equals(user.id))}">
+                <!-- Live Chat Button (Only available for Paid Members with Accepted Interest) -->
+                <div th:if="${isInterestAccepted and user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and profile.user != null and (user == null or !profile.user.id.equals(user.id))}">
                     <button type="button" class="btn btn-outline-success btn-lg rounded-3 fw-bold px-4"
                             th:data-partner-id="${profile.user.id}"
                             th:data-partner-name="${profile.fullName}"

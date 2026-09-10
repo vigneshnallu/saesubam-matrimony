@@ -518,49 +518,50 @@ public class PageController {
             boolean isOwnProfile = targetProfile.getUser() != null && currentUser.getId().equals(targetProfile.getUser().getId());
             boolean isAlreadyViewed = isOwnProfile;
             try {
-                if (!isOwnProfile) {
+                if (!isOwnProfile && currentUser.isMembershipActive()) {
                     isAlreadyViewed = userProfileViewRepository.existsByViewerUserIdAndViewedProfileId(currentUser.getId(), targetProfile.getId());
                 }
             } catch (Exception ex) {
                 System.err.println("Notice checking existing profile view record: " + ex.getMessage());
             }
 
-            boolean canViewFullProfile = isAlreadyViewed;
+            boolean canViewFullProfile = false;
 
-            if (!isOwnProfile) {
+            if (isOwnProfile) {
+                canViewFullProfile = true;
+            } else if (currentUser.isMembershipActive()) {
                 if (isAlreadyViewed) {
-                    // Re-viewing unlocked profile: allow viewing WITHOUT changing/decrementing limit count
+                    canViewFullProfile = true;
+                } else if (currentUser.hasRemainingProfileViews()) {
+                    int newCount = (currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1;
+                    currentUser.setProfileViewsCount(newCount);
+                    session.setAttribute("loggedInUser", currentUser);
+
+                    try {
+                        userRepository.updateProfileViewsCount(currentUser.getId(), newCount);
+                    } catch (Exception ex) {
+                        System.err.println("Notice updating profileViewsCount query: " + ex.getMessage());
+                    }
+
+                    try {
+                        // Persist permanent view record in DB
+                        UserProfileView viewRecord = new UserProfileView();
+                        viewRecord.setViewerUserId(currentUser.getId());
+                        viewRecord.setViewedProfileId(targetProfile.getId());
+                        viewRecord.setViewedDate(java.time.LocalDateTime.now());
+                        userProfileViewRepository.save(viewRecord);
+                    } catch (Exception ex) {
+                        System.err.println("Notice saving UserProfileView record: " + ex.getMessage());
+                    }
+
+                    isAlreadyViewed = true;
                     canViewFullProfile = true;
                 } else {
-                    // New profile: check if remaining limit count is greater than 0
-                    if (currentUser.hasRemainingProfileViews()) {
-                        int newCount = (currentUser.getProfileViewsCount() != null ? currentUser.getProfileViewsCount() : 0) + 1;
-                        currentUser.setProfileViewsCount(newCount);
-                        session.setAttribute("loggedInUser", currentUser);
-
-                        try {
-                            userRepository.updateProfileViewsCount(currentUser.getId(), newCount);
-                        } catch (Exception ex) {
-                            System.err.println("Notice updating profileViewsCount query: " + ex.getMessage());
-                        }
-
-                        try {
-                            // Persist permanent view record in DB
-                            UserProfileView viewRecord = new UserProfileView();
-                            viewRecord.setViewerUserId(currentUser.getId());
-                            viewRecord.setViewedProfileId(targetProfile.getId());
-                            viewRecord.setViewedDate(java.time.LocalDateTime.now());
-                            userProfileViewRepository.save(viewRecord);
-                        } catch (Exception ex) {
-                            System.err.println("Notice saving UserProfileView record: " + ex.getMessage());
-                        }
-
-                        isAlreadyViewed = true;
-                        canViewFullProfile = true;
-                    } else {
-                        canViewFullProfile = false;
-                    }
+                    canViewFullProfile = false;
                 }
+            } else {
+                isAlreadyViewed = false;
+                canViewFullProfile = false;
             }
 
             boolean interestSent = false;
