@@ -212,6 +212,69 @@ public class PageController {
         return "grievance";
     }
 
+    @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public String getSitemap() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+               "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>daily</changefreq>\n" +
+               "    <priority>1.0</priority>\n" +
+               "  </url>\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/register</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>weekly</changefreq>\n" +
+               "    <priority>0.9</priority>\n" +
+               "  </url>\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/login</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>weekly</changefreq>\n" +
+               "    <priority>0.8</priority>\n" +
+               "  </url>\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/profiles</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>daily</changefreq>\n" +
+               "    <priority>0.8</priority>\n" +
+               "  </url>\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/subscription</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>monthly</changefreq>\n" +
+               "    <priority>0.7</priority>\n" +
+               "  </url>\n" +
+               "  <url>\n" +
+               "    <loc>https://saesubam-matrimony.onrender.com/contact</loc>\n" +
+               "    <lastmod>2026-09-10</lastmod>\n" +
+               "    <changefreq>monthly</changefreq>\n" +
+               "    <priority>0.6</priority>\n" +
+               "  </url>\n" +
+               "</urlset>";
+    }
+
+    @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public String getRobotsTxt() {
+        return "User-agent: *\n" +
+               "Allow: /\n" +
+               "Allow: /login\n" +
+               "Allow: /register\n" +
+               "Allow: /profiles\n" +
+               "Allow: /subscription\n" +
+               "Allow: /contact\n" +
+               "Allow: /privacy-policy\n" +
+               "Allow: /terms\n" +
+               "Allow: /grievance\n\n" +
+               "Disallow: /admin/\n" +
+               "Disallow: /dashboard\n" +
+               "Disallow: /my-profile/edit\n\n" +
+               "Sitemap: https://saesubam-matrimony.onrender.com/sitemap.xml\n";
+    }
+
     /**
      * Register.
      *
