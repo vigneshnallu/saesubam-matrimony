@@ -955,7 +955,7 @@ public class PageController {
                 java.util.Set<Long> processedViewerIds = new java.util.HashSet<>();
 
                 for (UserProfileView v : visitorViews) {
-                    if (v.getViewerUserId() != null && !processedViewerIds.contains(v.getViewerUserId())) {
+                    if (v.getViewerUserId() != null && !v.getViewerUserId().equals(currentUser.getId()) && !processedViewerIds.contains(v.getViewerUserId())) {
                         processedViewerIds.add(v.getViewerUserId());
                         Users viewerUser = null;
                         try {
@@ -968,11 +968,20 @@ public class PageController {
                             if (viewerProfile == null) {
                                 viewerProfile = profileService.getProfileByUserId(viewerUser.getId());
                             }
-                            if (viewerProfile != null && viewerProfile.getId() != null) {
-                                java.util.Map<String, Object> map = new java.util.HashMap<>();
-                                map.put("user", viewerUser);
-                                map.put("profile", viewerProfile);
-                                map.put("viewedDate", v.getViewedDate());
+                            if (viewerProfile == null) {
+                                viewerProfile = new Profiles();
+                                viewerProfile.setId(viewerUser.getId());
+                                viewerProfile.setFullName(viewerUser.getName());
+                                viewerProfile.setGender(viewerUser.getGender());
+                                viewerProfile.setCity(viewerUser.getCity() != null ? viewerUser.getCity() : "Tamil Nadu");
+                                viewerProfile.setCaste(viewerUser.getCaste());
+                                viewerProfile.setUser(viewerUser);
+                            }
+
+                            java.util.Map<String, Object> map = new java.util.HashMap<>();
+                            map.put("user", viewerUser);
+                            map.put("profile", viewerProfile);
+                            map.put("viewedDate", v.getViewedDate());
 
                             String timeAgo = "Recently";
                             if (v.getViewedDate() != null) {
@@ -987,7 +996,6 @@ public class PageController {
                             }
                             map.put("timeAgo", timeAgo);
                             whoViewedMyProfile.add(map);
-                            }
                         }
                     }
                 }

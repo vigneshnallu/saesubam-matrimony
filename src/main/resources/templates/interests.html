@@ -364,9 +364,9 @@
                         <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 py-2">
                             <i class="bi bi-person-bounding-box me-1"></i> View Profile
                         </a>
-                        <div class="d-flex gap-2" th:if="${item.status.name() == 'PENDING'}">
+                        <div class="d-flex gap-2" th:if="${#strings.toString(item.status) == 'PENDING'}">
                             <!-- Paid Members: Accept & Decline Actions -->
-                            <th:block th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE'}">
+                            <th:block th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE'}">
                                 <form th:action="@{/api/interests/accept/{id}(id=${item.id})}" method="post">
                                     <button type="submit" class="btn btn-success btn-sm fw-bold px-3 rounded-3 py-2"><i class="bi bi-check-circle me-1"></i> Accept</button>
                                 </form>
@@ -376,7 +376,7 @@
                             </th:block>
 
                             <!-- FREE Members: Upgrade Plan Button -->
-                            <th:block th:if="${user == null or user.membershipType == null or user.membershipType.name() == 'FREE'}">
+                            <th:block th:if="${user == null or user.membershipType == null or #strings.toString(user.membershipType) == 'FREE'}">
                                 <a href="/subscription" class="btn btn-warning btn-sm fw-bold px-3 rounded-3 py-2 text-dark shadow-sm">
                                     <i class="bi bi-lock-fill me-1"></i> Upgrade Plan to Accept / Decline
                                 </a>
@@ -408,7 +408,7 @@
                             <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}" class="text-decoration-none text-dark">
                                 <h5 class="fw-bold mb-0" th:text="${item.receiver.name}">Receiver Name</h5>
                             </a>
-                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${item.status.name() == 'ACCEPTED' ? 'bg-success-subtle text-success' : (item.status.name() == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
+                            <span class="badge rounded-pill px-3 py-1 fw-bold" th:classappend="${#strings.toString(item.status) == 'ACCEPTED' ? 'bg-success-subtle text-success' : (#strings.toString(item.status) == 'DECLINED' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning')}" th:text="${item.status}">STATUS</span>
                         </div>
                         <p class="text-muted small mb-2" th:text="${item.receiver.profile != null ? item.receiver.profile.occupation + ' • ' + item.receiver.profile.city : 'Member'}">Profession • City</p>
                         <span class="small text-muted"><i class="bi bi-send me-1"></i> Interest sent on <span th:text="${#temporals.format(item.sentAt, 'dd MMM yyyy')}">Date</span></span>
@@ -502,13 +502,13 @@
                             <a th:href="@{/profile/{id}(id=${item.profile != null and item.profile.id != null ? item.profile.id : 1})}" class="btn btn-outline-danger btn-sm fw-bold px-3 rounded-3 py-1.5">
                                 <i class="bi bi-person-bounding-box me-1"></i> View Profile
                             </a>
-                            <form th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE' and item.profile != null and item.profile.id != null}" th:action="@{/api/interests/send/{id}(id=${item.profile.id})}" method="post" class="d-inline">
+                            <form th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and item.profile != null and item.profile.id != null}" th:action="@{/api/interests/send/{id}(id=${item.profile.id})}" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-danger btn-sm rounded-3 fw-bold px-3 py-1.5">
                                     <i class="bi bi-heart-fill me-1"></i> Send Express Interest
                                 </button>
                             </form>
                             <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3 rounded-3 py-1.5"
-                                    th:if="${user != null and user.membershipType != null and user.membershipType.name() != 'FREE' and item.user != null}"
+                                    th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE' and item.user != null}"
                                     th:data-partner-id="${item.user.id}"
                                     th:data-partner-name="${item.user.name}"
                                     th:data-partner-photo="${item.profile != null and item.profile.photoUrl != null ? item.profile.photoUrl : ''}"
