@@ -127,7 +127,7 @@ public class PageController {
      */
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
-        Users currentUser = getSessionUser(session);
+        Users currentUser = getLoggedInUser(session);
         if (currentUser != null) {
             model.addAttribute("user", currentUser);
         }
