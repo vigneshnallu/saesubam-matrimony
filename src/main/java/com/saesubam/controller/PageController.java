@@ -926,10 +926,14 @@ public class PageController {
      * @return the string
      */
     @GetMapping("/interests")
-    public String interests(HttpSession session, Model model) {
+    public String interests(@RequestParam(value = "tab", required = false) String activeTab, HttpSession session, Model model) {
         Users currentUser = getLoggedInUser(session);
         if (currentUser == null) {
             return "redirect:/?loginRequired=true";
+        }
+
+        if (activeTab == null || activeTab.trim().isEmpty()) {
+            activeTab = "received";
         }
 
         List<UserInterest> received = interestService.getReceivedInterests(currentUser);
@@ -1009,6 +1013,7 @@ public class PageController {
         model.addAttribute("sentInterests", sent);
         model.addAttribute("acceptedMatches", accepted);
         model.addAttribute("whoViewedMyProfile", whoViewedMyProfile);
+        model.addAttribute("activeTab", activeTab);
 
         return "interests";
     }

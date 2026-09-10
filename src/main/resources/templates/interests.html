@@ -316,22 +316,22 @@
     <!-- Tabs Nav -->
     <ul class="nav nav-pills mb-4" id="interestTabs" role="tablist">
         <li class="nav-item">
-            <button class="nav-link active" id="received-tab" data-bs-toggle="pill" data-bs-target="#received" type="button">
+            <button class="nav-link" id="received-tab" th:classappend="${activeTab == 'received' or activeTab == null ? 'active' : ''}" data-bs-toggle="pill" data-bs-target="#received" type="button" onclick="switchInterestTab('received')">
                 Received Interests <span class="badge bg-light text-danger ms-1" th:text="${receivedInterests != null ? receivedInterests.size() : 0}">0</span>
             </button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="sent-tab" data-bs-toggle="pill" data-bs-target="#sent" type="button">
+            <button class="nav-link" id="sent-tab" th:classappend="${activeTab == 'sent' ? 'active' : ''}" data-bs-toggle="pill" data-bs-target="#sent" type="button" onclick="switchInterestTab('sent')">
                 Sent Interests <span class="badge bg-light text-muted ms-1" th:text="${sentInterests != null ? sentInterests.size() : 0}">0</span>
             </button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="accepted-tab" data-bs-toggle="pill" data-bs-target="#accepted" type="button">
+            <button class="nav-link" id="accepted-tab" th:classappend="${activeTab == 'accepted' ? 'active' : ''}" data-bs-toggle="pill" data-bs-target="#accepted" type="button" onclick="switchInterestTab('accepted')">
                 Connected Matches <span class="badge bg-light text-success ms-1" th:text="${acceptedMatches != null ? acceptedMatches.size() : 0}">0</span>
             </button>
         </li>
         <li class="nav-item">
-            <button class="nav-link" id="viewers-tab" data-bs-toggle="pill" data-bs-target="#viewers" type="button">
+            <button class="nav-link" id="viewers-tab" th:classappend="${activeTab == 'viewers' ? 'active' : ''}" data-bs-toggle="pill" data-bs-target="#viewers" type="button" onclick="switchInterestTab('viewers')">
                 Who Viewed My Profile <span class="badge bg-light text-primary ms-1" th:text="${whoViewedMyProfile != null ? whoViewedMyProfile.size() : 0}">0</span>
             </button>
         </li>
@@ -340,7 +340,7 @@
     <!-- Tab Contents -->
     <div class="tab-content" id="interestTabsContent">
         <!-- Received Tab -->
-        <div class="tab-pane fade show active" id="received" role="tabpanel">
+        <div class="tab-pane fade" th:classappend="${activeTab == 'received' or activeTab == null ? 'show active' : ''}" id="received" role="tabpanel">
             <div th:if="${receivedInterests != null and not #lists.isEmpty(receivedInterests)}">
                 <div class="interest-card" th:each="item : ${receivedInterests}">
                     <a th:href="@{/profile/{id}(id=${item.sender.profile != null ? item.sender.profile.id : 1})}">
@@ -394,7 +394,7 @@
         </div>
 
         <!-- Sent Tab -->
-        <div class="tab-pane fade" id="sent" role="tabpanel">
+        <div class="tab-pane fade" th:classappend="${activeTab == 'sent' ? 'show active' : ''}" id="sent" role="tabpanel">
             <div th:if="${sentInterests != null and not #lists.isEmpty(sentInterests)}">
                 <div class="interest-card" th:each="item : ${sentInterests}">
                     <a th:href="@{/profile/{id}(id=${item.receiver.profile != null ? item.receiver.profile.id : 1})}">
@@ -428,7 +428,7 @@
         </div>
 
         <!-- Connected Tab (With Profile Details & Real-Time Live Partner Chat) -->
-        <div class="tab-pane fade" id="accepted" role="tabpanel">
+        <div class="tab-pane fade" th:classappend="${activeTab == 'accepted' ? 'show active' : ''}" id="accepted" role="tabpanel">
             <div th:if="${acceptedMatches != null and not #lists.isEmpty(acceptedMatches)}">
                 <div class="interest-card border-success border-2 shadow-sm" th:each="item : ${acceptedMatches}" th:with="partner=${item.sender.id == user.id ? item.receiver : item.sender}">
                     <a th:href="@{/profile/{id}(id=${partner.profile != null ? partner.profile.id : 1})}">
@@ -478,7 +478,7 @@
         </div>
 
         <!-- Who Viewed My Profile Tab -->
-        <div class="tab-pane fade" id="viewers" role="tabpanel">
+        <div class="tab-pane fade" th:classappend="${activeTab == 'viewers' ? 'show active' : ''}" id="viewers" role="tabpanel">
             <div th:if="${whoViewedMyProfile != null and not #lists.isEmpty(whoViewedMyProfile)}">
                 <div class="interest-card border-primary border-1 shadow-sm" th:each="item : ${whoViewedMyProfile}">
                     <a th:href="@{/profile/{id}(id=${item.profile != null and item.profile.id != null ? item.profile.id : 1})}">
@@ -702,6 +702,19 @@
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
+    function switchInterestTab(tabId) {
+        document.querySelectorAll('#interestTabs .nav-link').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('#interestTabsContent .tab-pane').forEach(function(pane) {
+            pane.classList.remove('show', 'active');
+        });
+        var btn = document.getElementById(tabId + '-tab');
+        var pane = document.getElementById(tabId);
+        if (btn) btn.classList.add('active');
+        if (pane) pane.classList.add('show', 'active');
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         var modalEl = document.getElementById('chatModal');
         if (modalEl) {
@@ -712,12 +725,8 @@
 
         var hash = (window.location.hash || (new URLSearchParams(window.location.search)).get('tab'));
         if (hash) {
-            var targetId = hash.replace('#', '') + '-tab';
-            var targetBtn = document.getElementById(targetId);
-            if (targetBtn && typeof bootstrap !== 'undefined') {
-                var bsTab = new bootstrap.Tab(targetBtn);
-                bsTab.show();
-            }
+            var tabName = hash.replace('#', '');
+            switchInterestTab(tabName);
         }
     });
 
