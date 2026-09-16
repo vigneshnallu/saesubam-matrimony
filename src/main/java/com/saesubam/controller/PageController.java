@@ -212,6 +212,11 @@ public class PageController {
         return "grievance";
     }
 
+    @GetMapping("/favicon.ico")
+    public String favicon() {
+        return "forward:/images/favicon.svg";
+    }
+
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public String getSitemap() {
