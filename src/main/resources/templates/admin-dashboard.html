@@ -31,6 +31,18 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             border: 1px solid #e2e8f0;
         }
+        .stat-card-clickable {
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stat-card-clickable:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(225, 29, 72, 0.12);
+            border-color: #cbd5e1;
+        }
+        .stat-card-clickable:active {
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -62,7 +74,7 @@
     <!-- Quick Stats Summary Cards -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="stat-card">
+            <div class="stat-card stat-card-clickable" id="cardUsers" onclick="showAdminTab('usersTabContainer', 'tabBtnUsers')" title="Click to view Candidate Users grid">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="text-muted small fw-bold">TOTAL USERS</div>
@@ -75,7 +87,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card">
+            <div class="stat-card stat-card-clickable" id="cardPayments" onclick="showAdminTab('paymentsTabContainer', 'tabBtnPayments')" title="Click to view Candidate Payments grid">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="text-muted small fw-bold">PAYMENTS</div>
@@ -88,7 +100,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card">
+            <div class="stat-card stat-card-clickable" id="cardGold" onclick="showAdminTab('usersTabContainer', 'tabBtnUsers'); filterUsersByPlan('GOLD');" title="Click to view Gold Plan Users">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="text-muted small fw-bold">GOLD PLAN QUOTA</div>
@@ -101,7 +113,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="stat-card">
+            <div class="stat-card stat-card-clickable" id="cardQueries" onclick="showAdminTab('queriesTabContainer', 'tabBtnQueries')" title="Click to view Support Queries grid">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <div class="text-muted small fw-bold">SUPPORT QUERIES</div>
@@ -118,8 +130,35 @@
         </div>
     </div>
 
+    <!-- Admin Management Navigation Tabs -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <ul class="nav nav-pills bg-white p-2 rounded-4 shadow-sm border gap-2 flex-wrap" id="adminTabPills">
+            <li class="nav-item">
+                <button class="nav-link active bg-danger text-white rounded-pill fw-bold px-4 py-2" id="tabBtnUsers" onclick="showAdminTab('usersTabContainer', 'tabBtnUsers')">
+                    <i class="bi bi-people-fill me-2"></i> Candidate Users (<span th:text="${usersList != null ? usersList.size() : 0}">0</span>)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link text-dark rounded-pill fw-bold px-4 py-2" id="tabBtnPayments" onclick="showAdminTab('paymentsTabContainer', 'tabBtnPayments')">
+                    <i class="bi bi-receipt-cutoff me-2 text-primary"></i> Payment Transactions (<span th:text="${transactions != null ? transactions.size() : 0}">0</span>)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link text-dark rounded-pill fw-bold px-4 py-2" id="tabBtnQueries" onclick="showAdminTab('queriesTabContainer', 'tabBtnQueries')">
+                    <i class="bi bi-headset me-2 text-danger"></i> Support Queries (<span th:text="${queriesList != null ? queriesList.size() : 0}">0</span>)
+                    <span class="badge bg-warning text-dark ms-1" th:if="${pendingQueriesCount > 0}" th:text="${pendingQueriesCount} + ' Pending'">1 Pending</span>
+                </button>
+            </li>
+        </ul>
+        <div>
+            <button class="btn btn-outline-secondary btn-sm rounded-pill fw-bold px-3 py-2" onclick="showAllSections()">
+                <i class="bi bi-view-list me-1"></i> Show All Grids
+            </button>
+        </div>
+    </div>
+
     <!-- Candidate User Administration & Quota Table -->
-    <div class="card-custom p-4 mb-5">
+    <div class="card-custom p-4 mb-5 admin-grid-section" id="usersTabContainer">
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
             <div>
                 <h4 class="fw-bold text-dark mb-1"><i class="bi bi-people-fill text-danger me-2"></i> Candidate Users & Membership Quotas</h4>
@@ -219,10 +258,19 @@
     </div>
 
     <!-- Candidate Payment Activity Log Table -->
-    <div class="card-custom p-4">
-        <h4 class="fw-bold text-dark mb-3"><i class="bi bi-receipt-cutoff text-primary me-2"></i> All Candidate Payment & Proof Submissions</h4>
+    <div class="card-custom p-4 mb-5 admin-grid-section" id="paymentsTabContainer">
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold text-dark mb-1"><i class="bi bi-receipt-cutoff text-primary me-2"></i> All Candidate Payment & Proof Submissions</h4>
+                <p class="text-muted small mb-0">Review UTR transaction numbers, inspect payment screenshots, and approve membership plan upgrades.</p>
+            </div>
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="paymentSearchInput" onkeyup="filterPayments()" class="form-control form-control-sm ps-5 rounded-pill" placeholder="Search name, UTR, plan..." style="min-width: 300px;">
+            </div>
+        </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0" id="paymentsTable">
                 <thead class="table-light small text-muted">
                     <tr>
                         <th class="py-3">Tx ID</th>
@@ -304,7 +352,7 @@
     </div>
 
     <!-- Member Support Queries Card -->
-    <div class="card-custom p-4 mb-4" id="queries">
+    <div class="card-custom p-4 mb-4 admin-grid-section" id="queriesTabContainer">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
                 <h5 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
@@ -453,6 +501,22 @@ function filterUsers() {
     }
 }
 
+function filterPayments() {
+    let input = document.getElementById("paymentSearchInput").value.toLowerCase();
+    let table = document.getElementById("paymentsTable");
+    if (!table) return;
+    let rows = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < rows.length; i++) {
+        let text = rows[i].textContent.toLowerCase();
+        if (text.indexOf(input) > -1) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+}
+
 function filterQueries() {
     let input = document.getElementById("querySearchInput").value.toLowerCase();
     let table = document.getElementById("queriesTable");
@@ -467,6 +531,69 @@ function filterQueries() {
         }
     }
 }
+
+function showAdminTab(tabContainerId, buttonId) {
+    let sections = document.getElementsByClassName("admin-grid-section");
+    for (let i = 0; i < sections.length; i++) {
+        sections[i].style.display = "none";
+    }
+
+    let target = document.getElementById(tabContainerId);
+    if (target) {
+        target.style.display = "block";
+    }
+
+    let tabBtns = ["tabBtnUsers", "tabBtnPayments", "tabBtnQueries"];
+    tabBtns.forEach(id => {
+        let btn = document.getElementById(id);
+        if (btn) {
+            btn.classList.remove("active", "bg-danger", "text-white", "bg-primary");
+            btn.classList.add("text-dark");
+        }
+    });
+
+    let activeBtn = document.getElementById(buttonId);
+    if (activeBtn) {
+        activeBtn.classList.add("active");
+        if (buttonId === 'tabBtnUsers' || buttonId === 'tabBtnQueries') {
+            activeBtn.classList.add("bg-danger", "text-white");
+            activeBtn.classList.remove("text-dark");
+        } else if (buttonId === 'tabBtnPayments') {
+            activeBtn.classList.add("bg-primary", "text-white");
+            activeBtn.classList.remove("text-dark");
+        }
+    }
+
+    if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function showAllSections() {
+    let sections = document.getElementsByClassName("admin-grid-section");
+    for (let i = 0; i < sections.length; i++) {
+        sections[i].style.display = "block";
+    }
+}
+
+function filterUsersByPlan(plan) {
+    let userSearch = document.getElementById("userSearchInput");
+    if (userSearch) {
+        userSearch.value = plan;
+        filterUsers();
+    }
+}
+
+window.addEventListener('DOMContentLoaded', (event) => {
+    let hash = window.location.hash;
+    if (hash === '#payments') {
+        showAdminTab('paymentsTabContainer', 'tabBtnPayments');
+    } else if (hash === '#queries') {
+        showAdminTab('queriesTabContainer', 'tabBtnQueries');
+    } else if (hash === '#users') {
+        showAdminTab('usersTabContainer', 'tabBtnUsers');
+    }
+});
 </script>
 
 </body>
