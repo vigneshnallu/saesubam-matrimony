@@ -567,6 +567,30 @@ public class Users {
     }
 
     /**
+     * Gets the number of days remaining until membership plan expires.
+     *
+     * @return days remaining, or null if no expiry date is set
+     */
+    public Long getDaysUntilExpiry() {
+        if (membershipExpiryDate == null) {
+            return null;
+        }
+        return java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.now(), membershipExpiryDate.toLocalDate());
+    }
+
+    /**
+     * Checks if membership plan has expired.
+     *
+     * @return true if plan is expired
+     */
+    public boolean isMembershipExpired() {
+        if (membershipType == null || membershipType == MembershipType.FREE) {
+            return false;
+        }
+        return membershipExpiryDate != null && LocalDateTime.now().isAfter(membershipExpiryDate);
+    }
+
+    /**
      * Gets the profile views count.
      *
      * @return the profile views count

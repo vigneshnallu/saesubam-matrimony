@@ -81,6 +81,23 @@ public class DataInitializer implements CommandLineRunner {
             System.err.println("Notice updating payment transaction statuses: " + e.getMessage());
         }
 
+        // Migration: Ensure existing paid members have valid membershipExpiryDate
+        try {
+            List<Users> allUsers = userRepository.findAll();
+            for (Users u : allUsers) {
+                if (u.getMembershipType() != null && u.getMembershipType() != MembershipType.FREE && u.getMembershipExpiryDate() == null) {
+                    int days = (u.getMembershipType() == MembershipType.GOLD) ? 90 : 365;
+                    u.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(days));
+                    if (u.getMaxProfileViews() == null || u.getMaxProfileViews() <= 0) {
+                        u.setMaxProfileViews(u.getMembershipType() == MembershipType.GOLD ? 100 : 250);
+                    }
+                    userRepository.save(u);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Notice initializing paid user expiry dates: " + e.getMessage());
+        }
+
         if (profileRepository.count() > 0) {
             return; // Seed data already exists
         }
@@ -267,6 +284,19 @@ public class DataInitializer implements CommandLineRunner {
         user.setMembershipType(membershipType);
         user.setMobileVerified(true);
         user.setEmailVerified(true);
+        if (membershipType == MembershipType.GOLD) {
+            user.setMaxProfileViews(100);
+            user.setProfileViewsCount(0);
+            user.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(90));
+        } else if (membershipType == MembershipType.PREMIUM || membershipType == MembershipType.PLATINUM) {
+            user.setMaxProfileViews(250);
+            user.setProfileViewsCount(0);
+            user.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(365));
+        } else {
+            user.setMaxProfileViews(0);
+            user.setProfileViewsCount(0);
+            user.setMembershipExpiryDate(null);
+        }
 
         Users savedUser = userRepository.save(user);
 

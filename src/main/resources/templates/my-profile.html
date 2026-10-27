@@ -340,7 +340,12 @@
             <div class="d-flex gap-4 text-muted small flex-wrap">
                 <div><i class="bi bi-envelope-fill me-1 text-danger"></i> <span th:text="${user.email}">user@gmail.com</span></div>
                 <div><i class="bi bi-telephone-fill me-1 text-danger"></i> <span th:text="${user.mobile}">9876543210</span></div>
-                <div><i class="bi bi-gem me-1 text-danger"></i> Plan: <span class="fw-bold text-dark" th:text="${user.membershipType}">FREE</span></div>
+                <div><i class="bi bi-gem me-1 text-danger"></i> Plan: <span class="fw-bold text-dark" th:text="${user.membershipType != null ? user.membershipType : 'FREE'}">FREE</span></div>
+                <div th:if="${user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE'}">
+                    <i class="bi bi-calendar-event me-1 text-danger"></i> Plan Expiry:
+                    <span class="fw-bold text-dark" th:if="${user.membershipExpiryDate != null}" th:text="${#temporals.format(user.membershipExpiryDate, 'dd MMM yyyy')}">15 Nov 2026</span>
+                    <span class="badge bg-success-subtle text-success border ms-1" th:if="${user.daysUntilExpiry != null and user.daysUntilExpiry > 0}" th:text="${user.daysUntilExpiry} + ' Days Left'">90 Days Left</span>
+                </div>
             </div>
         </div>
     </div>

@@ -111,6 +111,15 @@ public class PageController {
             try {
                 Users dbUser = userService.getUserById(sessionUser.getId());
                 if (dbUser != null) {
+                    if (dbUser.getMembershipType() != null && dbUser.getMembershipType() != MembershipType.FREE
+                            && dbUser.getMembershipExpiryDate() == null) {
+                        int days = (dbUser.getMembershipType() == MembershipType.GOLD) ? 90 : 365;
+                        dbUser.setMembershipExpiryDate(java.time.LocalDateTime.now().plusDays(days));
+                        if (dbUser.getMaxProfileViews() == null || dbUser.getMaxProfileViews() <= 0) {
+                            dbUser.setMaxProfileViews(dbUser.getMembershipType() == MembershipType.GOLD ? 100 : 250);
+                        }
+                        dbUser = userRepository.save(dbUser);
+                    }
                     session.setAttribute("loggedInUser", dbUser);
                     return dbUser;
                 }

@@ -493,7 +493,7 @@
                 <div th:if="${(canViewFullProfile and user != null and user.membershipType != null and #strings.toString(user.membershipType) != 'FREE') or isInterestAccepted}">
                     <div class="mb-3">
                         <label class="small text-muted fw-semibold">Contact Mobile</label>
-                        <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile != null and !profile.contactMobile.isEmpty() ? profile.contactMobile : (profile.user != null ? profile.user.mobile : 'Not Available')}">+91 98765 43210</div>
+                        <div class="fw-bold fs-5 text-dark" th:text="${profile.contactMobile != null and !profile.contactMobile.isEmpty() ? profile.contactMobile : (profile.user != null ? profile.user.mobile : 'Not Available')}">+91 63695 41046</div>
                         <div class="d-flex gap-2 mt-2 flex-wrap">
                             <a th:if="${profile.contactMobile != null and !profile.contactMobile.isEmpty()}" th:href="'tel:' + ${profile.contactMobile}" class="btn btn-sm btn-outline-success rounded-pill fw-bold px-3"><i class="bi bi-telephone-out-fill me-1"></i> Call Candidate</a>
                             <a th:if="${profile.contactMobile != null and !profile.contactMobile.isEmpty()}" th:href="'https://wa.me/91' + ${profile.contactMobile}" target="_blank" class="btn btn-sm btn-success rounded-pill fw-bold px-3"><i class="bi bi-whatsapp me-1"></i> WhatsApp</a>

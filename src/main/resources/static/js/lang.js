@@ -46,7 +46,15 @@ const translations = {
         "all_castes": "All Castes",
         "select_gender": "Select Gender",
         "male": "Male (ஆண்)",
-        "female": "Female (பெண்)"
+        "female": "Female (பெண்)",
+        "current_plan": "Current Plan:",
+        "plan_expiry_date": "Plan Expiry Date",
+        "plan_validity": "Plan Validity",
+        "days_left": "Days Left",
+        "expires_today": "Expires Today",
+        "plan_expired": "Plan Expired",
+        "lifetime_free": "Lifetime (Free Basic Account)",
+        "free_upgrade_hint": "Upgrade to Gold or Premium to unlock candidate contact details & full profiles."
     },
     "ta": {
         "dashboard": "முகப்பு",
@@ -95,7 +103,15 @@ const translations = {
         "all_castes": "அனைத்து ஜாதிகள்",
         "select_gender": "பாலினம் தேர்வு செய்ய",
         "male": "ஆண் வரன்கள்",
-        "female": "பெண் வரன்கள்"
+        "female": "பெண் வரன்கள்",
+        "current_plan": "தற்போதைய திட்டம்:",
+        "plan_expiry_date": "திட்டம் காலாவதியாகும் தேதி",
+        "plan_validity": "திட்டத்தின் செல்லுபடியாகும் காலம்",
+        "days_left": "நாட்கள் மீதம்",
+        "expires_today": "இன்றோடு முடிகிறது",
+        "plan_expired": "திட்டம் முடிவடைந்தது",
+        "lifetime_free": "வாழ்நாள் முழுவதும் (இலவச கணக்கு)",
+        "free_upgrade_hint": "முழு விவரங்கள் மற்றும் தொலைபேசி எண்களைப் பார்க்க கோல்டு அல்லது பிரிமியம் திட்டத்திற்கு மாறவும்."
     }
 };
 
@@ -105,6 +121,9 @@ const exactTextMap = {
     "Browse Profiles": "வரன்கள் / சுயவிவரங்கள்",
     "Match Interests": "விருப்பங்கள்",
     "Shortlisted Profiles": "விருப்பப்பட்டியல்கள்",
+    "Plan Expiry Date": "திட்டம் காலாவதியாகும் தேதி",
+    "Plan Validity": "திட்டத்தின் செல்லுபடியாகும் காலம்",
+    "Days Left": "நாட்கள் மீதம்",
     "My Profile": "என் சுயவிவரம்",
     "Membership Plan": "உறுப்பினர் திட்டம்",
     "Logout": "வெளியேறு",
