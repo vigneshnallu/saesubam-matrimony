@@ -1,0 +1,29 @@
+name: SaeSubam Matrimony Keep-Alive & Auto-Visitor Bot
+
+on:
+  schedule:
+    # Runs every 14 minutes to keep Render free tier awake 24/7
+    - cron: '*/14 * * * *'
+  workflow_dispatch: # Allows manual trigger anytime from GitHub Actions tab
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Visit Public Pages & Refresh Cache
+        run: |
+          echo "==========================================="
+          echo "🚀 Visiting SaeSubam Matrimony Live Site..."
+          echo "==========================================="
+          
+          curl -s -o /dev/null -w "Homepage (/)               : %{http_code}\n" https://saesubam-matrimony.onrender.com/
+          curl -s -o /dev/null -w "Register (/register)       : %{http_code}\n" https://saesubam-matrimony.onrender.com/register
+          curl -s -o /dev/null -w "Profiles (/profiles)       : %{http_code}\n" https://saesubam-matrimony.onrender.com/profiles
+          curl -s -o /dev/null -w "Subscription (/subscription): %{http_code}\n" https://saesubam-matrimony.onrender.com/subscription
+          curl -s -o /dev/null -w "Contact Us (/contact)      : %{http_code}\n" https://saesubam-matrimony.onrender.com/contact
+          curl -s -o /dev/null -w "Sitemap (/sitemap.xml)     : %{http_code}\n" https://saesubam-matrimony.onrender.com/sitemap.xml
+          curl -s -o /dev/null -w "Robots (/robots.txt)       : %{http_code}\n" https://saesubam-matrimony.onrender.com/robots.txt
+          
+          echo "==========================================="
+          echo "✅ All pages visited successfully! Server is active."
+          echo "==========================================="
