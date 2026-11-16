@@ -3,3 +3,7 @@
 app.log*
 .idea/
 *.iml
+
+# Android Application (Moved to independent project: d:/workspace2026/dev/appilcation/saesubam-android-app)
+android-app/
+

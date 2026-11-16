@@ -10,6 +10,14 @@
     <link rel="shortcut icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="apple-touch-icon" href="/images/favicon.svg">
 
+    <!-- Progressive Web App (PWA) Meta & Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#881337">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SaeSubam">
+
     <!-- Primary SEO Meta Tags -->
     <meta name="google-site-verification" content="gG75sylIm_OgSWPuQGKAHGQIEw_ogk2r13B9rOpyVZs" />
     <meta name="title" content="SaeSubam Matrimony Services Tamilnadu">
@@ -792,5 +800,79 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- PWA Install Prompt Banner for Mobile Users -->
+    <div id="pwaInstallBanner" class="position-fixed bottom-0 start-50 translate-middle-x mb-3 px-3 py-2 bg-dark text-white rounded-pill shadow-lg d-none align-items-center gap-3 border border-secondary border-opacity-50" style="z-index: 9999; max-width: 92%; width: 440px;">
+        <img src="/images/app-icon.jpg" alt="SaeSubam" width="36" height="36" class="rounded-circle flex-shrink-0" style="object-fit: cover; border: 1.5px solid #f59e0b;">
+        <div class="flex-grow-1 text-truncate">
+            <div class="fw-bold small text-white">SaeSubam Matrimony App</div>
+            <div class="text-white-50" style="font-size: 0.72rem;">Install for faster mobile access</div>
+        </div>
+        <button id="pwaInstallBtn" class="btn btn-sm btn-danger rounded-pill px-3 fw-semibold flex-shrink-0" style="font-size: 0.8rem;">
+            Install
+        </button>
+        <button id="pwaDismissBtn" type="button" class="btn-close btn-close-white flex-shrink-0 ms-1" style="font-size: 0.65rem;" aria-label="Close"></button>
+    </div>
+
+    <!-- PWA Service Worker & Install Handler -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SaeSubam PWA ServiceWorker registered:', reg.scope))
+                    .catch(err => console.log('ServiceWorker registration notice:', err));
+            });
+        }
+
+        let deferredPrompt = null;
+        const installBanner = document.getElementById('pwaInstallBanner');
+        const installBtn = document.getElementById('pwaInstallBtn');
+        const dismissBtn = document.getElementById('pwaDismissBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const dismissedAt = localStorage.getItem('pwa_dismissed_at');
+            const now = Date.now();
+            if (!dismissedAt || (now - parseInt(dismissedAt, 10)) > (7 * 24 * 60 * 60 * 1000)) {
+                if (installBanner) {
+                    installBanner.classList.remove('d-none');
+                    installBanner.classList.add('d-flex');
+                }
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                installBanner.classList.add('d-none');
+                installBanner.classList.remove('d-flex');
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                if (choice.outcome === 'accepted') {
+                    console.log('User installed SaeSubam PWA');
+                }
+                deferredPrompt = null;
+            });
+        }
+
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', () => {
+                if (installBanner) {
+                    installBanner.classList.add('d-none');
+                    installBanner.classList.remove('d-flex');
+                }
+                localStorage.setItem('pwa_dismissed_at', Date.now().toString());
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBanner) {
+                installBanner.classList.add('d-none');
+                installBanner.classList.remove('d-flex');
+            }
+            deferredPrompt = null;
+        });
+    </script>
 </body>
 </html>
